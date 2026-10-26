@@ -1,0 +1,6 @@
+{
+  "name": "@zoom-design/core",
+  "version": "0.0.0",
+  "description": "Framework-neutral behavior and algorithms",
+  "private": true
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@zoom-design/dom",
+  "version": "0.0.0",
+  "description": "Framework-neutral browser interaction utilities",
+  "private": true,
+  "dependencies": {
+    "@zoom-design/core": "0.0.0"
+  }
+}

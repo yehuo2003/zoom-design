@@ -1,0 +1,13 @@
+{
+  "name": "zoom-design",
+  "version": "0.0.0",
+  "description": "Zoom Design multi-framework component library workspace",
+  "workspaces": [
+    "packages/core",
+    "packages/dom",
+    "packages/vue",
+    "packages/react",
+    "packages/angular"
+  ],
+  "private": true
+}
