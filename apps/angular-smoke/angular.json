@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": { "analytics": false },
+  "projects": {
+    "angular-smoke": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "index": "src/index.html",
+            "outputPath": "../../.artifacts/task3/angular-smoke",
+            "polyfills": [],
+            "assets": [],
+            "styles": ["../../dist/angular/styles/style.css"]
+          },
+          "configurations": {
+            "production": { "outputHashing": "all" },
+            "development": { "optimization": false, "sourceMap": true }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": { "buildTarget": "angular-smoke:build:development", "port": 5173, "host": "127.0.0.1" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "dest": "../../../.artifacts/fixtures/angular/apf",
+  "lib": { "entryFile": "public-api.fixture.ts" }
+}

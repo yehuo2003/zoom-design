@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "../../../../.artifacts/fixtures/vue",
+    "rootDir": "."
+  },
+  "include": ["index.ts", "BuildProbe.vue"]
+}

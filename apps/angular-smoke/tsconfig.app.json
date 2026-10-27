@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "rootDir": "../..", "outDir": "../../.artifacts/task3/angular-smoke-types", "types": [] },
+  "files": ["src/main.ts"],
+  "include": ["src/**/*.d.ts"]
+}

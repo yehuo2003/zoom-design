@@ -2,5 +2,45 @@
   "name": "@zoom-design/vue",
   "version": "0.0.0",
   "description": "Vue components for Zoom Design",
-  "private": true
+  "private": true,
+  "type": "module",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/build-framework.mjs vue",
+    "typecheck": "node ../../scripts/check-vue.mjs",
+    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
+    "test:e2e": "node ../../scripts/e2e.mjs --mode workspace --package vue --browser chromium",
+    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vue": "3.5.44",
+    "@vue/compiler-sfc": "3.5.44",
+    "@vue/compiler-dom": "3.5.44",
+    "@vue/server-renderer": "3.5.44",
+    "vue-tsc": "3.3.13",
+    "vite": "8.3.5",
+    "@vitejs/plugin-vue": "6.0.10",
+    "@vue/test-utils": "2.5.1"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "peerDependencies": {
+    "vue": "~3.5.44"
+  }
 }

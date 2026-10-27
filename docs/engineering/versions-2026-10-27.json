@@ -1,0 +1,1948 @@
+{
+  "checkedAt": "2026-10-27T03:18:23.883Z",
+  "sources": [
+    "https://nodejs.org/dist/index.json",
+    "https://registry.npmjs.org/"
+  ],
+  "node": {
+    "selectedVersion": "26.12.1",
+    "publishedAt": "2026-10-21",
+    "lts": false,
+    "bundledNpm": "11.20.0"
+  },
+  "npm": {
+    "package": "npm",
+    "latestStable": "12.2.1",
+    "selectedVersion": "12.2.1",
+    "publishedAt": "2026-10-15T17:40:08.077Z",
+    "engines": {
+      "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+    },
+    "peers": null,
+    "peerMeta": null,
+    "deprecated": null,
+    "source": "https://registry.npmjs.org/npm",
+    "checkedAt": "2026-10-27T03:17:23.9791792Z"
+  },
+  "packages": [
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "sass",
+      "latestStable": "1.106.1",
+      "selectedVersion": "1.106.1",
+      "publishedAt": "2026-10-21T21:53:25.24Z",
+      "engines": {
+        "node": ">=20.19.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/sass",
+      "checkedAt": "2026-10-27T03:16:34.6506348Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vitest",
+      "latestStable": "5.0.5",
+      "selectedVersion": "5.0.5",
+      "publishedAt": "2026-10-15T14:29:01.396Z",
+      "engines": {
+        "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+      },
+      "peers": {
+        "vite": "^6.4.0 || ^7.0.0 || ^8.0.0",
+        "jsdom": "*",
+        "happy-dom": "*",
+        "@vitest/ui": "5.0.5",
+        "@types/node": "^22.0.0 || >=24.0.0",
+        "@edge-runtime/vm": "*",
+        "@opentelemetry/api": "^1.9.0",
+        "@vitest/coverage-v8": "5.0.5",
+        "@vitest/browser-preview": "5.0.5",
+        "@vitest/coverage-istanbul": "5.0.5",
+        "@vitest/browser-playwright": "5.0.5",
+        "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0"
+      },
+      "peerMeta": {
+        "vite": {
+          "optional": false
+        },
+        "jsdom": {
+          "optional": true
+        },
+        "happy-dom": {
+          "optional": true
+        },
+        "@vitest/ui": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "@edge-runtime/vm": {
+          "optional": true
+        },
+        "@opentelemetry/api": {
+          "optional": true
+        },
+        "@vitest/coverage-v8": {
+          "optional": true
+        },
+        "@vitest/browser-preview": {
+          "optional": true
+        },
+        "@vitest/coverage-istanbul": {
+          "optional": true
+        },
+        "@vitest/browser-playwright": {
+          "optional": true
+        },
+        "@vitest/browser-webdriverio": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vitest",
+      "checkedAt": "2026-10-27T03:16:38.2090323Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vitest/coverage-v8",
+      "latestStable": "5.0.5",
+      "selectedVersion": "5.0.5",
+      "publishedAt": "2026-10-15T14:27:49.006Z",
+      "engines": {},
+      "peers": {
+        "vitest": "5.0.5",
+        "@vitest/browser": "5.0.5"
+      },
+      "peerMeta": {
+        "@vitest/browser": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vitest/coverage-v8",
+      "checkedAt": "2026-10-27T03:16:36.6217231Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@playwright/test",
+      "latestStable": "1.64.1",
+      "selectedVersion": "1.64.1",
+      "publishedAt": "2026-10-14T11:58:13.696Z",
+      "engines": {
+        "node": ">=20"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@playwright/test",
+      "checkedAt": "2026-10-27T03:16:49.2169361Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "jsdom",
+      "latestStable": "30.1.3",
+      "selectedVersion": "30.1.3",
+      "publishedAt": "2026-10-15T09:24:38.912Z",
+      "engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "canvas": "^3.2.3"
+      },
+      "peerMeta": {
+        "canvas": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/jsdom",
+      "checkedAt": "2026-10-27T03:16:34.1390017Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/node",
+      "latestStable": "26.6.5",
+      "selectedVersion": "26.6.5",
+      "publishedAt": "2026-10-09T18:46:47.657Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/node",
+      "checkedAt": "2026-10-27T03:16:46.1331013Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "semver",
+      "latestStable": "7.8.5",
+      "selectedVersion": "7.8.5",
+      "publishedAt": "2026-06-19T18:32:48.972Z",
+      "engines": {
+        "node": ">=10"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/semver",
+      "checkedAt": "2026-10-27T03:17:00.2933058Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": ".",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": "packages/core",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": "packages/dom",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "6.0.3",
+      "publishedAt": "2026-04-16T23:38:27.905Z",
+      "engines": {
+        "node": ">=14.17"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8180449Z",
+      "workspace": "packages/vue",
+      "reason": "Compatibility exception: Vue traditional compiler API / Angular >=6.0 <6.1"
+    },
+    {
+      "package": "vue",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:32.806Z",
+      "engines": {},
+      "peers": {
+        "typescript": "*"
+      },
+      "peerMeta": {
+        "typescript": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vue",
+      "checkedAt": "2026-10-27T03:16:39.4408453Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/compiler-sfc",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:54.018Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/compiler-sfc",
+      "checkedAt": "2026-10-27T03:16:36.1661649Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/compiler-dom",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:43:35.763Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/compiler-dom",
+      "checkedAt": "2026-10-27T03:16:37.0742423Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/server-renderer",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:48.038Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/server-renderer",
+      "checkedAt": "2026-10-27T03:16:39.4421470Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vue-tsc",
+      "latestStable": "3.3.13",
+      "selectedVersion": "3.3.13",
+      "publishedAt": "2026-10-10T14:32:43.495Z",
+      "engines": {},
+      "peers": {
+        "typescript": ">=5.0.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vue-tsc",
+      "checkedAt": "2026-10-27T03:16:38.3701737Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vitejs/plugin-vue",
+      "latestStable": "6.0.10",
+      "selectedVersion": "6.0.10",
+      "publishedAt": "2026-10-10T07:40:21.88Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "vue": "^3.2.25 || ^3.6.0-rc.10",
+        "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vitejs/plugin-vue",
+      "checkedAt": "2026-10-27T03:16:40.7425650Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/test-utils",
+      "latestStable": "2.5.1",
+      "selectedVersion": "2.5.1",
+      "publishedAt": "2026-09-16T09:38:12.951Z",
+      "engines": {},
+      "peers": {
+        "vue": "3.x",
+        "@vue/compiler-dom": "3.x",
+        "@vue/server-renderer": "3.x"
+      },
+      "peerMeta": {
+        "@vue/server-renderer": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/test-utils",
+      "checkedAt": "2026-10-27T03:16:39.0730943Z",
+      "workspace": "packages/vue",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "react",
+      "latestStable": "19.3.1",
+      "selectedVersion": "19.3.1",
+      "publishedAt": "2026-10-14T16:47:15.29Z",
+      "engines": {
+        "node": ">=0.10.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/react",
+      "checkedAt": "2026-10-27T03:16:59.9090120Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "react-dom",
+      "latestStable": "19.3.1",
+      "selectedVersion": "19.3.1",
+      "publishedAt": "2026-10-14T16:49:10.081Z",
+      "engines": {},
+      "peers": {
+        "react": "^19.3.1"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/react-dom",
+      "checkedAt": "2026-10-27T03:16:57.4547649Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/react",
+      "latestStable": "19.3.0",
+      "selectedVersion": "19.3.0",
+      "publishedAt": "2026-09-09T18:08:49.75Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/react",
+      "checkedAt": "2026-10-27T03:16:43.7324642Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/react-dom",
+      "latestStable": "19.3.0",
+      "selectedVersion": "19.3.0",
+      "publishedAt": "2026-09-09T18:07:51.886Z",
+      "engines": {},
+      "peers": {
+        "@types/react": "^19.3.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/react-dom",
+      "checkedAt": "2026-10-27T03:16:45.4944099Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vitejs/plugin-react",
+      "latestStable": "6.1.2",
+      "selectedVersion": "6.1.2",
+      "publishedAt": "2026-10-05T10:08:27.143Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "vite": "^8.0.0",
+        "oxc-transform-react": "^0.152.0",
+        "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0",
+        "babel-plugin-react-compiler": "^1.0.0"
+      },
+      "peerMeta": {
+        "oxc-transform-react": {
+          "optional": true
+        },
+        "@rolldown/plugin-babel": {
+          "optional": true
+        },
+        "babel-plugin-react-compiler": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vitejs/plugin-react",
+      "checkedAt": "2026-10-27T03:16:47.1620921Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@testing-library/react",
+      "latestStable": "16.3.3",
+      "selectedVersion": "16.3.3",
+      "publishedAt": "2026-08-27T17:41:18.735Z",
+      "engines": {
+        "node": ">=18"
+      },
+      "peers": {
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0",
+        "@types/react": "^18.0.0 || ^19.0.0",
+        "@types/react-dom": "^18.0.0 || ^19.0.0",
+        "@testing-library/dom": "^10.0.0"
+      },
+      "peerMeta": {
+        "@types/react": {
+          "optional": true
+        },
+        "@types/react-dom": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@testing-library/react",
+      "checkedAt": "2026-10-27T03:16:47.2625650Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@testing-library/dom",
+      "latestStable": "10.4.2",
+      "selectedVersion": "10.4.2",
+      "publishedAt": "2026-09-13T18:08:36.116Z",
+      "engines": {
+        "node": ">=18"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@testing-library/dom",
+      "checkedAt": "2026-10-27T03:16:48.6842616Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@testing-library/user-event",
+      "latestStable": "14.6.8",
+      "selectedVersion": "14.6.8",
+      "publishedAt": "2026-10-13T06:41:22.306Z",
+      "engines": {
+        "npm": ">=6",
+        "node": ">=12"
+      },
+      "peers": {
+        "@testing-library/dom": ">=7.21.4"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@testing-library/user-event",
+      "checkedAt": "2026-10-27T03:16:48.4245276Z",
+      "workspace": "packages/react",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vitest",
+      "latestStable": "5.0.5",
+      "selectedVersion": "5.0.5",
+      "publishedAt": "2026-10-15T14:29:01.396Z",
+      "engines": {
+        "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+      },
+      "peers": {
+        "vite": "^6.4.0 || ^7.0.0 || ^8.0.0",
+        "jsdom": "*",
+        "happy-dom": "*",
+        "@vitest/ui": "5.0.5",
+        "@types/node": "^22.0.0 || >=24.0.0",
+        "@edge-runtime/vm": "*",
+        "@opentelemetry/api": "^1.9.0",
+        "@vitest/coverage-v8": "5.0.5",
+        "@vitest/browser-preview": "5.0.5",
+        "@vitest/coverage-istanbul": "5.0.5",
+        "@vitest/browser-playwright": "5.0.5",
+        "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0"
+      },
+      "peerMeta": {
+        "vite": {
+          "optional": false
+        },
+        "jsdom": {
+          "optional": true
+        },
+        "happy-dom": {
+          "optional": true
+        },
+        "@vitest/ui": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "@edge-runtime/vm": {
+          "optional": true
+        },
+        "@opentelemetry/api": {
+          "optional": true
+        },
+        "@vitest/coverage-v8": {
+          "optional": true
+        },
+        "@vitest/browser-preview": {
+          "optional": true
+        },
+        "@vitest/coverage-istanbul": {
+          "optional": true
+        },
+        "@vitest/browser-playwright": {
+          "optional": true
+        },
+        "@vitest/browser-webdriverio": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vitest",
+      "checkedAt": "2026-10-27T03:16:38.2090323Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "jsdom",
+      "latestStable": "30.1.3",
+      "selectedVersion": "30.1.3",
+      "publishedAt": "2026-10-15T09:24:38.912Z",
+      "engines": {
+        "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "canvas": "^3.2.3"
+      },
+      "peerMeta": {
+        "canvas": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/jsdom",
+      "checkedAt": "2026-10-27T03:16:34.1390017Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/node",
+      "latestStable": "26.6.5",
+      "selectedVersion": "26.6.5",
+      "publishedAt": "2026-10-09T18:46:47.657Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/node",
+      "checkedAt": "2026-10-27T03:16:46.1331013Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "6.0.3",
+      "publishedAt": "2026-04-16T23:38:27.905Z",
+      "engines": {
+        "node": ">=14.17"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8180449Z",
+      "workspace": "packages/angular",
+      "reason": "Compatibility exception: Vue traditional compiler API / Angular >=6.0 <6.1"
+    },
+    {
+      "package": "@angular/core",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:41:35.703Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "zone.js": "~0.15.0 || ~0.16.0",
+        "@angular/compiler": "22.2.3"
+      },
+      "peerMeta": {
+        "zone.js": {
+          "optional": true
+        },
+        "@angular/compiler": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/core",
+      "checkedAt": "2026-10-27T03:16:51.7820274Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/common",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:45:23.083Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "@angular/core": "22.2.3"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/common",
+      "checkedAt": "2026-10-27T03:16:52.5856259Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/compiler",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:40:13.749Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/compiler",
+      "checkedAt": "2026-10-27T03:16:55.5293424Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/compiler-cli",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:40:40.666Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "typescript": ">=6.0 <6.1",
+        "@angular/compiler": "22.2.3"
+      },
+      "peerMeta": {
+        "typescript": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/compiler-cli",
+      "checkedAt": "2026-10-27T03:16:54.3459761Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/platform-browser",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:41:08.082Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "@angular/core": "22.2.3",
+        "@angular/common": "22.2.3",
+        "@angular/animations": "22.2.3"
+      },
+      "peerMeta": {
+        "@angular/animations": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/platform-browser",
+      "checkedAt": "2026-10-27T03:16:56.9140264Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/platform-server",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:40:57.521Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "@angular/core": "22.2.3",
+        "@angular/common": "22.2.3",
+        "@angular/compiler": "22.2.3",
+        "@angular/platform-browser": "22.2.3"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/platform-server",
+      "checkedAt": "2026-10-27T03:16:57.4047180Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/router",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:41:01.394Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "@angular/core": "22.2.3",
+        "@angular/common": "22.2.3",
+        "@angular/platform-browser": "22.2.3"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/router",
+      "checkedAt": "2026-10-27T03:17:00.8462965Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/cli",
+      "latestStable": "22.2.4",
+      "selectedVersion": "22.2.4",
+      "publishedAt": "2026-10-22T13:39:33.32Z",
+      "engines": {
+        "npm": "^6.11.0 || ^7.5.6 || >=8.0.0",
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0",
+        "yarn": ">= 1.13.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/cli",
+      "checkedAt": "2026-10-27T03:17:01.9854044Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/build",
+      "latestStable": "22.2.4",
+      "selectedVersion": "22.2.4",
+      "publishedAt": "2026-10-22T13:40:12.115Z",
+      "engines": {
+        "npm": "^6.11.0 || ^7.5.6 || >=8.0.0",
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0",
+        "yarn": ">= 1.13.0"
+      },
+      "peers": {
+        "less": "^4.2.0",
+        "karma": "^6.4.0",
+        "tslib": "^2.3.0",
+        "rollup": "^4.0.0",
+        "vitest": "^4.0.8 || ^5.0.0",
+        "postcss": "^8.4.0",
+        "ng-packagr": "^22.0.0",
+        "typescript": ">=6.0 <6.1",
+        "tailwindcss": "^2.0.0 || ^3.0.0 || ^4.0.0",
+        "@angular/ssr": "^22.2.4",
+        "@angular/core": "^22.0.0",
+        "@angular/compiler": "^22.0.0",
+        "@angular/localize": "^22.0.0",
+        "@angular/compiler-cli": "^22.0.0",
+        "@angular/service-worker": "^22.0.0",
+        "istanbul-lib-instrument": "^6.0.0",
+        "@angular/platform-server": "^22.0.0",
+        "@angular/platform-browser": "^22.0.0"
+      },
+      "peerMeta": {
+        "less": {
+          "optional": true
+        },
+        "karma": {
+          "optional": true
+        },
+        "rollup": {
+          "optional": true
+        },
+        "vitest": {
+          "optional": true
+        },
+        "postcss": {
+          "optional": true
+        },
+        "ng-packagr": {
+          "optional": true
+        },
+        "tailwindcss": {
+          "optional": true
+        },
+        "@angular/ssr": {
+          "optional": true
+        },
+        "@angular/core": {
+          "optional": true
+        },
+        "@angular/localize": {
+          "optional": true
+        },
+        "@angular/service-worker": {
+          "optional": true
+        },
+        "istanbul-lib-instrument": {
+          "optional": true
+        },
+        "@angular/platform-server": {
+          "optional": true
+        },
+        "@angular/platform-browser": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/build",
+      "checkedAt": "2026-10-27T03:16:58.5563838Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/ssr",
+      "latestStable": "22.2.4",
+      "selectedVersion": "22.2.4",
+      "publishedAt": "2026-10-22T13:39:43.039Z",
+      "engines": {},
+      "peers": {
+        "@angular/core": "^22.0.0",
+        "@angular/common": "^22.0.0",
+        "@angular/router": "^22.0.0",
+        "@angular/platform-server": "^22.0.0"
+      },
+      "peerMeta": {
+        "@angular/platform-server": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/ssr",
+      "checkedAt": "2026-10-27T03:16:58.5662217Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "ng-packagr",
+      "latestStable": "22.2.5",
+      "selectedVersion": "22.2.5",
+      "publishedAt": "2026-10-23T11:31:00.717Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "tslib": "^2.3.0",
+        "typescript": ">=6.0 <6.1",
+        "tailwindcss": "^2.0.0 || ^3.0.0 || ^4.0.0",
+        "@angular/compiler-cli": "^22.0.0 || ^22.2.0-next || ^22.3.0-next"
+      },
+      "peerMeta": {
+        "tailwindcss": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/ng-packagr",
+      "checkedAt": "2026-10-27T03:16:59.8422803Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "rxjs",
+      "latestStable": "7.8.2",
+      "selectedVersion": "7.8.2",
+      "publishedAt": "2025-02-22T03:00:42.711Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/rxjs",
+      "checkedAt": "2026-10-27T03:16:59.5457387Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "tslib",
+      "latestStable": "2.8.1",
+      "selectedVersion": "2.8.1",
+      "publishedAt": "2024-10-31T22:42:48.624Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/tslib",
+      "checkedAt": "2026-10-27T03:16:59.9048698Z",
+      "workspace": "packages/angular",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": "apps/platform-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": "apps/platform-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vue",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:32.806Z",
+      "engines": {},
+      "peers": {
+        "typescript": "*"
+      },
+      "peerMeta": {
+        "typescript": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vue",
+      "checkedAt": "2026-10-27T03:16:39.4408453Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/server-renderer",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:48.038Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/server-renderer",
+      "checkedAt": "2026-10-27T03:16:39.4421470Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/node",
+      "latestStable": "26.6.5",
+      "selectedVersion": "26.6.5",
+      "publishedAt": "2026-10-09T18:46:47.657Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/node",
+      "checkedAt": "2026-10-27T03:16:46.1331013Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "6.0.3",
+      "publishedAt": "2026-04-16T23:38:27.905Z",
+      "engines": {
+        "node": ">=14.17"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8180449Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Compatibility exception: Vue traditional compiler API / Angular >=6.0 <6.1"
+    },
+    {
+      "package": "vue-tsc",
+      "latestStable": "3.3.13",
+      "selectedVersion": "3.3.13",
+      "publishedAt": "2026-10-10T14:32:43.495Z",
+      "engines": {},
+      "peers": {
+        "typescript": ">=5.0.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vue-tsc",
+      "checkedAt": "2026-10-27T03:16:38.3701737Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/compiler-sfc",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:45:54.018Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/compiler-sfc",
+      "checkedAt": "2026-10-27T03:16:36.1661649Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vue/compiler-dom",
+      "latestStable": "3.5.44",
+      "selectedVersion": "3.5.44",
+      "publishedAt": "2026-10-13T07:43:35.763Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vue/compiler-dom",
+      "checkedAt": "2026-10-27T03:16:37.0742423Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vitejs/plugin-vue",
+      "latestStable": "6.0.10",
+      "selectedVersion": "6.0.10",
+      "publishedAt": "2026-10-10T07:40:21.88Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "vue": "^3.2.25 || ^3.6.0-rc.10",
+        "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vitejs/plugin-vue",
+      "checkedAt": "2026-10-27T03:16:40.7425650Z",
+      "workspace": "apps/vue-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "react",
+      "latestStable": "19.3.1",
+      "selectedVersion": "19.3.1",
+      "publishedAt": "2026-10-14T16:47:15.29Z",
+      "engines": {
+        "node": ">=0.10.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/react",
+      "checkedAt": "2026-10-27T03:16:59.9090120Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "react-dom",
+      "latestStable": "19.3.1",
+      "selectedVersion": "19.3.1",
+      "publishedAt": "2026-10-14T16:49:10.081Z",
+      "engines": {},
+      "peers": {
+        "react": "^19.3.1"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/react-dom",
+      "checkedAt": "2026-10-27T03:16:57.4547649Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "7.0.2",
+      "publishedAt": "2026-07-08T15:55:18.431Z",
+      "engines": {
+        "node": ">=16.20.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8165171Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/react",
+      "latestStable": "19.3.0",
+      "selectedVersion": "19.3.0",
+      "publishedAt": "2026-09-09T18:08:49.75Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/react",
+      "checkedAt": "2026-10-27T03:16:43.7324642Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@types/react-dom",
+      "latestStable": "19.3.0",
+      "selectedVersion": "19.3.0",
+      "publishedAt": "2026-09-09T18:07:51.886Z",
+      "engines": {},
+      "peers": {
+        "@types/react": "^19.3.0"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@types/react-dom",
+      "checkedAt": "2026-10-27T03:16:45.4944099Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "vite",
+      "latestStable": "8.3.5",
+      "selectedVersion": "8.3.5",
+      "publishedAt": "2026-10-21T06:38:54.907Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "tsx": "^4.8.1",
+        "jiti": ">=1.21.0",
+        "less": "^4.0.0",
+        "sass": "^1.70.0",
+        "yaml": "^2.4.2",
+        "stylus": ">=0.54.8",
+        "terser": "^5.16.0",
+        "esbuild": "^0.27.0 || ^0.28.0",
+        "sugarss": "^5.0.0",
+        "@types/node": "^20.19.0 || >=22.12.0",
+        "sass-embedded": "^1.70.0",
+        "@vitejs/devtools": "^0.7.1 || ^0.8.0"
+      },
+      "peerMeta": {
+        "tsx": {
+          "optional": true
+        },
+        "jiti": {
+          "optional": true
+        },
+        "less": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        },
+        "yaml": {
+          "optional": true
+        },
+        "stylus": {
+          "optional": true
+        },
+        "terser": {
+          "optional": true
+        },
+        "esbuild": {
+          "optional": true
+        },
+        "sugarss": {
+          "optional": true
+        },
+        "@types/node": {
+          "optional": true
+        },
+        "sass-embedded": {
+          "optional": true
+        },
+        "@vitejs/devtools": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/vite",
+      "checkedAt": "2026-10-27T03:17:17.9360127Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@vitejs/plugin-react",
+      "latestStable": "6.1.2",
+      "selectedVersion": "6.1.2",
+      "publishedAt": "2026-10-05T10:08:27.143Z",
+      "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+      },
+      "peers": {
+        "vite": "^8.0.0",
+        "oxc-transform-react": "^0.152.0",
+        "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0",
+        "babel-plugin-react-compiler": "^1.0.0"
+      },
+      "peerMeta": {
+        "oxc-transform-react": {
+          "optional": true
+        },
+        "@rolldown/plugin-babel": {
+          "optional": true
+        },
+        "babel-plugin-react-compiler": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@vitejs/plugin-react",
+      "checkedAt": "2026-10-27T03:16:47.1620921Z",
+      "workspace": "apps/react-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/core",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:41:35.703Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "zone.js": "~0.15.0 || ~0.16.0",
+        "@angular/compiler": "22.2.3"
+      },
+      "peerMeta": {
+        "zone.js": {
+          "optional": true
+        },
+        "@angular/compiler": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/core",
+      "checkedAt": "2026-10-27T03:16:51.7820274Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/common",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:45:23.083Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "rxjs": "^6.5.3 || ^7.4.0",
+        "@angular/core": "22.2.3"
+      },
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/common",
+      "checkedAt": "2026-10-27T03:16:52.5856259Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/compiler",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:40:13.749Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/compiler",
+      "checkedAt": "2026-10-27T03:16:55.5293424Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/platform-browser",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:41:08.082Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "@angular/core": "22.2.3",
+        "@angular/common": "22.2.3",
+        "@angular/animations": "22.2.3"
+      },
+      "peerMeta": {
+        "@angular/animations": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/platform-browser",
+      "checkedAt": "2026-10-27T03:16:56.9140264Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "rxjs",
+      "latestStable": "7.8.2",
+      "selectedVersion": "7.8.2",
+      "publishedAt": "2025-02-22T03:00:42.711Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/rxjs",
+      "checkedAt": "2026-10-27T03:16:59.5457387Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "tslib",
+      "latestStable": "2.8.1",
+      "selectedVersion": "2.8.1",
+      "publishedAt": "2024-10-31T22:42:48.624Z",
+      "engines": {},
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/tslib",
+      "checkedAt": "2026-10-27T03:16:59.9048698Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/cli",
+      "latestStable": "22.2.4",
+      "selectedVersion": "22.2.4",
+      "publishedAt": "2026-10-22T13:39:33.32Z",
+      "engines": {
+        "npm": "^6.11.0 || ^7.5.6 || >=8.0.0",
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0",
+        "yarn": ">= 1.13.0"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/cli",
+      "checkedAt": "2026-10-27T03:17:01.9854044Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/build",
+      "latestStable": "22.2.4",
+      "selectedVersion": "22.2.4",
+      "publishedAt": "2026-10-22T13:40:12.115Z",
+      "engines": {
+        "npm": "^6.11.0 || ^7.5.6 || >=8.0.0",
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0",
+        "yarn": ">= 1.13.0"
+      },
+      "peers": {
+        "less": "^4.2.0",
+        "karma": "^6.4.0",
+        "tslib": "^2.3.0",
+        "rollup": "^4.0.0",
+        "vitest": "^4.0.8 || ^5.0.0",
+        "postcss": "^8.4.0",
+        "ng-packagr": "^22.0.0",
+        "typescript": ">=6.0 <6.1",
+        "tailwindcss": "^2.0.0 || ^3.0.0 || ^4.0.0",
+        "@angular/ssr": "^22.2.4",
+        "@angular/core": "^22.0.0",
+        "@angular/compiler": "^22.0.0",
+        "@angular/localize": "^22.0.0",
+        "@angular/compiler-cli": "^22.0.0",
+        "@angular/service-worker": "^22.0.0",
+        "istanbul-lib-instrument": "^6.0.0",
+        "@angular/platform-server": "^22.0.0",
+        "@angular/platform-browser": "^22.0.0"
+      },
+      "peerMeta": {
+        "less": {
+          "optional": true
+        },
+        "karma": {
+          "optional": true
+        },
+        "rollup": {
+          "optional": true
+        },
+        "vitest": {
+          "optional": true
+        },
+        "postcss": {
+          "optional": true
+        },
+        "ng-packagr": {
+          "optional": true
+        },
+        "tailwindcss": {
+          "optional": true
+        },
+        "@angular/ssr": {
+          "optional": true
+        },
+        "@angular/core": {
+          "optional": true
+        },
+        "@angular/localize": {
+          "optional": true
+        },
+        "@angular/service-worker": {
+          "optional": true
+        },
+        "istanbul-lib-instrument": {
+          "optional": true
+        },
+        "@angular/platform-server": {
+          "optional": true
+        },
+        "@angular/platform-browser": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/build",
+      "checkedAt": "2026-10-27T03:16:58.5563838Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "@angular/compiler-cli",
+      "latestStable": "22.2.3",
+      "selectedVersion": "22.2.3",
+      "publishedAt": "2026-10-14T23:40:40.666Z",
+      "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+      },
+      "peers": {
+        "typescript": ">=6.0 <6.1",
+        "@angular/compiler": "22.2.3"
+      },
+      "peerMeta": {
+        "typescript": {
+          "optional": true
+        }
+      },
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/@angular/compiler-cli",
+      "checkedAt": "2026-10-27T03:16:54.3459761Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Accepted exact Task1 stable version; explicit Task3 package/host dependency"
+    },
+    {
+      "package": "typescript",
+      "latestStable": "7.0.2",
+      "selectedVersion": "6.0.3",
+      "publishedAt": "2026-04-16T23:38:27.905Z",
+      "engines": {
+        "node": ">=14.17"
+      },
+      "peers": {},
+      "peerMeta": {},
+      "deprecated": null,
+      "source": "https://registry.npmjs.org/typescript",
+      "checkedAt": "2026-10-27T03:17:10.8180449Z",
+      "workspace": "apps/angular-smoke",
+      "reason": "Compatibility exception: Vue traditional compiler API / Angular >=6.0 <6.1"
+    }
+  ],
+  "consumerTypeScript": {
+    "core": {
+      "buildTypeScript": "7.0.2",
+      "testedConsumerTypeScript": [
+        "6.0.3",
+        "7.0.2"
+      ],
+      "consumerTypeScriptSupport": [
+        "6.0.3",
+        "7.0.2"
+      ],
+      "status": "Task2: empty public declarations and private generic/callback/union fixture checked with skipLibCheck=false; product APIs and packed consumers not tested",
+      "evidence": "docs/engineering/task2-acceptance.md"
+    },
+    "dom": {
+      "buildTypeScript": "7.0.2",
+      "testedConsumerTypeScript": [
+        "6.0.3",
+        "7.0.2"
+      ],
+      "consumerTypeScriptSupport": [
+        "6.0.3",
+        "7.0.2"
+      ],
+      "status": "Task2: empty public declarations and private generic/callback/union fixture checked with skipLibCheck=false; product APIs and packed consumers not tested",
+      "evidence": "docs/engineering/task2-acceptance.md"
+    },
+    "vue": {
+      "buildTypeScript": "6.0.3",
+      "testedConsumerTypeScript": ["6.0.3"],
+      "consumerTypeScriptSupport": ["6.0.3"],
+      "status": "Task3: empty public declarations and private SFC declaration consumer checked; product APIs and packed consumers not tested",
+      "evidence": "docs/engineering/task3-acceptance.md"
+    },
+    "react": {
+      "buildTypeScript": "7.0.2",
+      "testedConsumerTypeScript": ["7.0.2"],
+      "consumerTypeScriptSupport": ["7.0.2"],
+      "status": "Task3: empty public declarations and private TSX declaration consumer checked; product APIs and packed consumers not tested",
+      "evidence": "docs/engineering/task3-acceptance.md"
+    },
+    "angular": {
+      "buildTypeScript": "6.0.3",
+      "testedConsumerTypeScript": ["6.0.3"],
+      "consumerTypeScriptSupport": ["6.0.3"],
+      "status": "Task3: empty public APF declarations and private partial APF consumer checked; product APIs and packed consumers not tested",
+      "evidence": "docs/engineering/task3-acceptance.md"
+    }
+  }
+}

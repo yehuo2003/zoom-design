@@ -1,0 +1,5 @@
+{
+  "dest": "../../dist/angular",
+  "lib": { "entryFile": "src/public-api.ts" },
+  "assets": [{ "input": ".generated", "glob": "style.css", "output": "styles" }]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": { "analytics": false },
+  "projects": {
+    "zoom-angular": {
+      "projectType": "library",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "options": { "project": "ng-package.json" },
+          "configurations": {
+            "production": { "tsConfig": "tsconfig.lib.prod.json" },
+            "development": { "tsConfig": "tsconfig.lib.json" }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "zoom-angular:build:development",
+            "tsConfig": "tsconfig.spec.json",
+            "runner": "vitest",
+            "include": ["**/*.spec.ts", "../test/**/*.spec.ts"]
+          }
+        },
+        "fixture": {
+          "builder": "@angular/build:ng-packagr",
+          "options": {
+            "project": "test/ng-package.fixture.json",
+            "tsConfig": "test/apf/tsconfig.json"
+          }
+        }
+      }
+    }
+  }
+}

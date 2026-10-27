@@ -3,3 +3,13 @@ dist/
 coverage/
 *.tgz
 .trae/
+
+# Engineering reports and tool caches
+.artifacts/
+playwright-report/
+test-results/
+.angular/
+.vitest-cache/
+
+# Angular precompiled CSS
+.generated/

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../.artifacts/task3/angular-spec",
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.spec.ts", "test/fixtures/**/*.ts"],
+  "exclude": ["test/negative"]
+}

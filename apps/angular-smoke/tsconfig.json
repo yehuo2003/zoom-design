@@ -1,0 +1,8 @@
+{
+  "extends": "../../packages/angular/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@zoom-design/angular": ["../../dist/angular"]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "@zoom-design/vue-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Private Vue native engineering host",
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../scripts/run-local-bin.mjs --workspace . --package vite --bin vite -- --config vite.config.ts --host 127.0.0.1 --port 5171 --strictPort",
+    "build": "node ../../scripts/run-local-bin.mjs --workspace . --package vite --bin vite -- build --config vite.config.ts",
+    "typecheck": "node ../../scripts/run-vue-tsc.mjs --workspace . -- --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@zoom-design/vue": "0.0.0",
+    "vue": "3.5.44",
+    "@vue/server-renderer": "3.5.44"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "typescript": "6.0.3",
+    "vue-tsc": "3.3.13",
+    "@vue/compiler-sfc": "3.5.44",
+    "@vue/compiler-dom": "3.5.44",
+    "vite": "8.3.5",
+    "@vitejs/plugin-vue": "6.0.10"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

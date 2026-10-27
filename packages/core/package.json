@@ -2,5 +2,31 @@
   "name": "@zoom-design/core",
   "version": "0.0.0",
   "description": "Framework-neutral behavior and algorithms",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "typescript": "7.0.2"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ../../scripts/build-platform.mjs core",
+    "typecheck": "node ../../scripts/typecheck-platform.mjs core",
+    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
+    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage",
+    "test:e2e": "node ../../scripts/e2e.mjs --mode workspace --package core --browser chromium"
+  }
 }

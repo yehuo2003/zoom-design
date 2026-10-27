@@ -1,0 +1,27 @@
+{
+  "name": "@zoom-design/react-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Private React engineering and SSR host",
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../scripts/run-local-bin.mjs --workspace . --package vite --bin vite -- --config vite.config.ts --port 5172 --strictPort",
+    "build": "node ../../scripts/run-local-bin.mjs --workspace . --package vite --bin vite -- build --config vite.config.ts",
+    "typecheck": "node ../../scripts/run-local-bin.mjs --workspace . --package typescript --bin tsc -- -p tsconfig.json"
+  },
+  "dependencies": {
+    "@zoom-design/react": "0.0.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "vite": "8.3.5",
+    "@vitejs/plugin-react": "6.1.2"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

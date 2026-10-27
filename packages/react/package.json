@@ -2,5 +2,49 @@
   "name": "@zoom-design/react",
   "version": "0.0.0",
   "description": "React components for Zoom Design",
-  "private": true
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/build-framework.mjs react",
+    "typecheck": "node ../../scripts/check-react.mjs --types",
+    "check:fixtures": "node ../../scripts/check-react.mjs",
+    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
+    "test:e2e": "node ../../scripts/e2e.mjs --package react --mode workspace --browser chromium",
+    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "vite": "8.3.5",
+    "@vitejs/plugin-react": "6.1.2",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/user-event": "14.6.8"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "peerDependencies": {
+    "react": "~19.3.1",
+    "react-dom": "~19.3.1"
+  }
 }

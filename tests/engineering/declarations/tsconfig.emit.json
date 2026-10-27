@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"], "types": [],
+    "declaration": true, "emitDeclarationOnly": true,
+    "rootDir": "../../..", "outDir": "../../../.artifacts/fixtures/platform"
+  },
+  "include": ["../../../packages/core/test/fixtures/state.ts", "../../../packages/dom/test/fixtures/listener.ts"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@zoom-design/platform-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Private Core/DOM engineering consumer; no product components",
+  "volta": {
+    "extends": "../../package.json"
+  },
+  "type": "module",
+  "dependencies": {
+    "@zoom-design/core": "0.0.0",
+    "@zoom-design/dom": "0.0.0"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "scripts": {
+    "typecheck": "node ../../scripts/run-local-bin.mjs --workspace . --package typescript --bin tsc -- -p tsconfig.json",
+    "build": "node ../../scripts/run-local-bin.mjs --workspace . --package vite --bin vite -- build --outDir ../../.artifacts/task2/platform-build --emptyOutDir"
+  }
+}

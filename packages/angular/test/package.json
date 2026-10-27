@@ -1,0 +1,7 @@
+{
+  "name": "@zoom-design/angular-compilation-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "peerDependencies": { "@angular/core": "~22.2.3" }
+}
