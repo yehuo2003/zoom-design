@@ -1,4 +1,7 @@
-// Engineering asset marker only; product themes are delivered in Task 6.
+@use "theme";
+@use "../button/style";
+
+// Retained private engineering marker.
 .zoom-engineering-probe {
   --zoom-engineering-built: 1;
 }

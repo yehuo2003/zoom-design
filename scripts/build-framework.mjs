@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { rmSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { runBin } from './run-local-bin.mjs';
-import { compileStyle, stylePaths } from './build-styles.mjs';
+import { compilePackageStyles } from './build-styles.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
@@ -19,8 +19,9 @@ try {
     : runBin(workspace, 'typescript', 'tsc', ['-p', 'tsconfig.build.json']);
   if (declarations.error) throw declarations.error;
   if (declarations.status !== 0) throw Error(`${name}: declaration emit exited ${declarations.status}`);
-  const style = stylePaths(name); compileStyle(style.source, style.output);
-  for (const file of ['index.js', 'types/index.d.ts', 'style.css']) if (!existsSync(join(output, file))) throw Error(`${name}: missing built ${file}`);
+  compilePackageStyles(name);
+  if (name === 'vue') for (const file of ['button/index.js', 'types/button/index.d.ts', 'button/style.css']) if (!existsSync(join(output, file))) throw Error(`vue: missing built ${file}`);
+  for (const file of ['index.js', 'types/index.d.ts', 'style.css', 'theme.css', 'styles/theme/_index.scss']) if (!existsSync(join(output, file))) throw Error(`${name}: missing built ${file}`);
   console.log(`${name}: public JS, declarations and CSS built`);
 } catch (error) {
   // Invalidate outputs when any required build stage fails.

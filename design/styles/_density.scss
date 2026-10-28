@@ -1,0 +1,8 @@
+@use "sass:map";
+@use "sass:meta";
+@use "defaults";
+
+@mixin density($name) {
+  @if not map.has-key(defaults.$control-densities, $name) { @error "Unsupported density: #{meta.inspect($name)}; expected regular or compact"; }
+  @each $key, $value in map.get(defaults.$control-densities, $name) { --zoom-control-#{$key}: #{$value}; }
+}

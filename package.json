@@ -33,6 +33,16 @@
     "npm": ">=12.2.1 <13"
   },
   "scripts": {
+    "build": "node scripts/workspace.mjs build",
+    "typecheck": "node scripts/workspace.mjs typecheck",
+    "test:unit": "node scripts/workspace.mjs unit",
+    "test:coverage": "node scripts/workspace.mjs coverage",
+    "check": "node scripts/check.mjs",
+    "ci:verify": "node scripts/ci.mjs",
+    "verify:quality": "node tests/engineering/verify-quality.mjs",
+    "verify:ci:portable": "node tests/engineering/portable-ci.mjs",
+    "test:e2e": "node scripts/e2e.mjs --mode workspace",
+    "test:e2e:all": "node scripts/e2e.mjs --mode workspace --browser all",
     "check:versions": "node scripts/check-toolchain.mjs",
     "test:engineering": "vitest run --config tests/engineering/vitest.config.ts",
     "verify:portable": "node tests/engineering/portable-install.mjs",
@@ -42,6 +52,8 @@
     "dev:vue": "node scripts/dev.mjs --app vue",
     "dev:react": "node scripts/dev.mjs --app react",
     "dev:angular": "node scripts/dev.mjs --app angular",
-    "test:e2e:workspace": "node scripts/e2e.mjs --mode workspace --browser chromium"
+    "test:e2e:workspace": "node scripts/e2e.mjs --mode workspace --browser chromium",
+    "check:pack": "node scripts/pack-smoke.mjs",
+    "test:e2e:packed": "node scripts/e2e-packed.mjs"
   }
 }

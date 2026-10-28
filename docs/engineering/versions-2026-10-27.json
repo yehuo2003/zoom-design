@@ -1907,8 +1907,8 @@
         "6.0.3",
         "7.0.2"
       ],
-      "status": "Task2: empty public declarations and private generic/callback/union fixture checked with skipLibCheck=false; product APIs and packed consumers not tested",
-      "evidence": "docs/engineering/task2-acceptance.md"
+      "status": "Task5: outside-workspace tgz consumers checked with TS6.0.3 and TS7.0.2, including empty public declarations and private TS7 generic/callback/union declarations; skipLibCheck=false; product APIs not implemented",
+      "evidence": "docs/engineering/task5-acceptance.md"
     },
     "dom": {
       "buildTypeScript": "7.0.2",
@@ -1920,29 +1920,29 @@
         "6.0.3",
         "7.0.2"
       ],
-      "status": "Task2: empty public declarations and private generic/callback/union fixture checked with skipLibCheck=false; product APIs and packed consumers not tested",
-      "evidence": "docs/engineering/task2-acceptance.md"
+      "status": "Task5: outside-workspace tgz consumers checked with TS6.0.3 and TS7.0.2, including empty public declarations and private TS7 generic/callback/union declarations; skipLibCheck=false; product APIs not implemented",
+      "evidence": "docs/engineering/task5-acceptance.md"
     },
     "vue": {
       "buildTypeScript": "6.0.3",
       "testedConsumerTypeScript": ["6.0.3"],
       "consumerTypeScriptSupport": ["6.0.3"],
-      "status": "Task3: empty public declarations and private SFC declaration consumer checked; product APIs and packed consumers not tested",
-      "evidence": "docs/engineering/task3-acceptance.md"
+      "status": "Task5: isolated Vue SFC/public declaration consumer checked with local TS6.0.3 and vue-tsc3.3.13; product APIs not implemented",
+      "evidence": "docs/engineering/task5-acceptance.md"
     },
     "react": {
       "buildTypeScript": "7.0.2",
       "testedConsumerTypeScript": ["7.0.2"],
       "consumerTypeScriptSupport": ["7.0.2"],
-      "status": "Task3: empty public declarations and private TSX declaration consumer checked; product APIs and packed consumers not tested",
-      "evidence": "docs/engineering/task3-acceptance.md"
+      "status": "Task5: isolated React TSX/public declaration consumer checked with local TS7.0.2; product APIs not implemented",
+      "evidence": "docs/engineering/task5-acceptance.md"
     },
     "angular": {
       "buildTypeScript": "6.0.3",
       "testedConsumerTypeScript": ["6.0.3"],
       "consumerTypeScriptSupport": ["6.0.3"],
-      "status": "Task3: empty public APF declarations and private partial APF consumer checked; product APIs and packed consumers not tested",
-      "evidence": "docs/engineering/task3-acceptance.md"
+      "status": "Task5: isolated official APF/template consumer checked with local TS6.0.3; product APIs not implemented",
+      "evidence": "docs/engineering/task5-acceptance.md"
     }
   }
 }

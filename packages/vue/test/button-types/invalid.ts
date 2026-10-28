@@ -1,0 +1,15 @@
+import { ZButton } from '@zoom-design/vue';
+import { ZButton as SubpathButton } from '@zoom-design/vue/button';
+type Props = InstanceType<typeof ZButton>['$props'];
+type SubpathProps = InstanceType<typeof SubpathButton>['$props'];
+const variant: Props = { variant: 'danger' };
+const size: SubpathProps = { size: 'huge' };
+const type: Props = { type: 'link' };
+const disabled: Props = { disabled: 'false' };
+const loading: Props = { loading: 1 };
+const form: SubpathProps = { form: 123 };
+const native: Props = { tabindex: {} };
+const handler: Props = { onClick: (event: string) => void event };
+declare const button: InstanceType<typeof ZButton>;
+button.$emit('click', 'wrong');
+void [variant, size, type, disabled, loading, form, native, handler];

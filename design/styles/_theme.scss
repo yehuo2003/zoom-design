@@ -1,0 +1,37 @@
+@use "sass:map";
+@use "sass:meta";
+@use "defaults";
+
+@mixin theme($overrides: ()) {
+  $tokens: (
+    "color-primary": defaults.$color-primary,
+    "color-on-primary": defaults.$color-on-primary,
+    "color-text": defaults.$color-text,
+    "color-text-muted": defaults.$color-text-muted,
+    "color-surface": defaults.$color-surface,
+    "color-border": defaults.$color-border,
+    "color-danger": defaults.$color-danger,
+    "font-family": defaults.$font-family,
+    "font-size-base": defaults.$font-size-base,
+    "line-height": defaults.$line-height,
+    "radius-md": defaults.$radius-md,
+    "focus-width": defaults.$focus-width,
+    "focus-offset": defaults.$focus-offset,
+    "motion-duration": defaults.$motion-duration,
+    "color-primary-hover": defaults.$color-primary-hover,
+    "color-primary-active": defaults.$color-primary-active,
+    "color-focus": defaults.$color-focus,
+    "font-size-sm": defaults.$font-size-sm,
+    "font-size-md": defaults.$font-size-md,
+    "font-size-lg": defaults.$font-size-lg
+  );
+  @if meta.type-of($overrides) != "map" and $overrides != () {
+    @error "theme overrides must be a map; received #{meta.inspect($overrides)}";
+  }
+  @each $key, $value in $overrides {
+    @if not map.has-key($tokens, $key) { @error "Unknown theme token: #{$key}"; }
+  }
+  @each $key, $value in map.merge($tokens, $overrides) {
+    @if $value != null { --zoom-#{$key}: #{meta.inspect($value)}; }
+  }
+}

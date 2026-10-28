@@ -23,8 +23,8 @@ export function probeNpm(env = process.env, nodePath = process.execPath, platfor
       const executable = join(directory, 'npm.exe');
       if (existsSync(executable)) return invoke(executable, ['--version'], executable);
       if (existsSync(join(directory, 'npm.cmd'))) {
-        const cli = join(directory, 'node_modules/npm/bin/npm-cli.js');
-        if (!existsSync(cli)) return { version: null, path: cli };
+        const cli = [join(directory, 'node_modules/npm/bin/npm-cli.js'), join(directory, 'npm-cli.js')].find(existsSync);
+        if (!cli) return { version: null, path: join(directory, 'node_modules/npm/bin/npm-cli.js') };
         return invoke(nodePath, [cli, '--version'], cli);
       }
     } else if (existsSync(join(directory, 'npm'))) {

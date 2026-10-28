@@ -25,6 +25,15 @@ try {
   if (readJson(vueTscManifest).version !== '3.3.13') throw Error('Vue requires vue-tsc3.3.13');
   results.push({ label: 'actual Vue compiler resolution', ...compiler, vueTscManifest });
   vueTsc('tsconfig.json');
+  vueTsc('tsconfig.build.json');
+  record('TS6 public Button declaration consumer', runBin(workspace, 'typescript', 'tsc', ['-p', 'test/button-types/tsconfig.ts.json'], 'pipe'));
+  vueTsc('test/button-types/tsconfig.json');
+  const productNegative = vueTsc('test/button-types/tsconfig.negative.json', 2);
+  const productDiagnostics = `${productNegative.stdout}${productNegative.stderr}`;
+  const actualDiagnostics = [...productDiagnostics.matchAll(/(?:^|\n)([^\r\n]+)\((\d+),\d+\): error TS(\d+):/g)].map(match => `${match[1].replaceAll('\\', '/').split('/').pop()}:${match[2]}:TS${match[3]}`).sort();
+  const requiredDiagnostics = [...[5,6,7,8,9,10,11,12].map(line => `invalid.ts:${line}:TS2322`), 'invalid.ts:14:TS2345', ...[6,7,8,9].map(line => `Invalid.vue:${line}:TS2322`)].sort();
+  if (JSON.stringify(actualDiagnostics) !== JSON.stringify(requiredDiagnostics)) throw Error(`Button negative diagnostics differ: ${JSON.stringify(actualDiagnostics)}\n${productDiagnostics}`);
+  console.log('Button TS6/vue-tsc exact product diagnostics: PASS (13 expected)');
   record('private SFC fixture JavaScript build', runBin(workspace, 'vite', 'vite', ['build', '--config', 'test/fixtures/vite.config.ts'], 'pipe'));
   const js = readFileSync(join(root, '.artifacts/fixtures/vue/index.js'), 'utf8');
   if (!/from ["']vue["']/.test(js) || js.includes('function createRenderer(')) throw Error('Private SFC fixture must externalize Vue');

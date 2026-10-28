@@ -1,13 +1,21 @@
 # @zoom-design/vue
 
-计划提供适合 Vue 3 项目的原生组件与适配，包括组合式 API、v-model、插槽和生命周期接入。
+Vue 3 原生 `ZButton`，从 `@zoom-design/vue` 或 `@zoom-design/vue/button` 命名导入；公开 props/emits/ref 类型从同一入口导出。
 
-Task 3 已建立 Vite 库构建、vue-tsc SFC 类型与声明编译、SCSS 显式资产出口，以及原生工程宿主。公共 JS/声明入口保持空导出，`test/fixtures/BuildProbe.vue` 是私有工程探针，不是产品组件 API。
+```ts
+import { ZButton } from '@zoom-design/vue/button';
+import '@zoom-design/vue/theme.css';
+import '@zoom-design/vue/button/style.css';
+```
+
+也可只导入聚合 `@zoom-design/vue/style.css`。单组件 CSS 有regular默认回退；容器密度需theme.css，JS不隐式导入样式。普通CSS用户无需Sass，可选theme.scss仅公开主题。默认solid/md/type=button，不意外提交表单；disabled/loading为应用受控状态，click同步发出原始MouseEvent，保留原生表单与键盘语义。Button不依赖Core/DOM服务。
+
+完整参数、非法JS输入规则、slots、可访问名称、ref与样式用法见[Button](../../docs/components/button.md)、[主题](../../docs/theming.md)，自动结果及验收状态见[Task7记录](../../docs/engineering/task7-acceptance.md)。私有test/fixtures不进入发布包。
 
 ## 工程基线
 
-本包固定 Vue/compiler-sfc/compiler-dom/server-renderer 3.5.44、vue-tsc 3.3.13 和 TypeScript 6.0.3；Node/npm 继承根配置。局部工具命令与兼容例外见[工程基线](../../docs/engineering/baseline.md)，本轮范围见[Vue 工程报告](../../docs/engineering/task3-vue-report.md)。
+本包固定Vue/compiler-sfc/compiler-dom/server-renderer3.5.44、vue-tsc3.3.13和TS6.0.3；Node/npm继承根配置。SFC宏编译显式提供文件系统以兼容根TS7的工具提升，声明检查仍使用本包TS6。局部命令与兼容例外见[工程基线](../../docs/engineering/baseline.md)。
 
 在根目录执行 `npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/vue` 和 `npm run test:e2e --workspace @zoom-design/vue`。类型检查需要先构建本包及 Task 2 平台声明夹具；它会验证实际编译器路径、SFC 正例、prop/emit 反例和 TS6 声明消费者。
 
-消费方显式导入 `@zoom-design/vue/style.css`，无需 Sass。当前 CSS 只包含工程标记，不能据此认定 Task 6 主题或产品视觉已验收。`apps/vue-smoke` 通过真实公开包名导入产物，另挂载私有探针；`/ssr` 路径用于工程 SSR/水合复验。
+`apps/vue-smoke`默认`/`保留私有工程探针，`/theme`验证主题，`/button`使用公开组件；`/ssr?example=button`验证真实产品HTML和节点复用。当前private 0.0.0，尚未公开发布。

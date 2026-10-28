@@ -1,4 +1,6 @@
-// Engineering build marker; product styles and themes are introduced later.
+@use "theme";
+
+// Retained private engineering marker.
 .zoom-engineering-probe {
   --zoom-engineering-built: 1;
 }

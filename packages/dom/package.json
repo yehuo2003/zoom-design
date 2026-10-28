@@ -28,8 +28,8 @@
   "scripts": {
     "build": "node ../../scripts/build-platform.mjs dom",
     "typecheck": "node ../../scripts/typecheck-platform.mjs dom",
-    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
-    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage",
+    "test:unit": "node ../../scripts/test-unit.mjs --standalone --package dom",
+    "test:coverage": "node ../../scripts/test-unit.mjs --standalone --coverage --package dom",
     "test:e2e": "node ../../scripts/e2e.mjs --mode workspace --package dom --browser chromium"
   }
 }

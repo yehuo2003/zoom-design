@@ -7,7 +7,7 @@ type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B 
 type Expect<T extends true> = T;
 type Probe = InstanceType<typeof BuildProbe>;
 type LabelIsString = Expect<Equal<Probe['$props']['label'], string>>;
-type PublicSurfaceIsEmpty = Expect<Equal<keyof typeof PublicVue, never>>;
+type PublicSurfaceIsButton = Expect<Equal<keyof typeof PublicVue, 'ZButton'>>;
 const props: Probe['$props'] = { label: 'Initial', onChanged: (count: number) => void count };
 // @ts-expect-error Emitted fixture declarations must reject a numeric label.
 const invalidProps: Probe['$props'] = { label: 3 };
@@ -23,4 +23,4 @@ const cleanup: () => void = registerEngineeringClick(new EventTarget(), () => {}
 // @ts-expect-error TS7 DOM declarations must retain the EventTarget constraint.
 registerEngineeringClick({}, () => {});
 void [props, invalidProps, cleanup];
-export type { LabelIsString, PublicSurfaceIsEmpty };
+export type { LabelIsString, PublicSurfaceIsButton };

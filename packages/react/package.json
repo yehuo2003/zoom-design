@@ -11,7 +11,12 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./theme.css": "./dist/theme.css",
+    "./theme.scss": {
+      "sass": "./dist/styles/theme/_index.scss",
+      "default": "./dist/styles/theme/_index.scss"
+    }
   },
   "files": [
     "dist",
@@ -24,9 +29,9 @@
     "build": "node ../../scripts/build-framework.mjs react",
     "typecheck": "node ../../scripts/check-react.mjs --types",
     "check:fixtures": "node ../../scripts/check-react.mjs",
-    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
+    "test:unit": "node ../../scripts/test-unit.mjs --standalone --package react",
     "test:e2e": "node ../../scripts/e2e.mjs --package react --mode workspace --browser chromium",
-    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage"
+    "test:coverage": "node ../../scripts/test-unit.mjs --standalone --coverage --package react"
   },
   "devDependencies": {
     "typescript": "7.0.2",

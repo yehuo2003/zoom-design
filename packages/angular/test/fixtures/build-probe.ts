@@ -6,9 +6,9 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, 
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="zoom-engineering-probe">
-      <p data-testid="probe-label">{{ label() }}</p>
-      <p data-testid="count">{{ count() }}</p>
+    <section class="zoom-engineering-probe" role="region" aria-label="Angular engineering probe">
+      <output data-testid="probe-label" aria-label="Label">{{ label() }}</output>
+      <output data-testid="count" aria-label="Count">{{ count() }}</output>
       <button type="button" (click)="increment()">Increment</button>
     </section>
   `,

@@ -23,6 +23,9 @@
             "buildTarget": "zoom-angular:build:development",
             "tsConfig": "tsconfig.spec.json",
             "runner": "vitest",
+            "runnerConfig": "vitest.angular.config.ts",
+            "coverageInclude": ["**/src/**/*.ts", "**/test/fixtures/**/*.ts"],
+            "coverageReporters": ["json", "json-summary", "text-summary"],
             "include": ["**/*.spec.ts", "../test/**/*.spec.ts"]
           }
         },

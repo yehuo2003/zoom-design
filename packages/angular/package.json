@@ -4,16 +4,23 @@
   "description": "Angular components for Zoom Design",
   "private": true,
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
-    "./style.css": "./styles/style.css"
+    "./style.css": "./styles/style.css",
+    "./theme.css": "./styles/theme.css",
+    "./theme.scss": {
+      "sass": "./styles/theme/_index.scss",
+      "default": "./styles/theme/_index.scss"
+    }
   },
   "scripts": {
     "build": "node ../../scripts/build-angular.mjs",
     "typecheck": "node ../../scripts/check-angular.mjs",
     "test:unit": "node ../../scripts/test-angular.mjs",
     "test:list": "node ../../scripts/test-angular.mjs --list-tests",
-    "test:coverage": "node ../../scripts/test-angular.mjs --coverage",
+    "test:coverage": "node ../../scripts/test-unit.mjs --standalone --coverage --package angular",
     "test:e2e": "node ../../scripts/e2e.mjs --mode workspace --browser chromium --package angular"
   },
   "devDependencies": {

@@ -10,7 +10,17 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./style.css": "./dist/style.css"
+    "./button": {
+      "types": "./dist/types/button/index.d.ts",
+      "import": "./dist/button/index.js"
+    },
+    "./button/style.css": "./dist/button/style.css",
+    "./style.css": "./dist/style.css",
+    "./theme.css": "./dist/theme.css",
+    "./theme.scss": {
+      "sass": "./dist/styles/theme/_index.scss",
+      "default": "./dist/styles/theme/_index.scss"
+    }
   },
   "files": [
     "dist",
@@ -22,9 +32,9 @@
   "scripts": {
     "build": "node ../../scripts/build-framework.mjs vue",
     "typecheck": "node ../../scripts/check-vue.mjs",
-    "test:unit": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts",
+    "test:unit": "node ../../scripts/test-unit.mjs --standalone --package vue",
     "test:e2e": "node ../../scripts/e2e.mjs --mode workspace --package vue --browser chromium",
-    "test:coverage": "node ../../scripts/run-local-bin.mjs --workspace . --package vitest --bin vitest -- run --config vitest.config.ts --coverage"
+    "test:coverage": "node ../../scripts/test-unit.mjs --standalone --coverage --package vue"
   },
   "devDependencies": {
     "typescript": "6.0.3",

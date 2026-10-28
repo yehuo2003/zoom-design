@@ -8,16 +8,16 @@ import { BuildProbe } from '../../../packages/angular/test/fixtures/build-probe'
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <h1>Angular engineering host</h1>
-    <p data-testid="import-status">@zoom-design/angular APF imported</p>
+    <p data-testid="import-status" role="status" aria-label="Package readiness">@zoom-design/angular APF imported</p>
     @if (mounted()) {
       <zoom-build-probe [label]="label()" [onCleanup]="recordCleanup" (countChanged)="emitted.set($event)" />
       <button type="button" (click)="label.set('Updated')">Update label</button>
       <button type="button" (click)="mounted.set(false)">Unmount</button>
     } @else {
-      <p data-testid="unmounted">unmounted</p>
+      <p data-testid="unmounted" role="status" aria-label="Probe mount status">unmounted</p>
     }
-    <p data-testid="emitted-count">{{ emitted() }}</p>
-    <p data-testid="cleanup-count">{{ cleanup() }}</p>
+    <output data-testid="emitted-count" aria-label="Emitted count">{{ emitted() }}</output>
+    <output data-testid="cleanup-count" aria-label="Cleanup count">{{ cleanup() }}</output>
   `,
 })
 export class SmokeApp {

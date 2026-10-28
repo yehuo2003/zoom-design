@@ -1,0 +1,56 @@
+{
+  "runId": "48857888-4b10-41d9-a46a-38cfc3fedcb7",
+  "scenario": "Vue native engineering probe: input/count/event/unmount plus empty public package and CSS marker",
+  "mode": "packed-production",
+  "baselineKind": "engineering",
+  "target": "es2022; Vite production browser build",
+  "versions": {
+    "node": "v26.12.1",
+    "npm": "12.2.1",
+    "@types/node": "26.6.5",
+    "typescript": "6.0.3",
+    "vue-tsc": "3.3.13",
+    "@vue/compiler-sfc": "3.5.44",
+    "@vue/compiler-dom": "3.5.44",
+    "vite": "8.3.5",
+    "@vitejs/plugin-vue": "6.0.10",
+    "vue": "3.5.44",
+    "@vue/server-renderer": "3.5.44"
+  },
+  "assets": [
+    {
+      "path": "assets/dist-BvRk9kiK.js",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw": 0,
+      "gzip": 20,
+      "brotli": 1
+    },
+    {
+      "path": "assets/index-B_h7Civp.js",
+      "sha256": "bba54dac3227547787df8431c37c5c9885f1b8449cf20a66aa53514f0c633162",
+      "raw": 70625,
+      "gzip": 27595,
+      "brotli": 24973
+    },
+    {
+      "path": "assets/index-Ds9d3kEc.css",
+      "sha256": "1f50df2c5859935898497ac150fe2c490e651364a596003a555d3bf2b3eb26a9",
+      "raw": 52,
+      "gzip": 57,
+      "brotli": 52
+    }
+  ],
+  "total": {
+    "raw": 70677,
+    "gzip": 27672,
+    "brotli": 25026
+  },
+  "compression": "gzip/Brotli default Node zlib, each asset independently compressed; shared chunks deduplicated",
+  "excludes": [
+    "source maps",
+    "SSR server output",
+    "unreferenced assets",
+    "node_modules install size"
+  ],
+  "limitations": "No product component. No equivalent-function comparison or size saving claim."
+}

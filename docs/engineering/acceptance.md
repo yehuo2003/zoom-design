@@ -1,4 +1,18 @@
-# Task1 工程验收记录
+# 五包工程验收索引
+
+2026-10-28：Task1–5均已按用户确认标记完成；Task5开发和Windows本地17/17验收通过。最终Windows完整CI退出0：根工程/单测60/60，workspace三浏览器51/51，packed三浏览器51/51。五包均有真实tgz及仓库外原生消费者；Linux实机未执行的Task4部分结果保留。
+
+| Task | 记录与范围 |
+| --- | --- |
+| 1 | 本文件下方保留2026-10-27工具链原始验收；不将历史成绩改写为后续能力 |
+| 2 | [Core/DOM构建、声明、单测及消费宿主](./task2-acceptance.md) |
+| 3 | [三框架原生工程、样式、预览与SSR探针](./task3-acceptance.md) |
+| 4 | [根编排、覆盖率、三浏览器、无Volta及Linux边界](./task4-acceptance.md) |
+| 5 | [真实tarball、隔离install/ci、原生检查、生产E2E及最终证据](./task5-acceptance.md) |
+
+[CI命令](./ci.md)、[隔离消费复现](./packed-consumers.md)、[Vue工程体积基线](./size-baseline.md)、[Linux验证与WSL2安装方案](./linux-validation-setup.md)。Linux安装和验证暂缓，Angular SSR未实施。五包公共入口仍为空，产品组件、业务接入和公开发布未交付。
+
+## Task1 原始工程验收记录
 
 日期：2026-10-27（Asia/Shanghai），最终验证约11:34。范围：工具链基线；11/11本地验收项通过，自动测试15/15通过。任务状态：已完成（用户于2026-10-27确认验证通过）。
 

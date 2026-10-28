@@ -1,0 +1,5 @@
+@use "../../../../design/styles" as zoom;
+
+:where(:root) { @include zoom.theme(); @include zoom.density(regular); }
+:where([data-zoom-density="regular"]) { @include zoom.density(regular); }
+:where([data-zoom-density="compact"]) { @include zoom.density(compact); }

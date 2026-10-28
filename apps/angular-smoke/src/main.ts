@@ -12,6 +12,7 @@ start().catch((error: unknown) => {
   const target = document.querySelector('zoom-smoke-root');
   if (target) {
     target.setAttribute('data-testid', 'import-error');
+    target.setAttribute('role', 'alert');
     target.textContent = `Angular package import failed: ${error instanceof Error ? error.message : String(error)}`;
   }
   throw error;

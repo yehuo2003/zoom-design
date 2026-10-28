@@ -5,6 +5,15 @@ import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const roots: string[] = [];
+
+it('Task4 resolves a standalone npm bin directory without npm_execpath', async () => {
+  const { probeNpm } = await import('../../scripts/check-toolchain.mjs');
+  const directory = mkdtempSync(join(tmpdir(), 'zoom-npm-bin-')); roots.push(directory);
+  writeFileSync(join(directory, 'npm.cmd'), '@echo off');
+  writeFileSync(join(directory, 'npm-cli.js'), 'console.log("12.2.1")');
+  const result = probeNpm({ PATH: directory }, process.execPath, 'win32');
+  expect(result).toEqual({ version: '12.2.1', path: join(directory, 'npm-cli.js') });
+});
 afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const json = (path: string, value: unknown) => { mkdirSync(resolve(path, '..'), { recursive: true }); writeFileSync(path, JSON.stringify(value)); };
 const temp = () => { const root = mkdtempSync(join(tmpdir(), 'zoom-toolchain-')); roots.push(root); return root; };
