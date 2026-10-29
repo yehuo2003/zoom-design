@@ -18,7 +18,7 @@ const output = `.artifacts/task4/playwright/${mode}/${selection}-${browser}`;
 export default defineConfig({
   testDir: './e2e', fullyParallel: true, forbidOnly: true, retries: 0, workers: 2,
   timeout: 30000, expect: { timeout: 5000 },
-  metadata: { runId, mode, selection, browser, scope: 'Engineering probes; product coverage N/A' },
+  metadata: { runId, mode, selection, browser, scope: 'Engineering probes plus implemented Core/DOM rules, Vue Button and Select product scenarios; task acceptance records define the measured scope' },
   reporter: [['list'], ['json', { outputFile: `${output}/results.json` }], ['html', { outputFolder: `${output}/html`, open: 'never' }]],
   outputDir: `${output}/test-results`,
   use: { trace: 'retain-on-failure', screenshot: 'only-on-failure', actionTimeout: 10000 },

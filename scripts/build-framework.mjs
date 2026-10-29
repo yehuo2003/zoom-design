@@ -11,6 +11,11 @@ if (!['vue', 'react'].includes(name) || process.argv.length !== 3) throw Error('
 const workspace = join(root, 'packages', name); const output = join(workspace, 'dist');
 if (relative(root, output) !== join('packages', name, 'dist')) throw Error('Invalid framework output');
 try {
+  if (name === 'vue') {
+    const prerequisites = spawnSync(process.execPath, [join(root, 'scripts/build-platform.mjs'), 'dom'], { cwd: root, stdio: 'inherit', shell: false });
+    if (prerequisites.error) throw prerequisites.error;
+    if (prerequisites.status !== 0) throw Error(`vue: Core/DOM prerequisites exited ${prerequisites.status}`);
+  }
   rmSync(output, { recursive: true, force: true });
   const js = runBin(workspace, 'vite', 'vite', ['build', '--config', 'vite.config.ts']);
   if (js.status !== 0) throw Error(`${name}: Vite exited ${js.status}`);
@@ -20,7 +25,7 @@ try {
   if (declarations.error) throw declarations.error;
   if (declarations.status !== 0) throw Error(`${name}: declaration emit exited ${declarations.status}`);
   compilePackageStyles(name);
-  if (name === 'vue') for (const file of ['button/index.js', 'types/button/index.d.ts', 'button/style.css']) if (!existsSync(join(output, file))) throw Error(`vue: missing built ${file}`);
+  if (name === 'vue') for (const file of ['button/index.js', 'types/button/index.d.ts', 'button/style.css', 'select/index.js', 'types/select/index.d.ts', 'types/select/Select.vue.d.ts', 'select/style.css']) if (!existsSync(join(output, file))) throw Error(`vue: missing built ${file}`);
   for (const file of ['index.js', 'types/index.d.ts', 'style.css', 'theme.css', 'styles/theme/_index.scss']) if (!existsSync(join(output, file))) throw Error(`${name}: missing built ${file}`);
   console.log(`${name}: public JS, declarations and CSS built`);
 } catch (error) {

@@ -69,7 +69,7 @@ describe('Task1 review regressions', () => {
     for (const peerDependencies of [{}, { vue: '^3.0.0' }]) {
       expect(validateWorkspaceContract('packages/vue', { peerDependencies }, { peerDependencies }).join('\n')).toMatch(/public peer vue/);
     }
-    const good = { peerDependencies: { vue: '~3.5.44' } };
+    const good = { peerDependencies: { vue: '~3.5.44' }, dependencies: { '@zoom-design/core': '0.0.0', '@zoom-design/dom': '0.0.0' } };
     expect(validateWorkspaceContract('packages/vue', good, good)).toEqual([]);
   });
   it('rejects removing DOM to Core and detects runtime/peer lock drift', async () => {
@@ -80,6 +80,15 @@ describe('Task1 review regressions', () => {
     expect(validateWorkspaceContract('packages/dom', good, {}).join('\n')).toMatch(/lock dependencies/);
     const vue = { peerDependencies: { vue: '~3.5.44' } };
     expect(validateWorkspaceContract('packages/vue', vue, {}).join('\n')).toMatch(/lock peerDependencies/);
+  });
+  it('requires both exact Vue runtime selection dependencies', async () => {
+    const { validateWorkspaceContract } = await import('../../scripts/check-toolchain.mjs');
+    const vue = { peerDependencies: { vue: '~3.5.44' }, dependencies: { '@zoom-design/core': '0.0.0', '@zoom-design/dom': '0.0.0' } };
+    expect(validateWorkspaceContract('packages/vue', vue, vue)).toEqual([]);
+    for (const name of ['@zoom-design/core', '@zoom-design/dom']) {
+      const changed = structuredClone(vue); delete (changed.dependencies as Record<string, string>)[name];
+      expect(validateWorkspaceContract('packages/vue', changed, changed).join('\n')).toContain(`runtime dependency ${name}`);
+    }
   });
 });
 

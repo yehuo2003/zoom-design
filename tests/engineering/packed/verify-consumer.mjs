@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { assertNoLinks, inside, sha256, inspectPackageFiles, readTarball } from './pack-contracts.mjs';
 import { packagePath, readJson } from './run-local-bin.mjs';
+import { verifyDOMNode, domFunctions } from './dom-type-contract.mjs';
+import { verifySelectSSR } from './select-ssr-contract.mjs';
 
 // This file is copied into each consumer. All resolution starts here, outside the repo.
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,7 +18,7 @@ try {
   if (manifest.workspaces || manifest.volta || !manifest.private) throw Error('Consumer must be private and standalone');
   if (manifest.dependencies?.sass || manifest.devDependencies?.sass) throw Error('Standard CSS consumers must not declare Sass');
   if (phase === 'installed' && spec.app === 'vue' && existsSync(join(directory, 'node_modules/sass'))) throw Error('Standard Vue CSS consumption must not require installed Sass');
-  for (const name of ['tsconfig.json', 'tsconfig.app.json', 'tsconfig.contracts.json', 'tsconfig.contracts-negative.json', 'tsconfig.negative.json', 'tsconfig.button.json', 'tsconfig.button-ts.json', 'tsconfig.button-negative.json']) {
+  for (const name of ['tsconfig.json', 'tsconfig.app.json', 'tsconfig.contracts.json', 'tsconfig.contracts-negative.json', 'tsconfig.negative.json', 'tsconfig.button.json', 'tsconfig.button-ts.json', 'tsconfig.button-negative.json', 'tsconfig.select.json', 'tsconfig.select-negative.json', 'tsconfig.select-ts.json', 'tsconfig.select-ts-negative.json', 'tsconfig.selection.json', 'tsconfig.selection-negative.json', 'tsconfig.dom.json', 'tsconfig.dom-negative.json']) {
     const path = join(directory, name); if (!existsSync(path)) continue;
     const config = readJson(path);
     if (config.compilerOptions?.paths || config.compilerOptions?.baseUrl || config.references || (config.extends && !/^\.\/tsconfig\.json$/.test(config.extends))) throw Error(`Source alias/external config forbidden: ${name}`);
@@ -91,11 +93,23 @@ try {
     }
     if (typeof window !== 'undefined' || typeof document !== 'undefined') throw Error('Node import must have no browser globals');
     for (const name of ['@zoom-design/core', '@zoom-design/dom']) await import(name);
+    const core = await import('@zoom-design/core');
+    const approved = ['filterOptions', 'findTypeaheadMatch', 'getSelectedOption', 'moveHighlight', 'normalizeOptions', 'reconcileHighlight'];
+    if (JSON.stringify(Object.keys(core)) !== JSON.stringify(approved)) throw Error('Core selection runtime exports differ from approved API');
+    const normalized = core.normalizeOptions([{ value: 0, label: 'Zero' }, { value: '', label: 'Empty' }, { value: 0, label: 'Duplicate' }]);
+    const options = normalized.options;
+    if (normalized.issues[0]?.code !== 'duplicate-value' || core.getSelectedOption(options, 0)?.label !== 'Zero'
+      || core.moveHighlight(options, 0, 'next') !== '' || core.reconcileHighlight(options, 'missing', 0) !== 0
+      || core.filterOptions(options, 'EMPTY')[0]?.value !== '' || core.findTypeaheadMatch(options, null, 'z') !== 0) throw Error('Core selection tarball runtime contract failed');
+    resolved.coreSelection = { nodeImport: 'PASS', functions: approved, valueTypes: 'PASS' };
+    verifyDOMNode(await import('@zoom-design/dom'));
+    resolved.dom = { nodeImport: 'PASS', unsupportedCalls: 'PASS', functions: domFunctions };
     if (['vue', 'react'].includes(spec.app)) {
       const adapter = await import(`@zoom-design/${spec.app}`);
       if (spec.app === 'vue') {
         const component = await import('@zoom-design/vue/button');
-        if (JSON.stringify(Object.keys(adapter)) !== '["ZButton"]' || JSON.stringify(Object.keys(component)) !== '["ZButton"]' || component.ZButton !== adapter.ZButton) throw Error('Vue public runtime API differs between root and Button');
+        const select = await import('@zoom-design/vue/select');
+        if (JSON.stringify(Object.keys(adapter)) !== '["ZButton","ZSelect"]' || JSON.stringify(Object.keys(component)) !== '["ZButton"]' || component.ZButton !== adapter.ZButton || JSON.stringify(Object.keys(select)) !== '["ZSelect"]' || select.ZSelect !== adapter.ZSelect) throw Error('Vue public runtime API differs between root and component subpaths');
       }
       const server = join(directory, 'server/ssr.js');
       if (existsSync(server)) {
@@ -111,6 +125,7 @@ try {
           const other = await render('/ssr?example=button&brand=teal');
           if (!/<button[^>]*class="zoom-button"/.test(button) || !button.includes('Save changes') || !button.includes('aria-busy="true"') || !button.includes('data-button-brand="purple"') || !other.includes('data-button-brand="teal"') || await render('/ssr?example=button&brand=purple') !== button) throw Error('Button SSR markup/request isolation failed');
           resolved.ssr.button = { render: 'PASS', isolation: 'PASS' };
+          resolved.ssr.select = await verifySelectSSR(render);
         }
       }
     }

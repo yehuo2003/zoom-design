@@ -1,0 +1,49 @@
+[
+  {
+    "package": "@floating-ui/dom",
+    "selectedVersion": "1.8.0",
+    "latestStable": "1.8.0",
+    "publishedAt": "2026-07-11T08:41:32.794Z",
+    "license": "MIT",
+    "engines": {},
+    "peers": {},
+    "dependencies": {
+      "@floating-ui/core": "^1.8.0",
+      "@floating-ui/utils": "^0.2.12"
+    },
+    "deprecated": null,
+    "unpackedSize": 174208,
+    "source": "https://registry.npmjs.org/@floating-ui/dom",
+    "checkedAt": "2026-10-29T04:51:26.515Z"
+  },
+  {
+    "package": "@floating-ui/core",
+    "selectedVersion": "1.8.0",
+    "latestStable": "1.8.0",
+    "publishedAt": "2026-07-11T08:41:32.920Z",
+    "license": "MIT",
+    "engines": {},
+    "peers": {},
+    "dependencies": {
+      "@floating-ui/utils": "^0.2.12"
+    },
+    "deprecated": null,
+    "unpackedSize": 218589,
+    "source": "https://registry.npmjs.org/@floating-ui/core",
+    "checkedAt": "2026-10-29T04:51:26.627Z"
+  },
+  {
+    "package": "@floating-ui/utils",
+    "selectedVersion": "0.2.12",
+    "latestStable": "0.2.12",
+    "publishedAt": "2026-07-11T08:41:33.036Z",
+    "license": "MIT",
+    "engines": {},
+    "peers": {},
+    "dependencies": {},
+    "deprecated": null,
+    "unpackedSize": 66066,
+    "source": "https://registry.npmjs.org/@floating-ui/utils",
+    "checkedAt": "2026-10-29T04:51:26.711Z"
+  }
+]

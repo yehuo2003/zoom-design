@@ -80,7 +80,7 @@ export function prepareConsumers(state) {
   save(join(state.reportDirectory, 'state.json'), state);
   for (const app of apps) {
     const directory = join(state.consumerRoot, app);
-    const packages = state.packages.filter(entry => ['@zoom-design/core', '@zoom-design/dom', `@zoom-design/${app}`].includes(entry.name));
+    const packages = state.packages.filter(entry => ['@zoom-design/core', '@zoom-design/dom', '@zoom-design/vue', `@zoom-design/${app}`].includes(entry.name));
     mkdirSync(join(directory, 'vendor'), { recursive: true });
     for (const entry of packages) cpSync(entry.tarball, join(directory, 'vendor', entry.filename));
     createConsumer(root, directory, app, packages);
@@ -115,7 +115,11 @@ function runtimeGraph(state, app, directory) {
       const gate = publicImportChunk(graph, `@zoom-design/${name}`, state.packages.find(entry => entry.name === `@zoom-design/${name}`).exports);
       imports[name] = `/${gate.fileName}`;
     }
-    if (app === 'vue') imports.vueButton = `/${publicImportChunk(graph, '@zoom-design/vue', state.packages.find(entry => entry.name === '@zoom-design/vue').exports, './button').fileName}`;
+    if (app === 'vue') {
+      const exports = state.packages.find(entry => entry.name === '@zoom-design/vue').exports;
+      imports.vueButton = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './button').fileName}`;
+      imports.vueSelect = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './select').fileName}`;
+    }
   }
   for (const raw of graph.moduleIds) {
     const id = raw.replaceAll('\\', '/').split('?')[0];
@@ -171,6 +175,9 @@ export function verifyConsumers(state) {
       command(state, 'vue-minimal-button-size', process.execPath, ['scripts/button-size.mjs'], directory);
       state.buttonSize = readJson(join(directory, 'reports/button-size.json'));
       save(join(state.reportDirectory, 'button-size.json'), { runId: state.runId, ...state.buttonSize });
+      command(state, 'vue-minimal-select-size', process.execPath, ['scripts/select-size.mjs'], directory);
+      state.selectSize = readJson(join(directory, 'reports/select-size.json'));
+      save(join(state.reportDirectory, 'select-size.json'), { runId: state.runId, ...state.selectSize });
     }
     npm(state, `${app}-dependency-tree`, ['ls', '--all', '--json'], directory);
   }
@@ -179,12 +186,12 @@ export function verifyConsumers(state) {
 export function verifySassConsumer(state) {
   const directory = assertIsolatedRoot(mkdtempSync(join(tmpdir(), 'zoom-design-sass-')), root);
   state.sassConsumer = directory;
-  const packages = state.packages.filter(entry => ['@zoom-design/vue', '@zoom-design/react', '@zoom-design/angular'].includes(entry.name));
+  const packages = state.packages;
   const sass = readJson(join(root, 'package.json')).devDependencies.sass;
   mkdirSync(join(directory, 'vendor'), { recursive: true }); mkdirSync(join(directory, 'scripts'), { recursive: true });
   for (const entry of packages) cpSync(entry.tarball, join(directory, 'vendor', entry.filename));
   save(join(directory, 'package.json'), { name: 'zoom-theme-sass-consumer', private: true, type: 'module', version: '0.0.0', dependencies: Object.fromEntries(packages.map(entry => [entry.name, `file:vendor/${entry.filename}`])), devDependencies: { sass } });
-  save(join(directory, '.theme-spec.json'), { runId: state.runId, sass, packages: packages.map(entry => entry.name) });
+  save(join(directory, '.theme-spec.json'), { runId: state.runId, sass, packages: packages.filter(entry => !['@zoom-design/core', '@zoom-design/dom'].includes(entry.name)).map(entry => entry.name) });
   for (const file of ['pack-contracts.mjs', 'theme-contract.mjs', 'run-local-bin.mjs']) cpSync(join(root, 'scripts', file), join(directory, 'scripts', file));
   cpSync(join(root, 'tests/engineering/packed/theme-check.mjs'), join(directory, 'scripts/theme-check.mjs'));
   npm(state, 'theme-sass-install', ['install', '--no-audit', '--no-fund'], directory);
@@ -217,14 +224,14 @@ export function negativeConsumers(state) {
   negative('undeclared-dependency', platform, () => { const manifest = JSON.parse(consumerBytes); delete manifest.dependencies['@zoom-design/core']; save(consumerManifest, manifest); }, () => writeFileSync(consumerManifest, consumerBytes), /Missing declared local dependency @zoom-design\/core/, 'preinstall');
   negative('wrong-typescript', vue, () => npm(state, 'negative-install-actual-TS7-in-Vue', ['install', '--no-save', '--package-lock=false', '--no-audit', '--no-fund', 'typescript@7.0.2'], vue), () => npm(state, 'negative-restore-Vue-ci', ['ci', '--no-audit', '--no-fund'], vue), /Wrong tool version typescript.*resolved 7.0.2/);
   const installedVue = join(vue, 'node_modules/@zoom-design/vue');
-  for (const [name, target] of [['button-js', 'dist/button/index.js'], ['button-types', 'dist/types/button/index.d.ts'], ['button-css', 'dist/button/style.css'], ['theme-css', 'dist/theme.css'], ['theme-partial', 'dist/styles/theme/_defaults.scss']]) {
+  for (const [name, target] of [['button-js', 'dist/button/index.js'], ['button-types', 'dist/types/button/index.d.ts'], ['button-css', 'dist/button/style.css'], ['select-js', 'dist/select/index.js'], ['select-types', 'dist/types/select/index.d.ts'], ['select-css', 'dist/select/style.css'], ['theme-css', 'dist/theme.css'], ['theme-partial', 'dist/styles/theme/_defaults.scss']]) {
     const file = join(installedVue, target); const backup = `${file}.negative`;
     negative(`missing-${name}`, vue, () => renameSync(file, backup), () => { if (existsSync(backup)) renameSync(backup, file); }, new RegExp(`Missing/changed installed asset.*${target.replaceAll('.', '\\.')}`));
   }
-  for (const [name, condition] of [['button-js', 'import'], ['button-types', 'types']]) {
-    negative(`wrong-${name}`, vue, () => { const manifest = JSON.parse(manifestBytes); manifest.exports['./button'][condition] = './dist/nonexistent.js'; save(manifestPath, manifest); }, () => writeFileSync(manifestPath, manifestBytes), /manifest\/exports mismatch/);
+  for (const [name, subpath, condition] of [['button-js', './button', 'import'], ['button-types', './button', 'types'], ['select-js', './select', 'import'], ['select-types', './select', 'types']]) {
+    negative(`wrong-${name}`, vue, () => { const manifest = JSON.parse(manifestBytes); manifest.exports[subpath][condition] = './dist/nonexistent.js'; save(manifestPath, manifest); }, () => writeFileSync(manifestPath, manifestBytes), /manifest\/exports mismatch/);
   }
-  const required = ['missing-tgz', 'wrong-exports', 'missing-css', 'undeclared-dependency', 'wrong-typescript', 'missing-button-js', 'missing-button-types', 'missing-button-css', 'missing-theme-css', 'missing-theme-partial', 'wrong-button-js', 'wrong-button-types'];
+  const required = ['missing-tgz', 'wrong-exports', 'missing-css', 'undeclared-dependency', 'wrong-typescript', 'missing-button-js', 'missing-button-types', 'missing-button-css', 'missing-select-js', 'missing-select-types', 'missing-select-css', 'missing-theme-css', 'missing-theme-partial', 'wrong-button-js', 'wrong-button-types', 'wrong-select-js', 'wrong-select-types'];
   if (JSON.stringify(cases.map(entry => entry.name).sort()) !== JSON.stringify(required.sort()) || cases.some(entry => entry.restored !== 'PASS')) throw Error('Required named negative classes/restorations did not all execute');
   state.negative = cases;
   state.status = 'negative-verified';

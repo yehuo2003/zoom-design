@@ -2,9 +2,15 @@
   "name": "@zoom-design/dom",
   "version": "0.0.0",
   "description": "Framework-neutral browser interaction utilities",
-  "private": true,
+  "private": false,
+  "author": "linzhuming",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "@zoom-design/core": "0.0.0"
+    "@zoom-design/core": "0.0.0",
+    "@floating-ui/dom": "1.8.0"
   },
   "devDependencies": {
     "typescript": "7.0.2"

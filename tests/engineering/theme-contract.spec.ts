@@ -76,7 +76,7 @@ describe('Task6 public theme contract', () => {
     try {
       cpSync(join(root, 'design'), join(temporary, 'design'), { recursive: true });
       cpSync(join(root, `packages/${name}/src/styles`), join(temporary, `packages/${name}/src/styles`), { recursive: true });
-      if (name === 'vue') { mkdirSync(join(temporary, 'packages/vue/src/button'), { recursive: true }); cpSync(join(root, 'packages/vue/src/button/style.scss'), join(temporary, 'packages/vue/src/button/style.scss')); }
+      if (name === 'vue') for (const component of ['button', 'select']) { mkdirSync(join(temporary, `packages/vue/src/${component}`), { recursive: true }); cpSync(join(root, `packages/vue/src/${component}/style.scss`), join(temporary, `packages/vue/src/${component}/style.scss`)); }
       compilePackageStyles(name, { rootDirectory: temporary });
       const outputs = ['style.css', 'theme.css', name === 'angular' ? 'theme/_index.scss' : 'styles/theme/_index.scss'].map(file => join(temporary, `packages/${name}/${name === 'angular' ? '.generated' : 'dist'}`, file));
       expect(outputs.every(existsSync)).toBe(true);

@@ -1,5 +1,6 @@
 @use "theme";
 @use "../button/style";
+@use "../select/style" as select-style;
 
 // Retained private engineering marker.
 .zoom-engineering-probe {

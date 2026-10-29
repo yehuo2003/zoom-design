@@ -71,7 +71,7 @@ try {
         try {
           const { render } = await vite.ssrLoadModule('/src/ssr.ts');
           const markup = await render(request.url);
-          const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");</script>';
+          const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");window.__zoomSSRSelect=document.getElementById("ssr-select");window.__zoomSSRSelectPopup=document.getElementById("ssr-select-listbox");</script>';
           const source = readFileSync(join(workspace, 'index.html'), 'utf8');
           if (!source.includes('<div id="app"></div>')) throw Error('SSR host must provide #app placeholder');
           const template = source.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${capture}`);

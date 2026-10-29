@@ -8,13 +8,17 @@ Task6 扩展：三框架增加 `theme.css` 和可选 `theme.scss`；后者仅允
 
 `check:pack` 另外在 `zoom-design-sass-*` 临时目录安装真实 tarball 与固定版本 Sass，使用自身 `NodePackageImporter` 验证导入无输出、with 定制、两容器主题、三框架相同 CSS，并对缺 partial、错误 Sass export、额外私有 SCSS 和越界引用执行拒绝及恢复正例。它不替代四个标准消费者与原五类 packed 负例。结果保存在本轮 `theme-sass.json`；Vue 主题 SSR 与三浏览器证据见 [Task6 验收](./task6-acceptance.md)。
 
-在仓库运行 `npm run check:pack`。每次清理并重建五包，先检查 npm pack dry-run，再检查实际 tgz 的 manifest、JS、声明、CSS、依赖和文件摘要。Core/DOM/Vue/React从各自包目录打包，Angular从根dist/angular的APF打包。当前全部为private 0.0.0，不执行公开发布。
+在仓库运行 `npm run check:pack`。每次清理并重建五包，先检查 npm pack dry-run，再检查实际 tgz 的 manifest、JS、声明、CSS、依赖和文件摘要。Core/DOM/Vue/React从各自包目录打包，Angular从根dist/angular的APF打包。五个子包已配置公开发布、MIT许可和作者；版本仍为0.0.0，本脚本不执行发布。
 
 脚本在os.tmpdir创建新的zoom-design-packed-*目录，通过Windows原生realpath展开短路径；拒绝仓库内目录、仓库祖先、其他npm workspace祖先和junction消费者。四个消费者均是独立private项目，vendor放复制后的真实tgz，manifest使用file:vendor相对路径。每次先npm install，再npm ci，校验锁文件没有变化。
 
 platform安装Core/DOM；Vue、React、Angular各安装Core/DOM和自己的适配包。框架包仍无Core/DOM运行依赖，Vue现有产品Button；其余框架公共API为空。私有TS7泛型/回调/联合类型夹具与交互探针保留在消费者，不进入tgz，也不冒充产品API。
 
 消费者各自声明并解析工具：platform/React为TS7.0.2，Vue/Angular为TS6.0.3。Vue显式将本地TS6传给本地vue-tsc；Angular由本地ngc/官方application builder检查模板并构建。所有配置启用strict和skipLibCheck=false；没有源码paths、外部extends、workspace链接、NODE_PATH或根编译器回退。公共声明与原生模板/JSX均执行正例和有具体诊断要求的负例。
+
+Task9 起，四个消费者额外以纯 ES2022（无 DOM ambient）编译 Core 选择函数的真实声明，分别运行有效用法和九项逐行核对的负例；Node 解析核验后实际调用全部六个函数，不再只导入空入口。平台消费者的 `/selection` 与 workspace 使用同一套公开函数行为断言。具体候选结果见 [Task9 验收](task9-acceptance.md)，这些检查不代表后续框架 Select/Combobox 产品已经可用。
+
+Task10 起，四个消费者还用自身 TS6/TS7 编译器、ES2022/DOM 严格检查 DOM 十二个函数与十二个类型的真实声明，核对七项精确类型诊断；Node 无浏览器全局时导入并检查十二个操作均给出 unsupported 错误。平台消费者 `/layers` 复制公开 DOM 示例（不复制 DOM 生产源码），同一套三浏览器场景运行真实 tarball 函数。结果见 [Task10 验收](task10-acceptance.md)。
 
 验证器从消费者自身执行import.meta.resolve，核对实际文件、原生realpath、非链接安装、CSS公开出口及内部深层路径拒绝。Node无window/document时导入公开JS；Vue产品Button、主题及原工程probe分别SSR，React保留工程SSR。图验证单一运行时，并检查实际外部Vue导入与runtime实现片段，允许createVNode等合法外部helper；Angular使用APF编译图和peer解析。
 

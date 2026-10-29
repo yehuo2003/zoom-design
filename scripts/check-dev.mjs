@@ -1,6 +1,6 @@
 import { fork, spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { mkdirSync, readFileSync, writeFileSync, appendFileSync, rmSync, existsSync, statSync } from 'node:fs';
+import { dirname, join, resolve, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
@@ -10,6 +10,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifacts = join(root, '.artifacts/task3'); mkdirSync(artifacts, { recursive: true });
 const style = join(root, 'packages/vue/src/styles/style.scss'); const source = join(root, 'packages/vue/src/index.ts');
 const originalStyle = readFileSync(style); const originalSource = readFileSync(source);
+const platformSources = ['core', 'dom'].map(name => ({ name, file: join(root, `packages/${name}/src/index.ts`), original: readFileSync(join(root, `packages/${name}/src/index.ts`)) }));
 writeFileSync(join(artifacts, 'dev-original-style.scss'), originalStyle); writeFileSync(join(artifacts, 'dev-original-index.ts'), originalSource);
 const logfile = join(artifacts, 'dev-validation.log'); writeFileSync(logfile, '');
 const evidence = []; let child; let exit; let browser;
@@ -34,11 +35,29 @@ async function interrupt() {
 }
 try {
   assert.equal(await listening(), false, '5171 must be free before this owned validation');
+  for (const name of ['core', 'dom', 'vue']) {
+    const target = resolve(root, `packages/${name}/dist`); const within = relative(root, target);
+    assert.equal(within, join('packages', name, 'dist')); assert.equal(isAbsolute(within), false);
+    rmSync(target, { recursive: true, force: true });
+  }
   start(); await waitFor(listening, 'Vue native preview');
+  for (const name of ['core', 'dom', 'vue']) assert.ok(existsSync(join(root, `packages/${name}/dist/index.js`)), `${name} rebuilt from clean output`);
+  evidence.push({ check: 'clean Core/DOM/Vue outputs prepare in dependency order before dev readiness', status: 'PASS' });
   browser = await chromium.launch({ headless: true }); const page = await browser.newPage();
   await page.goto('http://127.0.0.1:5171');
   await page.getByRole('button', { name: 'Increment', exact: true }).click();
   evidence.push({ check: 'native Vue preview interaction', status: 'PASS' });
+  for (const entry of platformSources) {
+    const output = join(root, 'packages/vue/dist/index.js'); const before = statSync(output).mtimeMs;
+    writeFileSync(entry.file, Buffer.concat([entry.original, Buffer.from(`\n// Task11 ${entry.name} dev watch proof\n`)]));
+    await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > before && await listening(), `${entry.name} source rebuilds Vue preview`);
+    await page.goto('http://127.0.0.1:5171/select'); await page.getByRole('combobox', { name: 'Choose value', exact: true }).waitFor();
+    evidence.push({ check: `${entry.name} source change rebuilds dependency chain and functional Select preview`, status: 'PASS' });
+    const restoreBefore = statSync(output).mtimeMs;
+    writeFileSync(entry.file, entry.original);
+    await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > restoreBefore && await listening(), `${entry.name} source restored preview`);
+  }
+  await page.goto('http://127.0.0.1:5171');
   writeFileSync(style, Buffer.concat([originalStyle, Buffer.from('\n.zoom-engineering-probe { --zoom-dev-watch-proof: passed; }\n')]));
   await page.waitForFunction(() => {
     const element = document.querySelector('.zoom-engineering-probe');
@@ -53,6 +72,7 @@ try {
   assert.match(readFileSync(logfile, 'utf8'), /not assignable to type 'string'/);
   evidence.push({ check: 'invalid package TS visibly fails and removes stale service', status: 'PASS', exit: failed.code });
   writeFileSync(style, originalStyle); writeFileSync(source, originalSource);
+  for (const entry of platformSources) writeFileSync(entry.file, entry.original);
   start(); await waitFor(listening, 'restored Vue preview');
   await interrupt(); const stopped = await exit; assert.equal(stopped.code, 0);
   await waitFor(async () => !await listening(), 'SIGINT closes owned preview');
@@ -63,6 +83,7 @@ try {
     try { await interrupt(); } catch { await cleanup.stopChild(child); }
   }
   writeFileSync(style, originalStyle); writeFileSync(source, originalSource);
+  for (const entry of platformSources) writeFileSync(entry.file, entry.original);
   const restore = spawnSync(process.execPath, [join(root, 'scripts/build-framework.mjs'), 'vue'], { cwd: root, encoding: 'utf8' });
   appendFileSync(logfile, restore.stdout + restore.stderr);
   writeFileSync(join(artifacts, 'dev-validation.json'), JSON.stringify(evidence, null, 2) + '\n');

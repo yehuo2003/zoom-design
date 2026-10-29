@@ -46,14 +46,16 @@ export function classifyCoverage(name, coverage, workspaceRoot = root) {
     if (path.startsWith(`${packageRoot}/test/fixtures/`)) probes[path] = data;
   }
   const productionMetrics = metrics(Object.values(production));
+  const perFile = Object.fromEntries(Object.entries(production).map(([file, data]) => [file, metrics([data])]));
   if (sources.length) {
     for (const file of sources) if (!production[normalized(file)]) throw Error(`${name}: production source has no coverage: ${file}`);
     for (const [metric, value] of Object.entries(productionMetrics)) if (value.percent < 80) throw Error(`${name}: production ${metric} ${value.percent}% is below 80%`);
+    if (name === 'dom') for (const [file, values] of Object.entries(perFile)) for (const [metric, value] of Object.entries(values)) if (value.percent < 80) throw Error(`${name}: production file ${file} ${metric} ${value.percent}% is below 80%`);
   }
   if (!Object.keys(probes).length) throw Error(`${name}: private engineering probe coverage missing`);
   return {
     package: name,
-    production: { status: sources.length ? 'PASS' : 'N/A', threshold: 80, reason: sources.length ? 'Production logic measured separately' : 'Only erased types or barrels; no executable production logic', files: sources.length ? Object.keys(production) : [], metrics: sources.length ? productionMetrics : null, classification: { compiler: { path: compilerPath, version: ts.version }, excluded: classification.filter(item => !item.executable) } },
+    production: { status: sources.length ? 'PASS' : 'N/A', threshold: 80, reason: sources.length ? 'Production logic measured separately' : 'Only erased types or barrels; no executable production logic', files: sources.length ? Object.keys(production) : [], metrics: sources.length ? productionMetrics : null, perFile, classification: { compiler: { path: compilerPath, version: ts.version }, excluded: classification.filter(item => !item.executable) } },
     probes: { scope: 'Private engineering fixtures only; no product coverage claim', files: Object.keys(probes), metrics: metrics(Object.values(probes)) },
     maps: { production, probes },
   };

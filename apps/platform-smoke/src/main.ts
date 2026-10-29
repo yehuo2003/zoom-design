@@ -7,14 +7,23 @@ function element<T extends HTMLElement>(id: string): T {
   return found as T;
 }
 const domScenario = location.pathname === '/dom';
-document.querySelector('main')!.innerHTML = domScenario
+const selectionScenario = location.pathname === '/selection';
+const layersScenario = location.pathname === '/layers';
+document.querySelector('main')!.innerHTML = layersScenario ? '<section id="layers-example"></section>' : selectionScenario
+  ? '<h2>Core public selection API</h2><section data-selection-instance="first"></section><section data-selection-instance="second"></section>'
+  : domScenario
   ? '<h2>DOM listener fixture</h2><p>Clicks: <output id="click-count" aria-label="Click count">0</output></p><p>Listener: <output id="listener-state" aria-label="Listener state">waiting</output></p><button id="trigger" disabled>Trigger click</button><button id="dispose" disabled>Dispose listener</button>'
   : '<h2>Core state fixture</h2><p>First: <output id="first-count" aria-label="First count">0</output></p><p>Second: <output id="second-count" aria-label="Second count">0</output></p><button id="first" disabled>Increment first</button><button id="second" disabled>Increment second</button>';
 
 try {
   // Real public dist entry points must resolve and execute before any fixture starts.
-  await Promise.all([import('@zoom-design/core'), import('@zoom-design/dom')]);
-  if (domScenario) {
+  const [core, dom] = await Promise.all([import('@zoom-design/core'), import('@zoom-design/dom')]);
+  if (layersScenario) {
+    const { mountLayersExample } = await import('./examples/layers.js'); mountLayersExample(element('layers-example'), dom);
+  } else if (selectionScenario) {
+    const { mountSelectionExample } = await import('./examples/selection.js');
+    for (const root of document.querySelectorAll<HTMLElement>('[data-selection-instance]')) mountSelectionExample(root, core);
+  } else if (domScenario) {
     let count = 0; const trigger = element<HTMLButtonElement>('trigger');
     const dispose = registerEngineeringClick(trigger, () => { element('click-count').textContent = String(++count); });
     element('listener-state').textContent = 'registered';

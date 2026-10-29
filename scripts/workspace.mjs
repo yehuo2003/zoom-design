@@ -15,6 +15,7 @@ const stage = (name, script, kind = 'package') => ({ package: name, script, kind
 export function buildPlan(selection) {
   const names = selectedPackages(selection);
   if (selection === 'dom') names.unshift('core');
+  if (selection === 'vue') names.unshift('core', 'dom');
   return names.map(name => stage(name, 'build'));
 }
 function typePlan(selection) {
@@ -29,7 +30,7 @@ export function qualityPlan(action, selection) {
   const unit = coverage => nodeStage(coverage ? 'coverage' : 'unit', ['scripts/test-unit.mjs', ...(selection ? ['--package', selection] : []), ...(coverage ? ['--coverage'] : [])]);
   if (action === 'build') return buildPlan(selection);
   if (action === 'typecheck') {
-    const needsPlatform = ['vue', 'angular'].includes(selection);
+    const needsPlatform = selection === 'angular';
     const preparation = selection === 'core' ? buildPlan('dom') : needsPlatform ? [...buildPlan('dom'), ...buildPlan(selection)] : buildPlan(selection);
     return [...preparation, ...typePlan(selection)];
   }

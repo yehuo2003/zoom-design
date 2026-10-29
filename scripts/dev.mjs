@@ -68,7 +68,7 @@ try {
   await build();
   if (!stopping) {
     server = startServer();
-    const names = app === 'platform' ? ['core', 'dom'] : [app];
+    const names = app === 'platform' ? ['core', 'dom'] : app === 'vue' ? ['core', 'dom', 'vue'] : [app];
     const directories = [...names.map(name => join(root, 'packages', name, 'src')), join(root, 'design/styles')].filter(existsSync);
     for (const directory of directories) watchers.push(watch(directory, { recursive: true }, () => { clearTimeout(timer); timer = setTimeout(() => { void rebuild(); }, 100); }));
     console.log(`Preview: http://127.0.0.1:${ports[app]} — Ctrl+C closes this run's managed processes`);

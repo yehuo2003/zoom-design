@@ -1,0 +1,13 @@
+import { nextTick } from 'vue';
+import { app } from './ssr';
+import { mountForm } from './form';
+import { mountLayers } from './layers';
+import './style.css';
+const host = document.querySelector<HTMLElement>('#ssr')!;
+const instance = app(location.href, host.dataset.ssr === 'true');
+instance.mount(host);
+await nextTick(); await nextTick();
+host.dataset.hydrated = 'true';
+const form = mountForm(document.querySelector('#form-fixture')!);
+const layers = mountLayers(document.querySelector('#layers')!);
+Object.assign(window, { task8: { form, layers, unmount: () => instance.unmount() } });

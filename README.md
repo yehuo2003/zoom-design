@@ -16,9 +16,17 @@ Zoom Design 是面向 Web（以 PC 为主）的多框架组件库项目。规划
 
 ## 当前状态
 
-Task1–6已获用户确认完成。Task5的五包tarball与四个仓库外消费者、Task6的共享主题已建立独立证据。Task7正在交付Vue `ZButton`，根与/button均为命名导出；其余四包保留原工程范围。根项目和工作区均为private、版本0.0.0。最新产品范围与验证见 [Button](docs/components/button.md) 和 [Task7验收](docs/engineering/task7-acceptance.md)；Linux实机未执行。
+Task1–10已获用户确认完成（Task7/8/9/10于2026-10-29确认）。Vue `ZButton`通过40/40自动验收，Task11 新增 `ZSelect`，根与组件子路径均为命名导出，自动验收16/16通过、待用户验收；React/Angular已有共享主题资产，公开功能入口仍为空。Core 在 Task9 增加六个纯选择函数与十二个类型；DOM 在 Task10 增加十二个浏览器函数与十二个类型。Task7 的完整CI与普通Node/npm干净副本历史结果为95项单测、workspace和packed各132项三浏览器；新候选另按当前 Task 验收记录。根工作区保持private；五个子包已配置公开发布、MIT许可与作者linzhuming，版本仍为0.0.0，尚未发布。产品用法见[Button](docs/components/button.md)、[Select](docs/components/select.md)；Linux实机未执行。
 
-Task6 已于2026-10-28获用户确认完成：接入同源的三框架 `theme.css` 和可选 `theme.scss`，`style.css` 包含主题；自动检查26/26，见 [Task6 验收](docs/engineering/task6-acceptance.md)。Vue `/theme` 与主题 SSR 使用私有原生样本，Task7 Button 正在开发，结果单独记录。公共参数与定制方法见 [主题说明](docs/theming.md)。
+Task6已于2026-10-28获用户确认完成：同源三框架theme.css和可选theme.scss，26/26自动检查通过，见[Task6验收](docs/engineering/task6-acceptance.md)。Vue的聚合style.css现包含主题和Button；/theme保留原生主题样本，/button及产品SSR使用公开ZButton。公共参数见[主题说明](docs/theming.md)。
+
+Task8 已于 2026-10-29 获用户确认验收通过：已整理 [Selection 契约](docs/contracts/selection.md)、[三框架映射](docs/contracts/framework-adapters.md)、[Dialog 契约](docs/contracts/dialog.md) 与 [基础方案 ADR](docs/engineering/adr-0001-selection-foundations.md)，修正公开包/private/LICENSE 门禁。当前工具版本见 [10-29 快照](docs/engineering/versions-2026-10-29.json)，本轮结果见 [Task8 验收](docs/engineering/task8-acceptance.md)。Select/Combobox/Dialog 产品仍分别属于 Task11/12/13，Core/DOM 的新 API 属于 Task9/10。
+
+Task9 已于 2026-10-29 用户验收通过：[Core 用法与 API](packages/core/README.md)、`dev:platform` 的 `/selection` 公开函数示例、[Task9 验收](docs/engineering/task9-acceptance.md)。该阶段提供选择规则，Vue Select/Combobox 产品仍待后续实现。
+
+Task10 已于 2026-10-29 用户验收通过：[DOM 用法与 API](packages/dom/README.md)、`dev:platform` 的 `/layers` 公开基础示例、[Task10 验收](docs/engineering/task10-acceptance.md)。
+
+Task11：[Select 文档](docs/components/select.md)、`dev:vue` 的 `/select` 与 `/ssr?example=select&open=true`、[Task11 验收](docs/engineering/task11-acceptance.md)。Select 采用受控值、可选受控 open、原生表单桥接和按需 CSS；Task11 自动验收16/16通过：完整check204项、文档测试1项，workspace/packed三浏览器各141项；保持进行中，等待用户验收。
 
 ## 本地检查
 
@@ -27,6 +35,7 @@ Task6 已于2026-10-28获用户确认完成：接入同源的三框架 `theme.cs
 ```text
 npm ci
 npm run check:versions
+npm run test:contracts
 npm exec -- playwright install chromium firefox webkit
 npm run ci:verify
 npm run dev:vue
@@ -41,3 +50,5 @@ Task4最终完整check为53/53，三浏览器15项目51/51；无Volta干净CI也
 `npm run check:pack`与`npm run test:e2e:packed`已包含在完整ci:verify中。[隔离消费说明](./docs/engineering/packed-consumers.md)记录独立安装、类型、运行时解析、CSS及SSR；[体积说明](./docs/engineering/size-baseline.md)区分历史工程快照与本轮最小Button产品场景。
 
 [Linux验证与WSL2安装方案](./docs/engineering/linux-validation-setup.md)已整理，待以后需要时执行；Linux验证尚未运行，Angular SSR尚未实施。
+
+

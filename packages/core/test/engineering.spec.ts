@@ -20,6 +20,6 @@ describe('Core private engineering fixture (no product API)', () => {
   it('T2.2/T2.10 imports the real public package with no browser globals or fixture exports', async () => {
     expect(typeof globalThis).toBe('object');
     expect('document' in globalThis).toBe(false);
-    expect(Object.keys(await import('@zoom-design/core'))).toEqual([]);
+    expect(Object.keys(await import('@zoom-design/core')).sort()).toEqual(['filterOptions', 'findTypeaheadMatch', 'getSelectedOption', 'moveHighlight', 'normalizeOptions', 'reconcileHighlight']);
   });
 });

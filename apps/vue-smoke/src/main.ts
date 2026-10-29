@@ -6,14 +6,18 @@ const status = document.querySelector('[role="status"]')!;
 try {
   const scenario = selectExample(window.location.href);
   if (scenario.example === 'button') await import('@zoom-design/vue/button');
+  else if (scenario.example === 'select') await import('@zoom-design/vue/select');
   else await import('@zoom-design/vue');
   const { default: Host } = scenario.example === 'button'
     ? await import('./examples/ButtonExamples.vue')
+    : scenario.example === 'select'
+    ? await import('./examples/SelectExamples.vue')
     : scenario.example === 'theme'
     ? await import('./examples/ThemeExamples.vue')
     : await import('./ProbeHost.vue');
   const root = document.getElementById('app')!;
-  const app = root.dataset.ssr === 'true' ? createSSRApp(Host, { brand: scenario.brand }) : createApp(Host, { brand: scenario.brand });
+  const hostProps = { brand: scenario.brand, initialOpen: scenario.initialOpen };
+  const app = root.dataset.ssr === 'true' ? createSSRApp(Host, hostProps) : createApp(Host, hostProps);
   app.mount(root);
   root.dataset.hydrated = String(root.dataset.ssr === 'true');
   status.textContent = 'Vue package imports ready';

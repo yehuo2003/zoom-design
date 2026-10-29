@@ -1,5 +1,7 @@
 # 使用共享主题
 
+Task11 Vue Select 使用同一主题与密度，另提供冻结的 `--zoom-select-*` 局部变量；列表见 [Select 文档](components/select.md)。`@zoom-design/vue/select/style.css` 为自足的单组件 CSS，聚合 style.css 也已包含 Select。portal 由应用为浮层 host 同步品牌、字体、方向和密度。私有 `design/styles/components/_selection.scss` 只在组件构建时复用，不进入公开 theme.scss 闭包。
+
 Task6 为 Vue、React、Angular 提供相同的浅色参数与 regular/compact 密度。完整参数、类型及推导规则见 [参数表](../design/tokens/README.md)。Core/DOM 不包含主题 CSS。Task7 的 [Vue Button](components/button.md)已接入这些参数，`/theme`继续保留私有原生样本。
 
 普通 CSS 消费无需安装或配置 Sass：

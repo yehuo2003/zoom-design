@@ -25,7 +25,7 @@ export function compilePackageStyles(name, { rootDirectory = root } = {}) {
   const workspace = join(rootDirectory, 'packages', name);
   const output = join(workspace, name === 'angular' ? '.generated' : 'dist');
   const theme = join(output, name === 'angular' ? 'theme' : 'styles/theme');
-  const entries = name === 'vue' ? [...styleEntries, { source: '../button/style.scss', output: 'button/style.css' }] : styleEntries;
+  const entries = name === 'vue' ? [...styleEntries, { source: '../button/style.scss', output: 'button/style.css' }, { source: '../select/style.scss', output: 'select/style.css' }] : styleEntries;
   const invalidate = () => {
     for (const entry of entries) rmSync(join(output, entry.output), { force: true });
     rmSync(theme, { recursive: true, force: true });

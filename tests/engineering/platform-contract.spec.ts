@@ -3,6 +3,7 @@ import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { domFunctions } from './packed/dom-type-contract.mjs';
 
 const root = process.cwd();
 const read = (file: string) => JSON.parse(readFileSync(resolve(root, file), 'utf8'));
@@ -21,9 +22,13 @@ describe('Task2 public artifact contracts', () => {
       const result = spawnSync(process.execPath, ['--input-type=module', '-e', `
         import assert from 'node:assert/strict';
         assert.equal(typeof window, 'undefined'); assert.equal(typeof document, 'undefined');
-        const api=await import('@zoom-design/${name}'); assert.deepEqual(Object.keys(api), []);
+        const api=await import('@zoom-design/${name}');
+        assert.deepEqual(Object.keys(api), ${JSON.stringify(name === 'core' ? ['filterOptions', 'findTypeaheadMatch', 'getSelectedOption', 'moveHighlight', 'normalizeOptions', 'reconcileHighlight'] : domFunctions)});
+        ${name === 'core' ? `const options=api.normalizeOptions([{value:0,label:'Zero'},{value:'',label:'Empty'}]).options;
+        assert.equal(api.getSelectedOption(options,0).label,'Zero'); assert.equal(api.moveHighlight(options,0,'next'),'');` : ''}
         await assert.rejects(import('@zoom-design/${name}/src/index.ts'), {code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});
         await assert.rejects(import('@zoom-design/${name}/dist/index.js'), {code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});
+        await assert.rejects(import('@zoom-design/${name}/selection'), {code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});
       `], { cwd: root, encoding: 'utf8' });
       expect(result.stderr).toBe(''); expect(result.status).toBe(0);
     });
@@ -41,7 +46,7 @@ describe('Task2 public artifact contracts', () => {
       const m = read(`packages/${name}/package.json`);
       expect(Object.keys({ ...m.dependencies, ...m.devDependencies }).filter(n => /sass|react|vue|angular|css/i.test(n))).toEqual([]);
       const js = readFileSync(resolve(root, `packages/${name}/dist/index.js`), 'utf8');
-      expect(js).not.toMatch(/\.s?css|window|document/);
+      expect(js).not.toMatch(name === 'core' ? /\.s?css|window|document/ : /\.s?css/);
     }
   });
 });

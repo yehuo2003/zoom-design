@@ -1,0 +1,49 @@
+@use "sass:map";
+@use "../defaults" as defaults;
+
+// Private build-time component mixin; excluded from the public theme Sass closure.
+@mixin selection($component) {
+.zoom-#{$component} {
+  position: relative; display: inline-flex; align-items: center; vertical-align: middle;
+  min-inline-size: 0; max-inline-size: 100%; color: var(--zoom-#{$component}-fg, var(--zoom-color-text, #{defaults.$color-text}));
+  font-family: var(--zoom-#{$component}-font-family, var(--zoom-font-family, system-ui, sans-serif)); line-height: var(--zoom-#{$component}-line-height, var(--zoom-line-height, #{defaults.$line-height}));
+}
+.zoom-#{$component}__trigger, .zoom-#{$component}__clear, .zoom-#{$component}__popup { box-sizing: border-box; font: inherit; color: inherit; }
+.zoom-#{$component}__trigger {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: var(--zoom-#{$component}-gap, var(--zoom-control-gap, .5rem));
+  min-inline-size: 24px; max-inline-size: 100%; min-block-size: var(--zoom-control-min-size-md, 2.25rem);
+  padding-block: var(--zoom-#{$component}-padding-block, var(--zoom-control-padding-block, .375rem)); padding-inline: var(--zoom-#{$component}-padding-inline, var(--zoom-control-padding-inline-md, .875rem));
+  border: 1px solid var(--zoom-#{$component}-border-color, var(--zoom-color-border, #{defaults.$color-border}));
+  border-radius: var(--zoom-#{$component}-radius, var(--zoom-radius-md, #{defaults.$radius-md}));
+  background: var(--zoom-#{$component}-bg, var(--zoom-color-surface, #{defaults.$color-surface})); text-align: start; cursor: pointer;
+  transition: border-color var(--zoom-motion-duration, #{defaults.$motion-duration});
+}
+.zoom-#{$component}__value { min-inline-size: 0; overflow-wrap: anywhere; white-space: normal; }
+.zoom-#{$component}__arrow { flex: none; }
+.zoom-#{$component}__clear { flex: none; margin-inline-start: .25rem; border: 1px solid transparent; border-radius: var(--zoom-radius-md, .375rem); background: transparent; cursor: pointer; min-inline-size: 24px; min-block-size: 24px; }
+.zoom-#{$component}__trigger:focus-visible, .zoom-#{$component}__clear:focus-visible {
+  outline: var(--zoom-focus-width, 2px) solid var(--zoom-#{$component}-focus-color, var(--zoom-color-focus, var(--zoom-color-primary, #{defaults.$color-primary}))); outline-offset: var(--zoom-focus-offset, 2px);
+}
+.zoom-#{$component}__trigger[aria-invalid=true] { border-color: var(--zoom-color-danger, #{defaults.$color-danger}); }
+.zoom-#{$component}[data-zoom-disabled] { opacity: .55; }
+.zoom-#{$component}[data-zoom-disabled] .zoom-#{$component}__trigger { cursor: not-allowed; }
+.zoom-#{$component}__popup {
+  position: absolute; z-index: var(--zoom-#{$component}-z-index, 1000); left: 0; top: 100%;
+  min-inline-size: 24px; max-inline-size: calc(100vw - 1rem); max-block-size: var(--zoom-#{$component}-popup-max-block-size, 20rem); overflow: auto;
+  background: var(--zoom-#{$component}-popup-bg, var(--zoom-color-surface, #{defaults.$color-surface})); color: var(--zoom-#{$component}-fg, var(--zoom-color-text, #{defaults.$color-text}));
+  border: 1px solid var(--zoom-#{$component}-border-color, var(--zoom-color-border, #{defaults.$color-border})); border-radius: var(--zoom-#{$component}-radius, var(--zoom-radius-md, .375rem));
+  font-family: var(--zoom-#{$component}-font-family, var(--zoom-font-family, system-ui, sans-serif)); line-height: var(--zoom-#{$component}-line-height, var(--zoom-line-height, 1.5)); text-align: start;
+}
+.zoom-#{$component}__option, .zoom-#{$component}__message { padding-block: var(--zoom-#{$component}-padding-block, var(--zoom-control-padding-block, .375rem)); padding-inline: var(--zoom-#{$component}-padding-inline, var(--zoom-control-padding-inline-md, .875rem)); overflow-wrap: anywhere; white-space: normal; }
+.zoom-#{$component}__option { cursor: pointer; }
+.zoom-#{$component}__option[data-zoom-highlighted] { background: var(--zoom-#{$component}-option-bg-hover, color-mix(in srgb, var(--zoom-color-primary, #{defaults.$color-primary}) 8%, transparent)); }
+.zoom-#{$component}__option[aria-selected=true] { font-weight: 600; background: var(--zoom-#{$component}-option-bg-selected, color-mix(in srgb, var(--zoom-color-primary, #{defaults.$color-primary}) 16%, transparent)); color: var(--zoom-#{$component}-option-fg-selected, var(--zoom-color-text, #{defaults.$color-text})); }
+.zoom-#{$component}__option[aria-disabled=true], .zoom-#{$component}__message { color: var(--zoom-color-text-muted, #{defaults.$color-text-muted}); }
+.zoom-#{$component}__option[aria-disabled=true] { cursor: not-allowed; }
+@each $size, $scale in (sm: .75, md: .875, lg: 1) {
+  .zoom-#{$component}[data-zoom-size="#{$size}"], .zoom-#{$component}__popup[data-zoom-size="#{$size}"] { font-size: var(--zoom-#{$component}-font-size, var(--zoom-font-size-#{$size}, calc(var(--zoom-font-size-base, 1rem) * #{$scale}))); }
+  .zoom-#{$component}[data-zoom-size="#{$size}"] .zoom-#{$component}__trigger { min-block-size: max(24px, var(--zoom-#{$component}-min-block-size, var(--zoom-control-min-size-#{$size}, #{map.get(defaults.$control-densities, regular, "min-size-#{$size}")}))); padding-inline: var(--zoom-#{$component}-padding-inline, var(--zoom-control-padding-inline-#{$size}, #{map.get(defaults.$control-densities, regular, "padding-inline-#{$size}")})); }
+}
+.zoom-#{$component}__proxy { position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (prefers-reduced-motion: reduce) { .zoom-#{$component}__trigger { transition: none; } }
+}

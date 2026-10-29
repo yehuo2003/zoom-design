@@ -12,13 +12,16 @@ export function createConsumer(repository, directory, app, packages) {
   mkdirSync(join(directory, 'scripts'), { recursive: true }); mkdirSync(join(directory, 'src/fixtures'), { recursive: true }); mkdirSync(join(directory, 'contracts/platform'), { recursive: true });
   const original = JSON.parse(readFileSync(join(repository, `apps/${app}-smoke/package.json`), 'utf8'));
   const dependencies = Object.fromEntries(Object.entries(original.dependencies).filter(([name]) => !name.startsWith('@zoom-design/')));
+  // All four isolated consumers compile Select's real declarations. Pin its peer
+  // explicitly so a future registry release cannot silently change the fixture.
+  if (app !== 'vue') dependencies.vue = JSON.parse(readFileSync(join(repository, 'apps/vue-smoke/package.json'), 'utf8')).dependencies.vue;
   const tools = { ...original.devDependencies }; const runtimes = { ...dependencies };
   for (const entry of packages) dependencies[entry.name] = `file:vendor/${entry.filename}`;
   json(join(directory, 'package.json'), { name: `zoom-${app}-packed-consumer`, version: '0.0.0', private: true, type: 'module', engines: { node: '>=26.12.1 <27', npm: '>=12.2.1 <13' }, dependencies, devDependencies: tools, scripts: { typecheck: 'node scripts/native-check.mjs typecheck', build: 'node scripts/native-check.mjs build', validate: 'node scripts/verify-consumer.mjs' } });
   json(join(directory, '.pack-spec.json'), { app, tools, runtimes, packages });
   writeFileSync(join(directory, '.npmrc'), 'save-exact=true\nengine-strict=true\n');
   for (const script of ['run-local-bin.mjs', 'run-vue-tsc.mjs', 'pack-contracts.mjs', 'theme-contract.mjs']) cpSync(join(repository, 'scripts', script), join(directory, 'scripts', script));
-  for (const script of ['verify-consumer.mjs', 'native-check.mjs', 'vite-graph.mjs', ...(app === 'vue' ? ['button-size.mjs', 'button-size-contract.mjs'] : [])]) cpSync(join(repository, 'tests/engineering/packed', script), join(directory, 'scripts', script));
+  for (const script of ['verify-consumer.mjs', 'native-check.mjs', 'vite-graph.mjs', 'selection-type-contract.mjs', 'dom-type-contract.mjs', 'select-type-contract.mjs', 'select-ssr-contract.mjs', ...(app === 'vue' ? ['button-size.mjs', 'button-size-contract.mjs', 'select-size.mjs', 'select-size-contract.mjs'] : [])]) cpSync(join(repository, 'tests/engineering/packed', script), join(directory, 'scripts', script));
   cpSync(join(repository, `apps/${app}-smoke/src`), join(directory, 'src'), { recursive: true });
   if (app !== 'angular') cpSync(join(repository, `apps/${app}-smoke/index.html`), join(directory, 'index.html'));
   const probes = app === 'platform' ? [['core', 'state.ts'], ['dom', 'listener.ts']] : [[app, app === 'vue' ? 'BuildProbe.vue' : app === 'react' ? 'BuildProbe.tsx' : 'build-probe.ts']];
@@ -34,11 +37,25 @@ export function createConsumer(repository, directory, app, packages) {
   json(join(directory, 'tsconfig.json'), consumerTypeConfig(app));
   json(join(directory, 'tsconfig.contracts.json'), { extends: './tsconfig.json', compilerOptions: { noEmit: true }, include: [], files: ['contracts/valid.ts'] });
   json(join(directory, 'tsconfig.contracts-negative.json'), { extends: './tsconfig.json', compilerOptions: { noEmit: true }, include: [], files: ['contracts/invalid.ts'] });
+  cpSync(join(repository, 'packages/core/test/selection-types'), join(directory, 'contracts/selection'), { recursive: true });
+  cpSync(join(repository, 'packages/dom/test/dom-types'), join(directory, 'contracts/dom'), { recursive: true });
+  cpSync(join(repository, 'packages/vue/test/select-types'), join(directory, 'contracts/select'), { recursive: true });
+  for (const [suffix, file] of [['', 'consumer.ts'], ['-negative', 'invalid.ts']]) {
+    json(join(directory, `tsconfig.select-ts${suffix}.json`), { extends: './tsconfig.json', compilerOptions: { module: 'ESNext', moduleResolution: 'Bundler', lib: ['ES2022', 'DOM', 'DOM.Iterable'], types: [], noEmit: true }, include: [], files: [`contracts/select/${file}`] });
+  }
+  for (const [suffix, file] of [['', 'valid.ts'], ['-negative', 'invalid.ts']]) {
+    json(join(directory, `tsconfig.dom${suffix}.json`), { extends: './tsconfig.json', compilerOptions: { module: 'NodeNext', moduleResolution: 'NodeNext', lib: ['ES2022', 'DOM', 'DOM.Iterable'], types: [], noEmit: true }, include: [], files: [`contracts/dom/${file}`] });
+  }
+  for (const [suffix, file] of [['', 'valid.ts'], ['-negative', 'invalid.ts']]) {
+    json(join(directory, `tsconfig.selection${suffix}.json`), { extends: './tsconfig.json', compilerOptions: { module: 'NodeNext', moduleResolution: 'NodeNext', lib: ['ES2022'], types: [], noEmit: true }, include: [], files: [`contracts/selection/${file}`] });
+  }
   if (app === 'vue') {
     cpSync(join(repository, 'packages/vue/test/button-types'), join(directory, 'contracts/button'), { recursive: true });
     json(join(directory, 'tsconfig.button.json'), { extends: './tsconfig.json', include: ['contracts/button/consumer.ts', 'contracts/button/Valid.vue'] });
     json(join(directory, 'tsconfig.button-ts.json'), { extends: './tsconfig.json', include: ['contracts/button/consumer.ts'] });
     json(join(directory, 'tsconfig.button-negative.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/button/invalid.ts', 'contracts/button/Invalid.vue'] });
+    json(join(directory, 'tsconfig.select.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/select/consumer.ts', 'contracts/select/Valid.vue'] });
+    json(join(directory, 'tsconfig.select-negative.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/select/invalid.ts', 'contracts/select/Invalid.vue'] });
   }
   mkdirSync(join(directory, 'negative'), { recursive: true });
   let nativeNegative;

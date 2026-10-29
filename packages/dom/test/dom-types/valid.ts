@@ -1,0 +1,15 @@
+import { mountFloating, createLayerContext, registerLayer, isWithin, focusElement, restoreFocus, createModalContext, acquireModal, trapFocus, getFormOwner, isFieldsetDisabled, observeFormBridge } from '@zoom-design/dom';
+import type { Cleanup, Placement, FloatingOptions, FloatingHandle, LayerContext, LayerOptions, LayerHandle, ModalContext, ModalOptions, FocusTrapOptions, FormBridgeOptions, FormBridgeHandle } from '@zoom-design/dom';
+declare const trigger: HTMLButtonElement, popup: HTMLElement, proxy: HTMLSelectElement, submission: HTMLInputElement;
+const placement: Placement = 'bottom-start'; const floatingOptions: FloatingOptions = { placement, offset: 4 };
+const floating: FloatingHandle = mountFloating(trigger, popup, floatingOptions);
+const layerContext: LayerContext = createLayerContext(document);
+const layerOptions: LayerOptions = { nodes: [trigger, popup], onDismiss(reason, event) { const r: 'escape' | 'outside' = reason; const e: KeyboardEvent | PointerEvent = event; void [r, e]; } };
+const layer: LayerHandle = registerLayer(layerContext, layerOptions);
+const modalContext: ModalContext = createModalContext(document); const modalOptions: ModalOptions = { scope: popup, allowedNodes: [trigger] };
+const release: Cleanup = acquireModal(modalContext, modalOptions); const trapOptions: FocusTrapOptions = { initialFocus: trigger }; const stop: Cleanup = trapFocus(modalContext, popup, trapOptions);
+const bridgeOptions: FormBridgeOptions = { proxy, submission, trigger, onReset(event: Event) { void event; }, onInvalid(event: Event) { void event; }, onOwnerChange(form: HTMLFormElement | null) { void form; } };
+const bridge: FormBridgeHandle = observeFormBridge(bridgeOptions);
+const owner: HTMLFormElement | null = getFormOwner(proxy); const disabled: boolean = isFieldsetDisabled(proxy); const inside: boolean = isWithin([trigger, popup], trigger);
+const focused: boolean = focusElement(trigger, { preventScroll: true }); const returned: boolean = restoreFocus(trigger, popup); const update: Promise<void> = floating.update();
+void [owner, disabled, inside, focused, returned, update]; bridge.refresh(); bridge.cleanup(); stop(); release(); layer.cleanup(); floating.cleanup();

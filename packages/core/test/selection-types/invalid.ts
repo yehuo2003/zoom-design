@@ -1,0 +1,13 @@
+import { getSelectedOption, moveHighlight } from '@zoom-design/core';
+import type { SelectionValue, SelectionOption, SelectionChangeDetails, QueryChangeReason, OpenChangeReason } from '@zoom-design/core';
+const invalidValue: SelectionValue = false;
+const invalidLabel: SelectionOption = { value: 0, label: 42 };
+const invalidObject: SelectionOption = { value: {}, label: 'Object' };
+const option: SelectionOption<number> = { value: 0, label: 'Zero' };
+option.value = 1;
+getSelectedOption<number>([option], '0');
+moveHighlight([option], 0, 'up');
+const invalidReason: SelectionChangeDetails = { value: 0, previousValue: null, option, reason: 'input' };
+const invalidQuery: QueryChangeReason = 'keyboard';
+const invalidOpen: OpenChangeReason = 'external-sync';
+void [invalidValue, invalidLabel, invalidObject, invalidReason, invalidQuery, invalidOpen];

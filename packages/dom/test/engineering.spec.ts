@@ -17,6 +17,6 @@ describe('DOM private engineering fixture (no product API)', () => {
     dispose(); expect(button.getAttribute('style')).toBe(before);
   });
   it('T2.10 imports the public package without exposing the engineering fixture', async () => {
-    expect(Object.keys(await import('@zoom-design/dom'))).toEqual([]);
+    expect(Object.keys(await import('@zoom-design/dom')).sort()).toEqual(['acquireModal', 'createLayerContext', 'createModalContext', 'focusElement', 'getFormOwner', 'isFieldsetDisabled', 'isWithin', 'mountFloating', 'observeFormBridge', 'registerLayer', 'restoreFocus', 'trapFocus']);
   });
 });

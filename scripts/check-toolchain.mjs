@@ -10,6 +10,25 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const exact = value => typeof value === 'string' && semver.valid(value) === value && !semver.prerelease(value);
 const safeSatisfies = (version, range) => Boolean(semver.valid(version) && semver.validRange(range) && semver.satisfies(version, range));
 
+export function validatePublicationContract(workspace, manifest, license, rootLicense) {
+  const errors = [];
+  const packageName = /^packages\/(core|dom|vue|react|angular)$/.exec(workspace)?.[1];
+  if (packageName) {
+    if (manifest.private !== false) errors.push(`${workspace}: published package must set private:false`);
+    if (manifest.name !== `@zoom-design/${packageName}`) errors.push(`${workspace}: invalid public name`);
+    if (manifest.author !== 'linzhuming') errors.push(`${workspace}: invalid author`);
+    if (manifest.license !== 'MIT') errors.push(`${workspace}: license must be MIT`);
+    if (manifest.publishConfig?.access !== 'public') errors.push(`${workspace}: publish access must be public`);
+  } else if (manifest.private !== true) errors.push(`${workspace}: root/apps must remain private`);
+  if (!exact(manifest.version)) errors.push(`${workspace}: version must be exact stable`);
+  const normalize = value => String(value ?? '').replaceAll('\r\n', '\n').trim();
+  if (normalize(license) !== normalize(rootLicense) || !normalize(rootLicense).includes('Copyright (c) 2026 linzhuming')
+    || !normalize(rootLicense).includes('Permission is hereby granted, free of charge')
+    || !normalize(rootLicense).includes('THE SOFTWARE IS PROVIDED "AS IS"')
+    || !normalize(rootLicense).includes('IN AN ACTION OF CONTRACT, TORT OR OTHERWISE')) errors.push(`${workspace}: missing or invalid MIT LICENSE`);
+  return errors;
+}
+
 export function probeNpm(env = process.env, nodePath = process.execPath, platform = process.platform) {
   const invoke = (executable, args, path) => {
     const result = spawnSync(executable, args, { env, encoding: 'utf8', shell: false });
@@ -47,6 +66,7 @@ export function validateWorkspaceContract(workspace, manifest, locked) {
     if (manifest.peerDependencies?.[name] !== range || manifest.peerDependenciesMeta?.[name]?.optional) errors.push(`${workspace}: public peer ${name} must require ${range}`);
   }
   if (workspace === 'packages/dom' && manifest.dependencies?.['@zoom-design/core'] !== '0.0.0') errors.push(`${workspace}: runtime dependency @zoom-design/core must be 0.0.0`);
+  if (workspace === 'packages/vue') for (const name of ['@zoom-design/core', '@zoom-design/dom']) if (manifest.dependencies?.[name] !== '0.0.0') errors.push(`${workspace}: runtime dependency ${name} must be 0.0.0`);
   for (const field of ['dependencies', 'devDependencies', 'peerDependencies', 'peerDependenciesMeta']) {
     const sorted = value => Object.entries(value ?? {}).sort(([a], [b]) => a.localeCompare(b));
     if (JSON.stringify(sorted(manifest[field])) !== JSON.stringify(sorted(locked?.[field]))) errors.push(`${workspace}: lock ${field} mismatch`);
@@ -93,7 +113,7 @@ export function validateSnapshot(snapshot) {
 }
 
 export function inspectToolchain(directory = root) {
-  const snapshot = readJson(join(directory, 'docs/engineering/versions-2026-10-27.json'));
+  const snapshot = readJson(join(directory, 'docs/engineering/versions-2026-10-29.json'));
   const errors = validateSnapshot(snapshot); const resolved = []; const compilers = []; const angular = [];
   const manifest = readJson(join(directory, 'package.json'));
   const lock = readJson(join(directory, 'package-lock.json'));
@@ -109,9 +129,12 @@ export function inspectToolchain(directory = root) {
   const workspaces = ['.', ...['core', 'dom', 'vue', 'react', 'angular'].map(n => `packages/${n}`), ...['platform', 'vue', 'react', 'angular'].map(n => `apps/${n}-smoke`)];
   for (const workspace of workspaces) {
     const data = readJson(join(directory, workspace, 'package.json'));
-    if (!data.private || data.version !== '0.0.0') errors.push(`${workspace}: must remain private 0.0.0`);
+    const licensePath = join(directory, workspace, 'LICENSE');
+    errors.push(...validatePublicationContract(workspace, data,
+      existsSync(licensePath) ? readFileSync(licensePath, 'utf8') : workspace.startsWith('apps/') ? readFileSync(join(directory, 'LICENSE'), 'utf8') : '',
+      readFileSync(join(directory, 'LICENSE'), 'utf8')));
     if (workspace !== '.' && data.volta?.extends !== '../../package.json') errors.push(`${workspace}: invalid Volta inheritance`);
-    for (const [name, version] of Object.entries(data.devDependencies ?? {})) {
+    for (const [name, version] of Object.entries({ ...data.devDependencies, ...Object.fromEntries(Object.entries(data.dependencies ?? {}).filter(([name]) => !name.startsWith('@zoom-design/'))) })) {
       if (!exact(version)) errors.push(`${workspace}: ${name} devDependency must be exact stable`);
       if (!snapshot.packages.some(r => r.workspace === workspace && r.package === name && r.selectedVersion === version)) errors.push(`${workspace}: ${name} missing from snapshot`);
     }

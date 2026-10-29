@@ -97,6 +97,8 @@ export function inspectPackageFiles(files, name) {
   }
   if (name === '@zoom-design/vue') {
     if (JSON.stringify(manifest.exports['./button']) !== JSON.stringify({ types: './dist/types/button/index.d.ts', import: './dist/button/index.js' }) || manifest.exports['./button/style.css'] !== './dist/button/style.css') throw Error('Vue: exact Button JS/types/CSS exports required');
+    if (JSON.stringify(manifest.exports['./select']) !== JSON.stringify({ types: './dist/types/select/index.d.ts', import: './dist/select/index.js' }) || manifest.exports['./select/style.css'] !== './dist/select/style.css') throw Error('Vue: exact Select JS/types/CSS exports required');
+    for (const dependency of ['@zoom-design/core', '@zoom-design/dom']) if (manifest.dependencies?.[dependency] !== '0.0.0') throw Error(`Vue: exact runtime dependency ${dependency}@0.0.0 required`);
   }
   const runtimeDependencies = { ...manifest.dependencies, ...manifest.peerDependencies };
   for (const [path, content] of files) {

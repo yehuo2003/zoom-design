@@ -1,6 +1,10 @@
 # 工程基线（Task1–4）
 
-版本元数据和核对时间见 [版本快照](./versions-2026-10-27.json)。Node 的来源为[官方发布索引](https://nodejs.org/dist/index.json)，直接工具依赖取自[官方 npm registry](https://registry.npmjs.org/)。快照记录的是 2026-10-27 的稳定版本，不代表未来实时最新版。
+Task10 补充：DOM 已实现十二个公共函数与十二个类型，浏览器副作用只在显式调用后启动；Core 的无 DOM 边界保持不变。`/layers` 用真实公共入口验证定位、层级、焦点、模态与表单，workspace/packed 三浏览器及 TS6/TS7 正反例结果见 [Task10 验收](task10-acceptance.md)。DOM 生产逻辑覆盖率不再为 N/A，按每个可执行文件检查四项 ≥80%；历史空入口/夹具结果只对应当时阶段。
+
+Task9 补充：Core 已增加六个公开纯选择函数与十二个类型，Node 安全、仅 ES2022 环境及 TS6/TS7 真实声明正反例重新验证；历史章节中的“空公共入口”只对应当时阶段。当前生产覆盖、/selection 浏览器与 tarball 消费结果见 [Task9 验收](task9-acceptance.md)。
+
+当前门禁使用 [2026-10-29 版本快照](./versions-2026-10-29.json)，保留 [10-27 快照](./versions-2026-10-27.json)作为历史。Node 的来源为[官方发布索引](https://nodejs.org/dist/index.json)，直接工具依赖取自[官方 npm registry](https://registry.npmjs.org/)。Task8 重新核对 76 条直接依赖元数据并同步兼容更新；Node/npm 继续沿用已验证基线，不代表未来实时最新版。选型与精确更新范围见 [ADR-0001](adr-0001-selection-foundations.md)。
 
 ## 安装与工具检查
 
@@ -34,7 +38,7 @@ node scripts/run-local-bin.mjs --workspace packages/angular --package @angular/c
 
 ## TypeScript 升级影响示例
 
-当前真实运行依赖只有 `@zoom-design/dom → @zoom-design/core`；三个框架目前没有 Core/DOM 运行依赖，不能仅按目录存在推定影响。
+当前内部跨包运行依赖是 `@zoom-design/dom → @zoom-design/core`，DOM 另有 Task8 精确选定的 `@floating-ui/dom@1.8.0`；三个框架目前没有 Core/DOM 运行依赖，不能仅按目录存在推定影响。
 
 如果升级 Core 编译器或公共声明：先构建 Core，再复验 DOM 的公开入口和声明；声明存在后，以 TS6 与 TS7 消费 Core/DOM 声明，并设置 `skipLibCheck=false`；将来添加框架依赖后再沿真实 import/公共类型关系扩大回归。Task5 还需在仓库之外安装 tarball，避免工作区解析掩盖问题。
 

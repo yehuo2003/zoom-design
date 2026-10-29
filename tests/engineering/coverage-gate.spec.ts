@@ -34,3 +34,12 @@ it('T7.39 classifies erased types and barrels by emitted AST while missing execu
   writeFileSync(join(directory, 'index.ts'), 'import "./side-effect"; export { ZButton } from "./button";');
   expect(() => classifyCoverage('vue', coverage, root)).toThrow(/production source has no coverage.*index\.ts/);
 });
+it('T10.16 DOM per-file thresholds reject a weak production file even with a passing aggregate', async () => {
+  const { classifyCoverage } = await import('../../scripts/coverage-report.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'zoom-coverage-')); roots.push(root);
+  const directory = join(root, 'packages/dom/src'); mkdirSync(directory, { recursive: true });
+  const entry = (hits: number[]) => ({ s: Object.fromEntries(hits.map((value, index) => [index, value])), f: { 0: 1 }, b: { 0: [1] }, statementMap: Object.fromEntries(hits.map((_v, i) => [i, { start: { line: i + 1 } }])) });
+  writeFileSync(join(directory, 'good.ts'), 'export function good() { return true; }'); writeFileSync(join(directory, 'weak.ts'), 'export function weak() { return false; }');
+  const coverage = { [join(directory, 'good.ts')]: entry(Array(20).fill(1)), [join(directory, 'weak.ts')]: entry([1, 0]), [join(root, 'packages/dom/test/fixtures/listener.ts')]: entry([1]) };
+  expect(() => classifyCoverage('dom', coverage, root)).toThrow(/production file.*weak.ts.*50%/);
+});

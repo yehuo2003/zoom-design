@@ -3,6 +3,9 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { runBin, readJson } from './run-local-bin.mjs';
+import { verifySelectionDiagnostics } from './selection-type-contract.mjs';
+import { verifyDOMDiagnostics } from './dom-type-contract.mjs';
+import { verifySelectDiagnostics } from './select-type-contract.mjs';
 
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { app } = readJson(resolve(directory, '.pack-spec.json'));
@@ -22,18 +25,30 @@ function run(label, tool, bin, args, negative) {
     const expected = [...[5,6,7,8,9,10,11,12].map(line => `invalid.ts:${line}:TS2322`), 'invalid.ts:14:TS2345', ...[6,7,8,9].map(line => `Invalid.vue:${line}:TS2322`)].sort();
     if (JSON.stringify(actual) !== JSON.stringify(expected)) throw Error(`Button exact diagnostic mismatch: ${JSON.stringify(actual)}`);
   }
+  if (label === 'Core selection negative control') verifySelectionDiagnostics(output);
+  if (label === 'DOM negative control') verifyDOMDiagnostics(output);
+  if (label === 'Select plain declaration negative control') verifySelectDiagnostics(output);
+  if (label === 'Select template negative control') verifySelectDiagnostics(output, true);
   console.log(`${app} ${label}: PASS${negative ? ' (expected diagnostics)' : ''}`);
 }
 try {
   if (action === 'typecheck') {
     run('public + TS7 emitted declaration contracts', 'typescript', 'tsc', ['-p', 'tsconfig.contracts.json']);
     run('declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.contracts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2345/]);
+    run('Core selection real declarations without DOM', 'typescript', 'tsc', ['-p', 'tsconfig.selection.json']);
+    run('Core selection negative control', 'typescript', 'tsc', ['-p', 'tsconfig.selection-negative.json'], [/invalid\.ts/, /TS2540/, /TS2345/]);
+    run('DOM real public declarations', 'typescript', 'tsc', ['-p', 'tsconfig.dom.json']);
+    run('DOM negative control', 'typescript', 'tsc', ['-p', 'tsconfig.dom-negative.json'], [/invalid\.ts/, /TS2322/, /TS2345/]);
+    run('Select real root/subpath declarations', 'typescript', 'tsc', ['-p', 'tsconfig.select-ts.json']);
+    run('Select plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.select-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2769/]);
     const native = app === 'vue' ? ['vue-tsc', 'vue-tsc'] : app === 'angular' ? ['@angular/compiler-cli', 'ngc'] : ['typescript', 'tsc'];
     run('native source and public declarations', ...native, ['-p', app === 'angular' ? 'tsconfig.app.json' : 'tsconfig.json', '--noEmit']);
     if (app === 'vue') {
       run('Button plain TS6 declarations', 'typescript', 'tsc', ['-p', 'tsconfig.button-ts.json']);
       run('Button vue-tsc declarations and template', ...native, ['-p', 'tsconfig.button.json']);
       run('Button exact product negative control', ...native, ['-p', 'tsconfig.button-negative.json'], [/invalid\.ts\(14,\d+\): error TS2345/, /Invalid\.vue\(9,\d+\): error TS2322/]);
+      run('Select vue-tsc declarations and slots', ...native, ['-p', 'tsconfig.select.json']);
+      run('Select template negative control', ...native, ['-p', 'tsconfig.select-negative.json'], [/invalid\.ts\(14,\d+\): error TS2769/, /Invalid\.vue\(9,\d+\): error TS2322/]);
     }
     if (app !== 'platform') run('native template/JSX negative control', ...native, ['-p', 'tsconfig.negative.json', '--noEmit'], app === 'angular' ? [/Type 'number' is not assignable to type 'string'/, /Argument of type 'number' is not assignable to parameter of type 'string'/] : [/Type 'number' is not assignable to type 'string'/, /string.*number|number.*string/s]);
   } else if (action === 'build') {

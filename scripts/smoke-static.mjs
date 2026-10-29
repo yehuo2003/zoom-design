@@ -23,13 +23,20 @@ export async function staticSmoke({ workspace, output, app, mode, port, readines
         if (!existsSync(file) || !statSync(file).isFile()) { response.writeHead(404); return response.end(); }
         response.setHeader('Content-Type', mime[extname(file)] ?? 'application/octet-stream'); return response.end(readFileSync(file));
       }
+      const selectMinimal = /^\/minimal-select\/(select|named|unused)(?:\/(.*))?$/.exec(pathname);
+      if (app === 'vue' && mode === 'packed' && selectMinimal) {
+        const base = join(workspace, 'size-select', selectMinimal[1]); const file = resolve(base, selectMinimal[2] || 'index.html');
+        if (!inside(base, file)) { response.writeHead(403); return response.end(); }
+        if (!existsSync(file) || !statSync(file).isFile()) { response.writeHead(404); return response.end(); }
+        response.setHeader('Content-Type', mime[extname(file)] ?? 'application/octet-stream'); return response.end(readFileSync(file));
+      }
       if (pathname === '/ssr') {
         if (mode !== 'packed' || !['vue', 'react'].includes(app)) { response.writeHead(404); return response.end('Angular SSR not implemented'); }
         const { render } = await import(pathToFileURL(join(workspace, 'server/ssr.js')).href);
         const html = readFileSync(join(output, 'index.html'), 'utf8');
         if (!html.includes('<div id="app"></div>')) throw Error('Missing production SSR placeholder');
         const markup = await render(request.url);
-        const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");</script>';
+        const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");window.__zoomSSRSelect=document.getElementById("ssr-select");window.__zoomSSRSelectPopup=document.getElementById("ssr-select-listbox");</script>';
         response.setHeader('Content-Type', 'text/html');
         return response.end(html.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${capture}`));
       }

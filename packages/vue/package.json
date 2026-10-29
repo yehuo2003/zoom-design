@@ -2,7 +2,12 @@
   "name": "@zoom-design/vue",
   "version": "0.0.0",
   "description": "Vue components for Zoom Design",
-  "private": true,
+  "private": false,
+  "author": "linzhuming",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "types": "./dist/types/index.d.ts",
   "exports": {
@@ -15,6 +20,11 @@
       "import": "./dist/button/index.js"
     },
     "./button/style.css": "./dist/button/style.css",
+    "./select": {
+      "types": "./dist/types/select/index.d.ts",
+      "import": "./dist/select/index.js"
+    },
+    "./select/style.css": "./dist/select/style.css",
     "./style.css": "./dist/style.css",
     "./theme.css": "./dist/theme.css",
     "./theme.scss": {
@@ -52,5 +62,9 @@
   },
   "peerDependencies": {
     "vue": "~3.5.44"
+  },
+  "dependencies": {
+    "@zoom-design/core": "0.0.0",
+    "@zoom-design/dom": "0.0.0"
   }
 }

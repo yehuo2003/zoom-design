@@ -1,0 +1,15 @@
+import { ZSelect } from '@zoom-design/vue';
+import type { SelectProps, SelectTriggerAttributes } from '@zoom-design/vue/select';
+type Props = InstanceType<typeof ZSelect>['$props'];
+const value: Props = { modelValue: true };
+const size: SelectProps = { size: 'huge' };
+const options: Props = { options: [{ value: false, label: 'Wrong' }] };
+const label: Props = { options: [{ value: 0, label: 42 }] };
+const disabled: Props = { disabled: 'false' };
+const form: Props = { form: 42 };
+const placement: Props = { placement: 'middle' };
+const controlled: SelectTriggerAttributes = { role: 'listbox' };
+const handler: Props = { 'onUpdate:modelValue': (next: boolean) => void next };
+declare const select: InstanceType<typeof ZSelect>;
+select.$emit('update:modelValue', false);
+void [value, size, options, label, disabled, form, placement, controlled, handler];

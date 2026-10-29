@@ -1,5 +1,7 @@
 # 共享主题参数
 
+Vue Select 在属性使用处按“`--zoom-select-*` → 本表共享 token → Sass 默认值”回退，不在祖先提前展开组件变量。完整组件变量与参数见 [Select 文档](../../docs/components/select.md)；私有 selection mixin 不增加公共 theme.scss 配置项，也不会自动输出 Combobox 样式。
+
 默认值唯一维护于 [`../styles/_defaults.scss`](../styles/_defaults.scss)。公共 Sass 入口为 `_index.scss`，仅转发下表配置和 `theme()`、`density()`；导入本身不输出 CSS。Vue、React、Angular 使用同源模块生成主题。Task6 不提供产品组件或主题运行时单例。
 
 CSS 变量按容器继承；Sass 配置只在编译时生效。变量名去掉 `--zoom-` 后即为 `theme($overrides)` 的 map 键和 `$` 配置名。除可选项外，默认主题在 `:where(:root)` 输出声明。合法值由消费方校验，`var()` 不能替代任意非法 CSS 值的校验。

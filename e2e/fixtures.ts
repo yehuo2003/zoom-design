@@ -7,13 +7,17 @@ export const test = base.extend<{ runtimeErrors: RuntimeErrors; _runtimeGuard: v
     const imports: Record<string, RegExp | string> = Object.fromEntries(['core', 'dom', 'vue', 'react'].map(name => [name, new RegExp(`/packages/${name}/dist/index\\.js`)]));
     imports.angular = '**/chunk-*.js';
     imports.vueButton = /\/packages\/vue\/dist\/button\/index\.js/;
+    imports.vueSelect = /\/packages\/vue\/dist\/select\/index\.js/;
     if (testInfo.config.metadata.mode === 'packed') {
       const response = await request.get('/__imports');
       expect(response.ok()).toBe(true);
       const actual = await response.json();
       const suite = testInfo.project.name.split('-')[0];
       expect(actual[suite]).toMatch(/^\/.+\.js$/);
-      if (suite === 'vue') expect(actual.vueButton).toMatch(/^\/.+\.js$/);
+      if (suite === 'vue') {
+        expect(actual.vueButton).toMatch(/^\/.+\.js$/);
+        expect(actual.vueSelect).toMatch(/^\/.+\.js$/);
+      }
       for (const [name, path] of Object.entries(actual)) imports[name] = `**${path}`;
     }
     await use(imports);

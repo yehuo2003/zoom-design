@@ -28,7 +28,7 @@ describe('Task3 Vue production artifact boundary', () => {
       import assert from 'node:assert/strict';
       assert.equal(typeof window, 'undefined');
       const root = await import('@zoom-design/vue'); const button = await import('@zoom-design/vue/button');
-      assert.deepEqual(Object.keys(root), ['ZButton']); assert.deepEqual(Object.keys(button), ['ZButton']);
+      assert.deepEqual(Object.keys(root), ['ZButton', 'ZSelect']); assert.deepEqual(Object.keys(button), ['ZButton']);
       assert.equal(root.ZButton, button.ZButton);
       assert.ok(import.meta.resolve('@zoom-design/vue/style.css').endsWith('/dist/style.css'));
       await assert.rejects(import('@zoom-design/vue/test/fixtures/BuildProbe.vue'), {code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});

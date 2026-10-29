@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { runBin, resolveBin } from './run-local-bin.mjs';
 import { probeNpm } from './check-toolchain.mjs';
+import { validatePlatformPack } from './platform-contracts.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const results = [];
@@ -32,9 +33,8 @@ try {
     const packed = JSON.parse(result.stdout)[`@zoom-design/${name}`];
     if (!Array.isArray(packed?.files) || packed.files.length === 0) throw Error(`${name}: pack report has no files`);
     const files = packed.files.map(file => file.path);
-    for (const required of ['dist/index.js', 'dist/index.d.ts', 'README.md', 'package.json']) if (!files.includes(required)) throw Error(`${name}: missing packed ${required}`);
-    for (const file of files) if (!['package.json', 'README.md'].includes(file) && !file.startsWith('dist/')) throw Error(`${name}: unexpected packed file ${file}`);
-    if (files.some(file => /test|fixture|\.s?css$/.test(file))) throw Error(`${name}: fixture/style leaked into pack`);
+    const errors = validatePlatformPack(name, files);
+    if (errors.length) throw Error(errors.join('\n'));
     results.push({ label: `${name} pack dry run`, status: 0, files });
     console.log(`${name} package contents: PASS (${files.length} files)`);
   }

@@ -6,7 +6,7 @@ import { runBin } from './run-local-bin.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
 if (!['core', 'dom'].includes(name) || process.argv.length !== 3) throw Error('Usage: build-platform.mjs core|dom');
-// DOM keeps its declared Core prerequisite even while public entries are empty.
+// DOM keeps its declared Core prerequisite; Core now exports pure selection rules.
 for (const current of name === 'dom' ? ['core', 'dom'] : ['core']) {
   const workspace = join(root, 'packages', current); const output = join(workspace, 'dist');
   if (relative(root, output) !== join('packages', current, 'dist')) throw Error('Invalid build output path');

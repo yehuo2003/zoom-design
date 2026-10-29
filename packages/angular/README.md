@@ -17,6 +17,6 @@ npm run test:coverage --workspace @zoom-design/angular
 npm run test:e2e --workspace @zoom-design/angular
 ```
 
-`src/styles/style.scss` 在 APF 构建前编译到 `.generated/style.css`，再由 assets 复制到 `styles/style.css`，通过 `./style.css` 出口供消费者使用。当前规则仅为工程构建标记。
+`src/styles/style.scss` 和 `theme.scss` 在 APF 构建前编译到 `.generated`，再由 assets 复制到 `styles/style.css` 和 `styles/theme.css`；可选 `theme.scss` 提供 Sass 定制。当前尚无 Angular 产品组件。
 
-原生应用 `apps/angular-smoke` 以包名解析根目录实际 APF，使用 Angular 默认 zoneless 启动私有探针。Task 5 的打包消费验证将移除本地 APF 映射；当前未实现或验证 Angular SSR / hydration。详细证据见 [Task 3 Angular 报告](../../docs/engineering/task3-angular-report.md)。
+原生应用 `apps/angular-smoke` 以包名解析根目录实际 APF，使用 Angular 默认 zoneless 启动私有探针。打包消费验证已在仓库外移除本地 APF 映射；当前未实现或验证 Angular SSR / hydration。详细证据见 [仓库外消费记录](../../docs/engineering/packed-consumers.md)。
