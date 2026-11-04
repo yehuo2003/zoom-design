@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue({ script: { fs: sfcFileSystem } })],
   build: {
     lib: {
-      entry: { index: fileURLToPath(new URL('./src/index.ts', import.meta.url)), 'button/index': fileURLToPath(new URL('./src/button/index.ts', import.meta.url)), 'select/index': fileURLToPath(new URL('./src/select/index.ts', import.meta.url)) },
+      entry: { index: fileURLToPath(new URL('./src/index.ts', import.meta.url)), 'button/index': fileURLToPath(new URL('./src/button/index.ts', import.meta.url)), 'select/index': fileURLToPath(new URL('./src/select/index.ts', import.meta.url)), 'combobox/index': fileURLToPath(new URL('./src/combobox/index.ts', import.meta.url)) },
       formats: ['es'], fileName: (_format, name) => `${name}.js`,
     },
     outDir: 'dist',

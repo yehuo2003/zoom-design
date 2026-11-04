@@ -6,9 +6,9 @@ import type { SelectProps, SelectEmits, SelectExpose, SelectOptionContext, Selec
 import { useSelectionState } from '../selection/useSelectionState';
 import { useSelectionDom } from '../selection/useSelectionDom';
 import { useSelectionForm } from '../selection/useSelectionForm';
-import { triggerAttributes } from '../selection/attrs';
+import { triggerAttributes, rootAttributes } from '../selection/attrs';
 defineOptions({ name: 'ZSelect', inheritAttrs: false });
-const props = withDefaults(defineProps<SelectProps>(), { open: undefined });
+const props = withDefaults(defineProps<SelectProps>(), { open: undefined, matchTriggerWidth: true });
 const emit = defineEmits<SelectEmits>();
 defineSlots<{ option?(context: SelectOptionContext): unknown; value?(context: SelectValueContext): unknown; empty?(): unknown; loading?(): unknown }>();
 const attrs = useAttrs(); const generated = `zoom-select-${useId()}`; const warned = new Set<string>();
@@ -27,7 +27,7 @@ const triggerId = computed(() => n.value.id ?? generated); const listId = comput
 const optionId = (value: SelectionValue) => `${listId.value}-${typeof value}-${String(value).split('').map(unit => unit.charCodeAt(0).toString(16)).join('-')}`;
 const showClear = computed(() => n.value.clearable && n.value.value !== null && !blocked.value);
 const successful = computed(() => !!selected.value && !!n.value.name && !disabled.value);
-function rootAttrs() { return Object.fromEntries(Object.entries(attrs).filter(([key]) => !key.toLowerCase().startsWith('aria-') && !key.toLowerCase().startsWith('data-zoom-') && !['id', 'role'].includes(key.toLowerCase()))); }
+function rootAttrs() { return rootAttributes(attrs); }
 function triggerAttrs() {
   const forwarded = triggerAttributes(props.triggerAttrs);
   for (const key of ['aria-label', 'aria-labelledby', 'aria-describedby'] as const) {
@@ -46,7 +46,7 @@ function choose(option: SelectionOption) { state.choose(option); dom.focus(); }
       :aria-expanded="opened" :aria-controls="opened ? listId : undefined" :aria-activedescendant="opened && highlighted !== null ? optionId(highlighted) : undefined" @click="toggle" @keydown="dom.keydown">
       <span class="zoom-select__value"><slot name="value" :option="selected" :value="n.value">{{ selected?.label ?? n.placeholder }}</slot></span><span aria-hidden="true" class="zoom-select__arrow">▾</span>
     </button>
-    <button v-if="showClear" ref="clear" type="button" class="zoom-select__clear" :aria-label="n.clearLabel" @click="state.clear(); dom.focus()">×</button>
+    <button v-if="showClear" ref="clear" type="button" class="zoom-select__clear" :aria-label="n.clearLabel" @pointerdown.prevent @click="state.clear(); dom.focus()">×</button>
     <select ref="proxy" class="zoom-select__proxy" aria-hidden="true" tabindex="-1" :form="n.form" :disabled="n.disabled" :required="n.required && !n.readonly" :value="selected ? '__zoom_selected__' : ''">
       <option value=""></option><option value="__zoom_selected__"></option>
     </select>

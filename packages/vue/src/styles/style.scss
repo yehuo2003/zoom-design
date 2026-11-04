@@ -1,6 +1,7 @@
 @use "theme";
 @use "../button/style";
 @use "../select/style" as select-style;
+@use "../combobox/style" as combobox-style;
 
 // Retained private engineering marker.
 .zoom-engineering-probe {

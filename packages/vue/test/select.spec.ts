@@ -8,6 +8,15 @@ const options = [{ value: 0, label: 'Zero' }, { value: '', label: 'Empty' }, { v
 const wrappers: ReturnType<typeof mount>[] = [];
 function setup(props: Record<string, unknown> = {}) { const wrapper = mount(Select, { props: { options, ...props }, attachTo: document.body }); wrappers.push(wrapper); return wrapper; }
 afterEach(() => { wrappers.splice(0).forEach(wrapper => wrapper.unmount()); document.body.replaceChildren(); vi.useRealTimers(); vi.restoreAllMocks(); });
+it('T11.1 omitted matchTriggerWidth stays true after Vue Boolean casting and false remains an explicit opt-out', async () => {
+  const w = setup({ open: true }); expect(w.props('matchTriggerWidth')).toBe(true); await w.setProps({ matchTriggerWidth: false }); expect(w.props('matchTriggerWidth')).toBe(false);
+});
+it('T11.6 clear pointerdown preserves trigger focus until the explicit clear request', () => {
+  const w = setup({ modelValue: 0, open: true, clearable: true }); const t = w.get<HTMLButtonElement>('[role=combobox]'); t.element.focus(); const event = new MouseEvent('pointerdown', { bubbles: true, cancelable: true }); w.get('.zoom-select__clear').element.dispatchEvent(event); expect(event.defaultPrevented).toBe(true); expect(w.emitted('update:open')).toBeUndefined();
+});
+it('T11.9 shared root attrs reject inline event strings while callbacks remain Vue listeners', async () => {
+  const callback = vi.fn(); const w = setup({ onclick: 'window.unsafe = true', onClick: callback }); expect(w.attributes('onclick')).toBeUndefined(); await w.get('[role=combobox]').trigger('click'); expect(callback).toHaveBeenCalledOnce();
+});
 it('T11.1/2 value is controlled and preserves zero/empty/type identity without external-change events', async () => {
   const w = setup({ modelValue: 0, clearable: true, 'aria-label': 'Choice' }); expect(w.get('[role=combobox]').text()).toContain('Zero');
   await w.get('[role=combobox]').trigger('click'); await w.get('[role=option][data-value-type="string"]').trigger('click');

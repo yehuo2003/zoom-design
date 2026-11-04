@@ -8,6 +8,7 @@ export const test = base.extend<{ runtimeErrors: RuntimeErrors; _runtimeGuard: v
     imports.angular = '**/chunk-*.js';
     imports.vueButton = /\/packages\/vue\/dist\/button\/index\.js/;
     imports.vueSelect = /\/packages\/vue\/dist\/select\/index\.js/;
+    imports.vueCombobox = /\/packages\/vue\/dist\/combobox\/index\.js/;
     if (testInfo.config.metadata.mode === 'packed') {
       const response = await request.get('/__imports');
       expect(response.ok()).toBe(true);
@@ -17,6 +18,7 @@ export const test = base.extend<{ runtimeErrors: RuntimeErrors; _runtimeGuard: v
       if (suite === 'vue') {
         expect(actual.vueButton).toMatch(/^\/.+\.js$/);
         expect(actual.vueSelect).toMatch(/^\/.+\.js$/);
+        expect(actual.vueCombobox).toMatch(/^\/.+\.js$/);
       }
       for (const [name, path] of Object.entries(actual)) imports[name] = `**${path}`;
     }

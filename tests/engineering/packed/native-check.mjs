@@ -5,6 +5,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { runBin, readJson } from './run-local-bin.mjs';
 import { verifySelectionDiagnostics } from './selection-type-contract.mjs';
 import { verifyDOMDiagnostics } from './dom-type-contract.mjs';
+import { verifyComboboxDiagnostics } from './combobox-type-contract.mjs';
 import { verifySelectDiagnostics } from './select-type-contract.mjs';
 
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,6 +28,8 @@ function run(label, tool, bin, args, negative) {
   }
   if (label === 'Core selection negative control') verifySelectionDiagnostics(output);
   if (label === 'DOM negative control') verifyDOMDiagnostics(output);
+  if (label === 'Combobox plain declaration negative control') verifyComboboxDiagnostics(output);
+  if (label === 'Combobox template negative control') verifyComboboxDiagnostics(output, true);
   if (label === 'Select plain declaration negative control') verifySelectDiagnostics(output);
   if (label === 'Select template negative control') verifySelectDiagnostics(output, true);
   console.log(`${app} ${label}: PASS${negative ? ' (expected diagnostics)' : ''}`);
@@ -41,12 +44,16 @@ try {
     run('DOM negative control', 'typescript', 'tsc', ['-p', 'tsconfig.dom-negative.json'], [/invalid\.ts/, /TS2322/, /TS2345/]);
     run('Select real root/subpath declarations', 'typescript', 'tsc', ['-p', 'tsconfig.select-ts.json']);
     run('Select plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.select-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2769/]);
+    run('Combobox real root/subpath declarations', 'typescript', 'tsc', ['-p', 'tsconfig.combobox-ts.json']);
+    run('Combobox plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.combobox-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2769/]);
     const native = app === 'vue' ? ['vue-tsc', 'vue-tsc'] : app === 'angular' ? ['@angular/compiler-cli', 'ngc'] : ['typescript', 'tsc'];
     run('native source and public declarations', ...native, ['-p', app === 'angular' ? 'tsconfig.app.json' : 'tsconfig.json', '--noEmit']);
     if (app === 'vue') {
       run('Button plain TS6 declarations', 'typescript', 'tsc', ['-p', 'tsconfig.button-ts.json']);
       run('Button vue-tsc declarations and template', ...native, ['-p', 'tsconfig.button.json']);
       run('Button exact product negative control', ...native, ['-p', 'tsconfig.button-negative.json'], [/invalid\.ts\(14,\d+\): error TS2345/, /Invalid\.vue\(9,\d+\): error TS2322/]);
+      run('Combobox vue-tsc declarations and slots', ...native, ['-p', 'tsconfig.combobox.json']);
+      run('Combobox template negative control', ...native, ['-p', 'tsconfig.combobox-negative.json'], [/invalid\.ts\(16,\d+\): error TS2769/, /Invalid\.vue\(9,\d+\): error TS2322/]);
       run('Select vue-tsc declarations and slots', ...native, ['-p', 'tsconfig.select.json']);
       run('Select template negative control', ...native, ['-p', 'tsconfig.select-negative.json'], [/invalid\.ts\(14,\d+\): error TS2769/, /Invalid\.vue\(9,\d+\): error TS2322/]);
     }

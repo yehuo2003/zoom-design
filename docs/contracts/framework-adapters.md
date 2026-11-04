@@ -2,7 +2,7 @@
 
 冻结日期：2026-10-29。Task8 契约 v1；以下是 Task9–13 的实施输入，尚未实现的公共导出不代表当前可用。产品支持范围见[组件矩阵](../components/README.md)。
 
-每项共同配置的类型、缺省、边界见 [selection 4.2](selection.md#42-首轮配置清单)，新增 query 配置见 4.7。Vue/React/Angular 均沿用这些语义默认值；名称仅按下面两表映射。Vue 也要到 Task11/12 才有产品实现，下面均不是安装即用 API。
+每项共同配置的类型、缺省、边界见 [selection 4.2](selection.md#42-首轮配置清单)，新增 query 配置见 4.7。Vue/React/Angular 均沿用这些语义默认值；名称仅按下面两表映射。Vue Select已于2026-10-30用户验收，Combobox已在Task12于2026-10-30通过用户验收；实际可用API以组件MD为准，React/Angular列仍为规划。
 
 ### 4.3 框架映射与差异
 

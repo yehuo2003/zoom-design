@@ -25,7 +25,7 @@ try {
   if (declarations.error) throw declarations.error;
   if (declarations.status !== 0) throw Error(`${name}: declaration emit exited ${declarations.status}`);
   compilePackageStyles(name);
-  if (name === 'vue') for (const file of ['button/index.js', 'types/button/index.d.ts', 'button/style.css', 'select/index.js', 'types/select/index.d.ts', 'types/select/Select.vue.d.ts', 'select/style.css']) if (!existsSync(join(output, file))) throw Error(`vue: missing built ${file}`);
+  if (name === 'vue') for (const file of ['button/index.js', 'types/button/index.d.ts', 'button/style.css', 'select/index.js', 'types/select/index.d.ts', 'types/select/Select.vue.d.ts', 'select/style.css', 'combobox/index.js', 'types/combobox/index.d.ts', 'types/combobox/Combobox.vue.d.ts', 'combobox/style.css']) if (!existsSync(join(output, file))) throw Error(`vue: missing built ${file}`);
   for (const file of ['index.js', 'types/index.d.ts', 'style.css', 'theme.css', 'styles/theme/_index.scss']) if (!existsSync(join(output, file))) throw Error(`${name}: missing built ${file}`);
   console.log(`${name}: public JS, declarations and CSS built`);
 } catch (error) {

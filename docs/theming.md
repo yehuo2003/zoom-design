@@ -1,6 +1,6 @@
 # 使用共享主题
 
-Task11 Vue Select 使用同一主题与密度，另提供冻结的 `--zoom-select-*` 局部变量；列表见 [Select 文档](components/select.md)。`@zoom-design/vue/select/style.css` 为自足的单组件 CSS，聚合 style.css 也已包含 Select。portal 由应用为浮层 host 同步品牌、字体、方向和密度。私有 `design/styles/components/_selection.scss` 只在组件构建时复用，不进入公开 theme.scss 闭包。
+Vue Select（Task11已验收）与Combobox（Task12已于2026-10-30用户验收通过）使用同一主题与密度，分别提供冻结的 `--zoom-select-*` / `--zoom-combobox-*` 局部变量；列表见 [Select](components/select.md)、[Combobox](components/combobox.md)。两个组件的 `select/style.css` / `combobox/style.css` 均可独立使用，聚合style.css包含已实现组件。portal 由应用为浮层 host 同步品牌、字体、方向和密度。私有 `design/styles/components/_selection.scss` 只在组件构建时复用，不进入公开 theme.scss 闭包。
 
 Task6 为 Vue、React、Angular 提供相同的浅色参数与 regular/compact 密度。完整参数、类型及推导规则见 [参数表](../design/tokens/README.md)。Core/DOM 不包含主题 CSS。Task7 的 [Vue Button](components/button.md)已接入这些参数，`/theme`继续保留私有原生样本。
 
@@ -11,7 +11,7 @@ import '@zoom-design/vue/theme.css';
 // React 使用 @zoom-design/react/theme.css；Angular 使用 @zoom-design/angular/theme.css。
 ```
 
-Vue的`style.css`聚合主题与Button；按需使用`theme.css`与`button/style.css`，不要再重复导入聚合入口。Button CSS自身具备默认regular回退；data-zoom-density需主题规则。React/Angular聚合入口仍只包含已交付的主题。JS入口不隐式加载样式，三个包保留CSS sideEffects。
+Vue的`style.css`聚合主题、Button、Select和Combobox；按需使用`theme.css`与`button/style.css`，不要再重复导入聚合入口。Button CSS自身具备默认regular回退；data-zoom-density需主题规则。React/Angular聚合入口仍只包含已交付的主题。JS入口不隐式加载样式，三个包保留CSS sideEffects。
 
 ```css
 .brand-a {

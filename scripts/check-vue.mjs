@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { runBin, packagePath, readJson } from './run-local-bin.mjs';
 import { resolveVueCompiler } from './run-vue-tsc.mjs';
+import { verifyComboboxDiagnostics } from '../tests/engineering/packed/combobox-type-contract.mjs';
 import { verifySelectDiagnostics } from '../tests/engineering/packed/select-type-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -41,6 +42,16 @@ try {
   const selectNegative = vueTsc('test/select-types/tsconfig.negative.json', 2);
   verifySelectDiagnostics(`${selectNegative.stdout}${selectNegative.stderr}`, true);
   console.log('Select TS6/vue-tsc exact product diagnostics: PASS');
+  for (const compilerWorkspace of [workspace, join(root, 'packages/core')]) {
+    record(`Combobox ${compilerWorkspace} public declaration consumer`, runBin(compilerWorkspace, 'typescript', 'tsc', ['-p', join(workspace, 'test/combobox-types/tsconfig.ts.json')], 'pipe'));
+    const negative = runBin(compilerWorkspace, 'typescript', 'tsc', ['-p', join(workspace, 'test/combobox-types/tsconfig.ts.negative.json')], 'pipe');
+    record(`Combobox ${compilerWorkspace} negative declarations`, negative, compilerWorkspace === workspace ? 2 : 1);
+    verifyComboboxDiagnostics(`${negative.stdout}${negative.stderr}`);
+  }
+  vueTsc('test/combobox-types/tsconfig.json');
+  const comboboxNegative = vueTsc('test/combobox-types/tsconfig.negative.json', 2);
+  verifyComboboxDiagnostics(`${comboboxNegative.stdout}${comboboxNegative.stderr}`, true);
+  console.log('Combobox TS6/TS7/vue-tsc exact product diagnostics: PASS');
   record('private SFC fixture JavaScript build', runBin(workspace, 'vite', 'vite', ['build', '--config', 'test/fixtures/vite.config.ts'], 'pipe'));
   const js = readFileSync(join(root, '.artifacts/fixtures/vue/index.js'), 'utf8');
   if (!/from ["']vue["']/.test(js) || js.includes('function createRenderer(')) throw Error('Private SFC fixture must externalize Vue');

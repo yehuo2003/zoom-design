@@ -1,0 +1,3 @@
+@use "../../../../design/styles/components/selection";
+@include selection.selection("combobox");
+.zoom-combobox__trigger { cursor: text; inline-size: 100%; min-inline-size: 0; }

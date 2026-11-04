@@ -2,13 +2,13 @@
 
 `ZSelect` 从同步选项中请求选择一个已有值，适合无需文本搜索的单选表单和筛选。应用拥有已确认值，组件负责临时高亮、键盘、定位、原生表单桥接和可访问状态。
 
-核对日期：2026-10-29。语义依据为 [Selection 共同契约](../contracts/selection.md)与[框架适配契约](../contracts/framework-adapters.md)。Task11 自动验收16/16通过，待用户验收，见[验收记录](../engineering/task11-acceptance.md)。
+核对日期：2026-10-29。语义依据为 [Selection 共同契约](../contracts/selection.md)与[框架适配契约](../contracts/framework-adapters.md)。Task11已于2026-10-30获用户验收（自动验收16/16），见[验收记录](../engineering/task11-acceptance.md)。
 
 ## 框架与验证状态
 
 | 框架 | 实现状态 | 类型与浏览器 | 表单 | SSR 与水合 |
 | --- | --- | --- | --- | --- |
-| Vue 3 | 已实现；Task11待用户验收 | 真实声明通过；workspace/packed Chromium、Firefox、WebKit各47项通过 | 原生提交、required、reset、外部form通过 | 初始关闭/打开、portal、节点复用与请求隔离通过 |
+| Vue 3 | 已实现；2026-10-30用户验收通过 | 真实声明通过；workspace/packed Chromium、Firefox、WebKit各47项通过 | 原生提交、required、reset、外部form通过 | 初始关闭/打开、portal、节点复用与请求隔离通过 |
 | React | 规划用法，当前不可用 | 产品组件未实施 | 未实施 | 产品 SSR 未实施 |
 | Angular | 规划用法，当前不可用 | 产品组件未实施 | CVA / Forms 未实施 | Angular SSR 尚未实施 |
 

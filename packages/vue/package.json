@@ -25,6 +25,11 @@
       "import": "./dist/select/index.js"
     },
     "./select/style.css": "./dist/select/style.css",
+    "./combobox": {
+      "types": "./dist/types/combobox/index.d.ts",
+      "import": "./dist/combobox/index.js"
+    },
+    "./combobox/style.css": "./dist/combobox/style.css",
     "./style.css": "./dist/style.css",
     "./theme.css": "./dist/theme.css",
     "./theme.scss": {

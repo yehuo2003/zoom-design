@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
+import { verifyComboboxSSR } from '../tests/engineering/packed/combobox-ssr-contract.mjs';
 import { verifySelectSSR } from '../tests/engineering/packed/select-ssr-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -14,5 +15,7 @@ try {
   assert.ok(html.includes('aria-label="Label">Initial</output>'));
   console.log('Vue server-renderer native SFC markup: PASS');
   await verifySelectSSR(render);
+  await verifyComboboxSSR(render);
+  console.log('Vue Combobox SSR initial query/open inline portal and request isolation: PASS');
   console.log('Vue Select SSR closed/open inline portal and request isolation: PASS');
 } finally { await server.close(); }

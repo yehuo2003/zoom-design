@@ -21,7 +21,7 @@ export function createConsumer(repository, directory, app, packages) {
   json(join(directory, '.pack-spec.json'), { app, tools, runtimes, packages });
   writeFileSync(join(directory, '.npmrc'), 'save-exact=true\nengine-strict=true\n');
   for (const script of ['run-local-bin.mjs', 'run-vue-tsc.mjs', 'pack-contracts.mjs', 'theme-contract.mjs']) cpSync(join(repository, 'scripts', script), join(directory, 'scripts', script));
-  for (const script of ['verify-consumer.mjs', 'native-check.mjs', 'vite-graph.mjs', 'selection-type-contract.mjs', 'dom-type-contract.mjs', 'select-type-contract.mjs', 'select-ssr-contract.mjs', ...(app === 'vue' ? ['button-size.mjs', 'button-size-contract.mjs', 'select-size.mjs', 'select-size-contract.mjs'] : [])]) cpSync(join(repository, 'tests/engineering/packed', script), join(directory, 'scripts', script));
+  for (const script of ['verify-consumer.mjs', 'native-check.mjs', 'vite-graph.mjs', 'selection-type-contract.mjs', 'dom-type-contract.mjs', 'select-type-contract.mjs', 'select-ssr-contract.mjs', 'combobox-type-contract.mjs', 'combobox-ssr-contract.mjs', ...(app === 'vue' ? ['button-size.mjs', 'button-size-contract.mjs', 'select-size.mjs', 'select-size-contract.mjs', 'combobox-size.mjs', 'combobox-size-contract.mjs'] : [])]) cpSync(join(repository, 'tests/engineering/packed', script), join(directory, 'scripts', script));
   cpSync(join(repository, `apps/${app}-smoke/src`), join(directory, 'src'), { recursive: true });
   if (app !== 'angular') cpSync(join(repository, `apps/${app}-smoke/index.html`), join(directory, 'index.html'));
   const probes = app === 'platform' ? [['core', 'state.ts'], ['dom', 'listener.ts']] : [[app, app === 'vue' ? 'BuildProbe.vue' : app === 'react' ? 'BuildProbe.tsx' : 'build-probe.ts']];
@@ -39,8 +39,10 @@ export function createConsumer(repository, directory, app, packages) {
   json(join(directory, 'tsconfig.contracts-negative.json'), { extends: './tsconfig.json', compilerOptions: { noEmit: true }, include: [], files: ['contracts/invalid.ts'] });
   cpSync(join(repository, 'packages/core/test/selection-types'), join(directory, 'contracts/selection'), { recursive: true });
   cpSync(join(repository, 'packages/dom/test/dom-types'), join(directory, 'contracts/dom'), { recursive: true });
+  cpSync(join(repository, 'packages/vue/test/combobox-types'), join(directory, 'contracts/combobox'), { recursive: true });
   cpSync(join(repository, 'packages/vue/test/select-types'), join(directory, 'contracts/select'), { recursive: true });
   for (const [suffix, file] of [['', 'consumer.ts'], ['-negative', 'invalid.ts']]) {
+    json(join(directory, `tsconfig.combobox-ts${suffix}.json`), { extends: './tsconfig.json', compilerOptions: { module: 'ESNext', moduleResolution: 'Bundler', lib: ['ES2022', 'DOM', 'DOM.Iterable'], types: [], noEmit: true }, include: [], files: [`contracts/combobox/${file}`] });
     json(join(directory, `tsconfig.select-ts${suffix}.json`), { extends: './tsconfig.json', compilerOptions: { module: 'ESNext', moduleResolution: 'Bundler', lib: ['ES2022', 'DOM', 'DOM.Iterable'], types: [], noEmit: true }, include: [], files: [`contracts/select/${file}`] });
   }
   for (const [suffix, file] of [['', 'valid.ts'], ['-negative', 'invalid.ts']]) {
@@ -54,6 +56,8 @@ export function createConsumer(repository, directory, app, packages) {
     json(join(directory, 'tsconfig.button.json'), { extends: './tsconfig.json', include: ['contracts/button/consumer.ts', 'contracts/button/Valid.vue'] });
     json(join(directory, 'tsconfig.button-ts.json'), { extends: './tsconfig.json', include: ['contracts/button/consumer.ts'] });
     json(join(directory, 'tsconfig.button-negative.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/button/invalid.ts', 'contracts/button/Invalid.vue'] });
+    json(join(directory, 'tsconfig.combobox.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/combobox/consumer.ts', 'contracts/combobox/Valid.vue'] });
+    json(join(directory, 'tsconfig.combobox-negative.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/combobox/invalid.ts', 'contracts/combobox/Invalid.vue'] });
     json(join(directory, 'tsconfig.select.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/select/consumer.ts', 'contracts/select/Valid.vue'] });
     json(join(directory, 'tsconfig.select-negative.json'), { extends: './tsconfig.json', vueCompilerOptions: { strictTemplates: true }, include: ['contracts/select/invalid.ts', 'contracts/select/Invalid.vue'] });
   }

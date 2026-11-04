@@ -52,7 +52,8 @@ try {
     writeFileSync(entry.file, Buffer.concat([entry.original, Buffer.from(`\n// Task11 ${entry.name} dev watch proof\n`)]));
     await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > before && await listening(), `${entry.name} source rebuilds Vue preview`);
     await page.goto('http://127.0.0.1:5171/select'); await page.getByRole('combobox', { name: 'Choose value', exact: true }).waitFor();
-    evidence.push({ check: `${entry.name} source change rebuilds dependency chain and functional Select preview`, status: 'PASS' });
+    await page.goto('http://127.0.0.1:5171/combobox'); await page.getByRole('combobox', { name: 'Choose searchable value', exact: true }).waitFor();
+    evidence.push({ check: `${entry.name} source change rebuilds dependency chain and functional Select/Combobox previews`, status: 'PASS' });
     const restoreBefore = statSync(output).mtimeMs;
     writeFileSync(entry.file, entry.original);
     await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > restoreBefore && await listening(), `${entry.name} source restored preview`);

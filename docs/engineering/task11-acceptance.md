@@ -1,6 +1,6 @@
 # Task11 Vue Select 验收
 
-实施日期：2026-10-29（Asia/Shanghai）。Task10 已获用户验收并标记已完成；Task11 保持进行中，等待用户验收；Task12 未开始。T11.1–T11.16自动验收16/16通过；无Git提交、推送或公开发布。
+实施日期：2026-10-29（Asia/Shanghai）。Task10 已获用户验收并标记已完成；Task11 已于2026-10-30获用户验收并标记已完成；Task12按授权开始开发。T11.1–T11.16自动验收16/16通过；无Git提交、推送或公开发布。
 
 ## 交付与边界
 
@@ -8,7 +8,7 @@ Vue 根入口及 `@zoom-design/vue/select` 命名导出 ZSelect 和七个 Select
 
 value 始终由父层确认，open 的受控模式在首帧固定；拒绝回写保持实际值与资源。选择先发 modelValue 请求和 change，再发 open 请求和 open-change。500ms typeahead、循环开关、IME/修饰键避让、Tab 原生离开、顶层 Escape、outside/focusout 去重均有回归。已确认值的 aria-selected 与临时高亮分离，选项 ID 按值类型及 UTF16 编码，支持空串、0、数字字符串及不成对代理字符。
 
-一个具名 hidden input 提交合法已确认值；无 name 的原生 select 代理约束校验，使用两个 sentinel option 区分合法空串和缺值。未知/禁用选项不提交，required/readonly/loading 与 fieldset 首 legend 按契约分别处理；外部 form、动态 owner、invalid 转焦点及可取消 reset 采用真实浏览器验证。reset 在下一任务请求 null，并在父层恢复自有默认值后同步代理。
+一个具名 hidden input 提交合法已确认值；无 name 的原生 select 代理约束校验，使用两个 sentinel option 区分合法空串和缺值。未知值不提交；应用已赋给禁用选项的值仍显示和提交，required/readonly/loading 与 fieldset 首 legend 按契约分别处理；外部 form、动态 owner、invalid 转焦点及可取消 reset 采用真实浏览器验证。reset 在下一任务请求 null，并在父层恢复自有默认值后同步代理。
 
 非模态弹层不启用焦点陷阱或滚动锁。层级 context 存在 Vue appContext 中，按 Document 引用计数；只在 mounted 后建立浏览器资源。SSR 初始 open 输出 inline popup，水合后才迁移 portal。几何刷新不重新登记层级，关闭/卸载释放 observer、listener、timer 和 host。
 
@@ -71,4 +71,4 @@ Select 实际声明检查包括 plain TS 十项精确负例、Vue TS/模板合�
 
 运行 `npm run dev:vue`，打开输出地址的 `/select`，检查键盘选择/清空、父层拒绝回写、required/reset、外部 form、主题/RTL/portal，再检查 `/ssr?example=select&open=true`。自动化 ARIA 和键盘断言不替代屏幕阅读器人工验收。
 
-Linux 实机、无 Volta 干净副本、整套 ci:verify 单命令、本轮其他包覆盖率、真实 OS 输入法/触摸设备与人工读屏未执行。Angular SSR 未实施。保留 Task11 进行中（待用户验收）；Task12 未开始。
+Linux 实机、无 Volta 干净副本、整套 ci:verify 单命令、本轮其他包覆盖率、真实 OS 输入法/触摸设备与人工读屏未执行。Angular SSR 未实施。2026-10-30用户确认Task11已完成，状态已更新；Task12按task-driven-dev继续开发。

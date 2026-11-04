@@ -6,7 +6,7 @@ import type { SelectProps } from '../select/types';
 import type { SelectionState } from './useSelectionState';
 const layersKey = Symbol('zoom-selection-layers');
 interface AppLayers { context: LayerContext; users: number }
-export function useSelectionDom(props: SelectProps, state: SelectionState, trigger: Ref<HTMLButtonElement | null>, popup: Ref<HTMLElement | null>, root: Ref<HTMLElement | null>, warn: (message: string) => void) {
+export function useSelectionDom(props: SelectProps, state: Pick<SelectionState, 'normalized' | 'opened' | 'disabled' | 'highlighted' | 'requestOpen' | 'keydown'>, trigger: Ref<HTMLElement | null>, popup: Ref<HTMLElement | null>, root: Ref<HTMLElement | null>, warn: (message: string) => void) {
   const target = shallowRef<HTMLElement | null>(null); const app = getCurrentInstance()!.appContext;
   const focusEvents = new WeakSet<Event>(); let outsideBlur = false; let outsideTimer: ReturnType<typeof setTimeout> | undefined;
   let stop = () => {};
@@ -55,7 +55,7 @@ export function useSelectionDom(props: SelectProps, state: SelectionState, trigg
   onBeforeUnmount(() => stop());
   return { target,
     keydown(event: KeyboardEvent) {
-      if (event.key === 'Tab' && state.opened.value) { outsideBlur = true; clearTimeout(outsideTimer); outsideTimer = setTimeout(() => { outsideBlur = false; }, 0); }
+      if (event.key === 'Tab') { outsideBlur = true; clearTimeout(outsideTimer); outsideTimer = setTimeout(() => { outsideBlur = false; }, 0); }
       state.keydown(event);
     },
     focus(options?: FocusOptions) { if (!state.disabled.value) focusElement(trigger.value, options); },

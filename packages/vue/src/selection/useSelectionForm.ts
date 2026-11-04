@@ -2,7 +2,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watchEffect
 import type { Ref } from 'vue';
 import { isFieldsetDisabled, observeFormBridge } from '@zoom-design/dom';
 import type { SelectionState } from './useSelectionState';
-export function useSelectionForm(state: SelectionState, proxy: Ref<HTMLSelectElement | null>, submission: Ref<HTMLInputElement | null>, trigger: Ref<HTMLButtonElement | null>, nativeDisabled: Ref<boolean>) {
+export function useSelectionForm(state: Pick<SelectionState, 'normalized' | 'selected' | 'reset'>, proxy: Ref<HTMLSelectElement | null>, submission: Ref<HTMLInputElement | null>, trigger: Ref<HTMLElement | null>, nativeDisabled: Ref<boolean>) {
   const nativeInvalid = shallowRef(false); let stop = () => {};
   function sync() {
     if (!proxy.value) return;

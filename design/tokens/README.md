@@ -1,6 +1,6 @@
 # 共享主题参数
 
-Vue Select 在属性使用处按“`--zoom-select-*` → 本表共享 token → Sass 默认值”回退，不在祖先提前展开组件变量。完整组件变量与参数见 [Select 文档](../../docs/components/select.md)；私有 selection mixin 不增加公共 theme.scss 配置项，也不会自动输出 Combobox 样式。
+Vue Select/Combobox分别在属性使用处按“`--zoom-select-*` / `--zoom-combobox-*` → 本表共享token → Sass默认值”回退，不在祖先提前展开组件变量。完整变量与参数见 [Select](../../docs/components/select.md)、[Combobox](../../docs/components/combobox.md)；私有selection mixin不增加公共theme.scss配置项，仅由对应组件构建显式产出样式。
 
 默认值唯一维护于 [`../styles/_defaults.scss`](../styles/_defaults.scss)。公共 Sass 入口为 `_index.scss`，仅转发下表配置和 `theme()`、`density()`；导入本身不输出 CSS。Vue、React、Angular 使用同源模块生成主题。Task6 不提供产品组件或主题运行时单例。
 

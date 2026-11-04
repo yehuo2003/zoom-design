@@ -1,0 +1,27 @@
+import { ZCombobox } from '@zoom-design/vue';
+import { ZCombobox as SubpathCombobox } from '@zoom-design/vue/combobox';
+import type { ComboboxProps, ComboboxEmits, ComboboxExpose, ComboboxSize, ComboboxInputAttributes, ComboboxOptionContext } from '@zoom-design/vue';
+import type { ComboboxProps as SubpathProps } from '@zoom-design/vue/combobox';
+
+type Root = InstanceType<typeof ZCombobox>;
+type Subpath = InstanceType<typeof SubpathCombobox>;
+const options = [{ value: 0, label: 'Zero' }, { value: '', label: 'Empty' }, { value: '0', label: 'String zero', disabled: true }] as const;
+const props: Root['$props'] = { modelValue: 0, options, query: 'Ze', minQueryLength: 1, filterOption: (query, option) => option.label.startsWith(query), open: false, size: 'sm', disabled: false, readonly: true, loading: false, clearable: true, loop: true, placement: 'bottom-start', offset: 4, matchTriggerWidth: true, portal: false, name: 'choice', form: 'external', required: true, invalid: false, 'aria-label': 'Choice', inputAttrs: { title: 'Choose', tabindex: 0 }, 'onUpdate:modelValue': value => { const next: string | number | null = value; void next; }, 'onUpdate:query': query => { const next: string = query; void next; } };
+const subpath: Subpath['$props'] = props;
+const own: ComboboxProps = subpath;
+const same: SubpathProps = own;
+declare const instance: Root;
+const expose: ComboboxExpose = instance;
+expose.focus({ preventScroll: true }); expose.blur();
+instance.$emit('update:modelValue', '0'); instance.$emit('update:modelValue', 0); instance.$emit('update:modelValue', null);
+const size: ComboboxSize = 'lg';
+const attrs: ComboboxInputAttributes = { title: 'Choice', tabindex: 0 };
+const events: ComboboxEmits['change'] = [{ value: 0, previousValue: null, option: options[0], reason: 'option' }];
+const queryEvents: ComboboxEmits['query-change'] = [{ query: 'Ze', previousQuery: '', reason: 'input' }];
+const openEvents: ComboboxEmits['open-change'] = [{ open: true, previousOpen: false, reason: 'keyboard' }];
+instance.$emit('change', events[0]); instance.$emit('query-change', queryEvents[0]); instance.$emit('update:query', 'Ze'); instance.$emit('open-change', openEvents[0]); instance.$emit('update:open', false);
+declare const option: ComboboxOptionContext;
+const selected: boolean = option.selected;
+const highlighted: boolean = option.highlighted;
+const label: string = option.option.label;
+void [same, size, attrs, events, queryEvents, openEvents, selected, highlighted, label];

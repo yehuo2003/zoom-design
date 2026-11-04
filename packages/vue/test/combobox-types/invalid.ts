@@ -1,0 +1,17 @@
+import { ZCombobox } from '@zoom-design/vue';
+import type { ComboboxProps, ComboboxInputAttributes } from '@zoom-design/vue/combobox';
+type Props = InstanceType<typeof ZCombobox>['$props'];
+const value: Props = { modelValue: true };
+const size: ComboboxProps = { size: 'huge' };
+const options: Props = { options: [{ value: false, label: 'Wrong' }] };
+const label: Props = { options: [{ value: 0, label: 42 }] };
+const disabled: Props = { disabled: 'false' };
+const query: Props = { query: 42 };
+const placement: Props = { placement: 'middle' };
+const controlled: ComboboxInputAttributes = { role: 'listbox' };
+const handler: Props = { 'onUpdate:query': (next: boolean) => void next };
+const filter: Props = { filterOption: (query: number) => !!query };
+const minimum: Props = { minQueryLength: '2' };
+declare const combobox: InstanceType<typeof ZCombobox>;
+combobox.$emit('update:query', false);
+void [value, size, options, label, disabled, query, placement, controlled, handler, filter, minimum];
