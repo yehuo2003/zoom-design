@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, realpathSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gzipSync, brotliCompressSync } from 'node:zlib';
@@ -47,6 +48,28 @@ describe('Task5 packed consumer gates', () => {
     const manifest = { name: '@zoom-design/vue', exports: { '.': { types: './dist/index.d.ts', import: './dist/index.js' }, './style.css': './dist/style.css' } };
     files.set('package.json', Buffer.from(JSON.stringify(manifest))); files.set('dist/index.d.ts', Buffer.from('export {};'));
     expect(() => inspectPackageFiles(files, '@zoom-design/vue')).toThrow(/sideEffects/);
+  });
+  it('rejects node_modules in tarball contents while allowing npm-installed nested dependencies', async () => {
+    const name = '@zoom-design/angular';
+    const manifest = { name, dependencies: { tslib: '~2.8.1' }, exports: { '.': { types: './dist/index.d.ts', import: './dist/index.js' }, './style.css': './styles/style.css', './theme.css': './styles/theme.css', './theme.scss': { sass: './styles/theme/_index.scss', default: './styles/theme/_index.scss' } }, sideEffects: ['**/*.css'] };
+    const contents: [string, Buffer][] = [
+      ['package.json', Buffer.from(JSON.stringify(manifest))], ['dist/index.js', Buffer.from('export {};')], ['dist/index.d.ts', Buffer.from('export {};')],
+      ['styles/style.css', Buffer.from('')], ['styles/theme.css', Buffer.from('')],
+      ...['_index.scss', '_defaults.scss', '_theme.scss', '_density.scss'].map(file => [`styles/theme/${file}`, Buffer.from('')] as [string, Buffer]),
+    ];
+    const leakedTarball = new Map(contents); leakedTarball.set('node_modules/tslib/CopyrightNotice.txt', Buffer.from('dependency file'));
+    expect(() => inspectPackageFiles(leakedTarball, name)).toThrow(/forbidden packed file node_modules\/tslib/);
+
+    const directory = mkdtempSync(join(tmpdir(), 'zoom-installed-package-'));
+    try {
+      for (const [path, body] of contents) { const file = join(directory, path); mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, body); }
+      const nested = join(directory, 'node_modules/tslib'); mkdirSync(nested, { recursive: true }); writeFileSync(join(nested, 'CopyrightNotice.txt'), 'npm-installed dependency');
+      const packContracts = await import('../../scripts/pack-contracts.mjs') as typeof import('../../scripts/pack-contracts.mjs') & { installedPackageFiles?: (directory: string) => Map<string, Buffer> };
+      expect(packContracts.installedPackageFiles).toBeTypeOf('function');
+      const installed = packContracts.installedPackageFiles!(directory);
+      expect(installed.has('node_modules/tslib/CopyrightNotice.txt')).toBe(false);
+      expect(inspectPackageFiles(installed, name).manifest.dependencies).toEqual({ tslib: '~2.8.1' });
+    } finally { rmSync(directory, { recursive: true, force: true }); }
   });
   it('rejects the repository, its ancestors, descendants and symlink consumers', () => {
     const base = mkdtempSync(join(tmpdir(), 'zoom-pack-boundary-'));

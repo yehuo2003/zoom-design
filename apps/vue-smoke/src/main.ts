@@ -6,17 +6,20 @@ const status = document.querySelector('[role="status"]')!;
 try {
   const scenario = selectExample(window.location.href);
   if (scenario.example === 'button') await import('@zoom-design/vue/button');
+  else if (scenario.example === 'combobox') await import('@zoom-design/vue/combobox');
   else if (scenario.example === 'select') await import('@zoom-design/vue/select');
   else await import('@zoom-design/vue');
   const { default: Host } = scenario.example === 'button'
     ? await import('./examples/ButtonExamples.vue')
+    : scenario.example === 'combobox'
+    ? await import('./examples/ComboboxExamples.vue')
     : scenario.example === 'select'
     ? await import('./examples/SelectExamples.vue')
     : scenario.example === 'theme'
     ? await import('./examples/ThemeExamples.vue')
     : await import('./ProbeHost.vue');
   const root = document.getElementById('app')!;
-  const hostProps = { brand: scenario.brand, initialOpen: scenario.initialOpen };
+  const hostProps = { brand: scenario.brand, initialOpen: scenario.initialOpen, initialQuery: scenario.initialQuery, initialValue: scenario.initialValue, ...(scenario.example === 'select' ? { largeList: scenario.largeList } : {}) };
   const app = root.dataset.ssr === 'true' ? createSSRApp(Host, hostProps) : createApp(Host, hostProps);
   app.mount(root);
   root.dataset.hydrated = String(root.dataset.ssr === 'true');

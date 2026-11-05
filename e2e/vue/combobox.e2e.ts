@@ -22,6 +22,22 @@ async function choose(page: Page, input: Locator, label: string) {
 }
 test.beforeEach(async ({ page }) => { await page.emulateMedia({ reducedMotion: 'reduce' }); });
 
+test('T12.12 explicit empty form owner detaches both native fields and dynamic owners follow the prop', async ({ page }) => {
+  await visit(page); const probe = page.getByTestId('combobox-form-owner-probe'); const controls = probe.locator('select, input[type="hidden"]');
+  const owners = () => controls.evaluateAll(nodes => nodes.map(node => ({ attribute: node.getAttribute('form'), owner: (node as HTMLInputElement | HTMLSelectElement).form?.id ?? null })));
+  const data = (formId: string) => page.locator(`#${formId}`).evaluate(form => [...new FormData(form as HTMLFormElement).entries()]);
+  expect(await owners()).toEqual([{ attribute: null, owner: 'combobox-form-owner-probe' }, { attribute: null, owner: 'combobox-form-owner-probe' }]);
+  expect(await data('combobox-form-owner-probe')).toEqual([['probe-choice', '0']]);
+  await page.getByRole('button', { name: 'Set Combobox probe to empty form', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: '', owner: null }, { attribute: '', owner: null }]); expect(await data('combobox-form-owner-probe')).toEqual([]);
+  await page.getByRole('button', { name: 'Set Combobox probe to external form', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: 'combobox-alternative-form', owner: 'combobox-alternative-form' }, { attribute: 'combobox-alternative-form', owner: 'combobox-alternative-form' }]);
+  expect(await data('combobox-alternative-form')).toEqual([['probe-choice', '0']]);
+  await page.getByRole('button', { name: 'Clear Combobox probe form override', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: null, owner: 'combobox-form-owner-probe' }, { attribute: null, owner: 'combobox-form-owner-probe' }]);
+  expect(await data('combobox-form-owner-probe')).toEqual([['probe-choice', '0']]);
+});
+
 test('T12.1/T12.2 editing filters text without submitting a business value', async ({ page, assetEvidence }) => {
   await visit(page); const input = choice(page);
   await expect(input).toHaveJSProperty('tagName', 'INPUT'); await expect(input).toHaveAttribute('aria-autocomplete', 'list');

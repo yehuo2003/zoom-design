@@ -21,6 +21,40 @@ async function choose(page: Page, trigger: Locator, label: string) {
 }
 test.beforeEach(async ({ page }) => { await page.emulateMedia({ reducedMotion: 'reduce' }); });
 
+test('T11.5 initially open SSR selection scrolls its active option within the popup after hydration and reorder', async ({ page }) => {
+  await page.goto('/ssr?example=select&open=true&largeList=true'); await expect(page.locator('#app')).toHaveAttribute('data-hydrated', 'true');
+  const trigger = page.getByRole('combobox', { name: 'SSR select', exact: true }); const list = page.locator('#ssr-popup-host [role="listbox"]');
+  const option = page.getByRole('option', { name: 'Option 79', exact: true });
+  const visible = () => list.evaluate(popup => {
+    const activeId = document.querySelector<HTMLElement>('#ssr-select')?.getAttribute('aria-activedescendant'); const active = activeId ? document.getElementById(activeId) : null;
+    if (!active) return false;
+    const popupRect = popup.getBoundingClientRect(); const activeRect = active.getBoundingClientRect(); const top = popupRect.top + (popup as HTMLElement).clientTop; const bottom = top + (popup as HTMLElement).clientHeight;
+    return activeRect.top >= top && activeRect.bottom <= bottom;
+  });
+  await expect(option).toHaveAttribute('aria-selected', 'true'); await expect.poll(visible).toBe(true);
+  expect(await list.evaluate(node => (node as HTMLElement).scrollTop)).toBeGreaterThan(0); const pageScroll = await page.evaluate(() => window.scrollY);
+  await page.getByRole('button', { name: 'Reverse large list options', exact: true }).evaluate(button => (button as HTMLButtonElement).click());
+  await expect.poll(visible).toBe(true);
+  await trigger.press('Escape'); await expect(trigger).toHaveAttribute('aria-expanded', 'false'); await trigger.click(); await expect.poll(visible).toBe(true);
+  expect(await page.evaluate(() => window.scrollY)).toBe(pageScroll);
+});
+
+test('T11.10 explicit empty form owner detaches both native fields and dynamic owners follow the prop', async ({ page }) => {
+  await visit(page); const probe = page.getByTestId('select-form-owner-probe'); const controls = probe.locator('select, input[type="hidden"]');
+  const owners = () => controls.evaluateAll(nodes => nodes.map(node => ({ attribute: node.getAttribute('form'), owner: (node as HTMLInputElement | HTMLSelectElement).form?.id ?? null })));
+  const data = (formId: string) => page.locator(`#${formId}`).evaluate(form => [...new FormData(form as HTMLFormElement).entries()]);
+  expect(await owners()).toEqual([{ attribute: null, owner: 'select-form-owner-probe' }, { attribute: null, owner: 'select-form-owner-probe' }]);
+  expect(await data('select-form-owner-probe')).toEqual([['probe-choice', '0']]);
+  await page.getByRole('button', { name: 'Set Select probe to empty form', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: '', owner: null }, { attribute: '', owner: null }]); expect(await data('select-form-owner-probe')).toEqual([]);
+  await page.getByRole('button', { name: 'Set Select probe to external form', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: 'alternative-form', owner: 'alternative-form' }, { attribute: 'alternative-form', owner: 'alternative-form' }]);
+  expect(await data('alternative-form')).toEqual([['probe-choice', '0']]);
+  await page.getByRole('button', { name: 'Clear Select probe form override', exact: true }).click();
+  expect(await owners()).toEqual([{ attribute: null, owner: 'select-form-owner-probe' }, { attribute: null, owner: 'select-form-owner-probe' }]);
+  expect(await data('select-form-owner-probe')).toEqual([['probe-choice', '0']]);
+});
+
 test('T11.1/T11.2/T11.8 public Select preserves numeric, string, empty and null values', async ({ page, assetEvidence }) => {
   await visit(page); const trigger = choice(page);
   await expect(trigger).toHaveText(/Zero/); await expect(trigger).toHaveAccessibleName('Choose value');
@@ -40,6 +74,7 @@ test('T11.3 options removal and reappearance preserve confirmed value; reorder p
   await trigger.press('Enter'); const originalId = await (await popup(page, trigger)).getByRole('option', { name: 'Zero', exact: true }).getAttribute('id');
   await page.getByRole('button', { name: 'Reverse options', exact: true }).click(); await trigger.press('Enter');
   await expect((await popup(page, trigger)).getByRole('option', { name: 'Zero', exact: true })).toHaveAttribute('id', originalId!);
+  await trigger.press('Escape'); await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   await page.getByRole('button', { name: 'Toggle zero disabled', exact: true }).click(); await trigger.press('Enter');
   await expect((await popup(page, trigger)).getByRole('option', { name: 'Zero', exact: true })).toHaveAttribute('aria-disabled', 'true');
   await expect(await highlighted(page, trigger)).not.toHaveText('Zero'); await expect(trigger).toHaveText(/Zero/);

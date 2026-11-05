@@ -12,8 +12,8 @@ function popupHost(trigger: HTMLElement) { return trigger.ownerDocument.getEleme
   <section aria-labelledby="select-appearance-title"><h2 id="select-appearance-title">Themes, density &amp; portal</h2>
     <div v-for="density in ['regular', 'compact']" :key="density" :data-zoom-density="density" class="select-row"><ZSelect v-for="size in (['sm', 'md', 'lg'] as const)" :key="size" :size="size" :options="options" model-value="small" :aria-label="`${density} ${size} select`" /></div>
     <div dir="rtl"><ZSelect :options="options" model-value="small" aria-label="RTL select" /></div>
-    <div :style="theme" data-zoom-density="compact"><ZSelect v-if="portalMounted" :options="options" model-value="small" portal :get-popup-container="popupHost" aria-label="Themed portal select" /><div id="select-themed-host" :style="theme" data-zoom-density="compact" /></div>
     <div class="select-controls"><button @click="alternate = !alternate">Change select theme</button><button @click="portalMounted = !portalMounted">Toggle portal select</button></div>
+    <div :style="theme" data-zoom-density="compact"><ZSelect v-if="portalMounted" :options="options" model-value="small" portal :get-popup-container="popupHost" aria-label="Themed portal select" /><div id="select-themed-host" :style="theme" data-zoom-density="compact" /></div>
     <div class="select-long"><ZSelect :options="options" model-value="long" aria-label="Large label select" /></div><button class="select-native-host">Native host control</button>
   </section>
 </template>

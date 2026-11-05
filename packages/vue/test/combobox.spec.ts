@@ -58,6 +58,18 @@ it('T12.12 native bridge submits confirmed empty/zero only, query has no name an
   await edit(w, 'free text'); expect(input(w).attributes('name')).toBeUndefined(); expect([...new FormData(form)]).toEqual([['choice', '']]); expect(form.checkValidity()).toBe(true);
   form.reset(); await vi.runAllTimersAsync(); await nextTick(); expect(input(w).element.value).toBe('Empty'); expect(w.emitted('update:modelValue')).toEqual([[null]]); expect(form.checkValidity()).toBe(true);
 });
+it('T12.12 preserves an explicit empty form owner and dynamically switches native ownership', async () => {
+  const outer = document.createElement('form'); const external = document.createElement('form'); external.id = 'external-owner'; document.body.append(outer, external);
+  const w = mount(Combobox, { props: { options, modelValue: 0, name: 'choice' }, attachTo: outer }); wrappers.push(w);
+  const fields = () => [w.get('.zoom-combobox__proxy').element, w.get('input[type="hidden"]').element];
+  expect(fields().map(field => field.form)).toEqual([outer, outer]); expect([...new FormData(outer).entries()]).toEqual([['choice', '0']]);
+  await w.setProps({ form: '' }); expect(fields().map(field => field.getAttribute('form'))).toEqual(['', '']);
+  expect(fields().map(field => field.form)).toEqual([null, null]); expect([...new FormData(outer).entries()]).toEqual([]);
+  await w.setProps({ form: 'external-owner' }); expect(fields().map(field => field.form)).toEqual([external, external]);
+  expect([...new FormData(external).entries()]).toEqual([['choice', '0']]);
+  await w.setProps({ form: undefined }); expect(fields().map(field => field.form)).toEqual([outer, outer]);
+  expect([...new FormData(outer).entries()]).toEqual([['choice', '0']]);
+});
 it('T12.14 SSR starts from query/open and isolates requests without browser resources', async () => {
   const first = await renderToString(createSSRApp({ render: () => h(Combobox, { options, modelValue: 0, query: 'Em', open: true }) }));
   const second = await renderToString(createSSRApp({ render: () => h(Combobox, { options, modelValue: '', query: 'different' }) }));

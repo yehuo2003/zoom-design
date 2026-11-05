@@ -1,11 +1,11 @@
 // Copied outside the repository. Every compiler and theme resolves from this fixture.
 import assert from 'node:assert/strict';
 import * as sass from 'sass';
-import { readFileSync, writeFileSync, renameSync, rmSync, readdirSync, realpathSync } from 'node:fs';
+import { readFileSync, writeFileSync, renameSync, rmSync, realpathSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import { inspectPackageFiles, inside } from './pack-contracts.mjs';
+import { inspectPackageFiles, installedPackageFiles, inside } from './pack-contracts.mjs';
 import { packagePath } from './run-local-bin.mjs';
 
 const root = resolve(import.meta.dirname, '..');
@@ -21,12 +21,6 @@ const compile = (name, body = '.brand { @include zoom.theme(); @include zoom.den
   for (const url of result.loadedUrls) if (url.protocol === 'file:') assert(inside(join(root, 'node_modules', name), fileURLToPath(url)), `Sass source escaped installed package: ${url}`);
   return result.css;
 };
-function installedFiles(directory, prefix = '') {
-  return new Map(readdirSync(join(directory, prefix), { withFileTypes: true }).flatMap(entry => {
-    const path = prefix ? `${prefix}/${entry.name}` : entry.name;
-    return entry.isDirectory() ? [...installedFiles(directory, path)] : [[path, readFileSync(join(directory, path))]];
-  }));
-}
 function positive(name) {
   assert.match(compile(name), /--zoom-color-primary: #2563eb/);
   assert.equal(compile(name, ''), '');
@@ -40,7 +34,7 @@ try {
   for (const name of spec.packages) {
     positive(name);
     const directory = join(root, 'node_modules', name);
-    inspectPackageFiles(installedFiles(directory), name);
+    inspectPackageFiles(installedPackageFiles(directory), name);
     css.push(readFileSync(fileURLToPath(import.meta.resolve(`${name}/theme.css`)), 'utf8'));
   }
   assert.equal(new Set(css).size, 1, 'framework CSS must share identical semantics');
@@ -55,10 +49,10 @@ try {
     writeFileSync(manifestFile, JSON.stringify(manifest)); assert.throws(() => compile(name), /(?:find stylesheet|no such file or directory)/i); evidence.negative.push('wrong-sass-export');
   } finally { writeFileSync(manifestFile, original); positive(name); }
   const privateFile = join(theme, '_private.scss');
-  try { writeFileSync(privateFile, ''); assert.throws(() => inspectPackageFiles(installedFiles(directory), name), /forbidden.*scss/i); evidence.negative.push('private-scss'); }
+  try { writeFileSync(privateFile, ''); assert.throws(() => inspectPackageFiles(installedPackageFiles(directory), name), /forbidden.*scss/i); evidence.negative.push('private-scss'); }
   finally { rmSync(privateFile, { force: true }); positive(name); }
   const source = join(theme, '_theme.scss'); const originalSource = readFileSync(source);
-  try { writeFileSync(source, '@use "../../../src/business";'); assert.throws(() => inspectPackageFiles(installedFiles(directory), name), /Sass.*reference/i); evidence.negative.push('source-reference'); }
+  try { writeFileSync(source, '@use "../../../src/business";'); assert.throws(() => inspectPackageFiles(installedPackageFiles(directory), name), /Sass.*reference/i); evidence.negative.push('source-reference'); }
   finally { writeFileSync(source, originalSource); positive(name); }
   evidence.exitCode = 0;
   console.log(`Theme installed Sass: ${spec.packages.length} packages, 4 negative controls and restored positives PASS`);

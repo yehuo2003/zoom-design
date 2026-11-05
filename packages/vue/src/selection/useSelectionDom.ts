@@ -49,7 +49,18 @@ export function useSelectionDom(props: SelectProps, state: Pick<SelectionState, 
         } catch (error) { floating?.cleanup(); warn(`Cannot mount selection popup: ${String(error)}`); }
       });
     }, { flush: 'post', immediate: true });
-    const scroll = watch(state.highlighted, () => { void nextTick(() => { popup.value?.querySelector<HTMLElement>('[data-zoom-highlighted]')?.scrollIntoView?.({ block: 'nearest' }); }); }, { flush: 'post' });
+    const scroll = watch([state.opened, popup, target, state.highlighted, () => state.normalized.value.options], (_values, _old, onCleanup) => {
+      let active = true; onCleanup(() => { active = false; });
+      void nextTick(() => {
+        const list = popup.value;
+        if (!active || !state.opened.value || !list?.isConnected) return;
+        const option = list.querySelector<HTMLElement>('[data-zoom-highlighted]'); if (!option) return;
+        const listRect = list.getBoundingClientRect(); const optionRect = option.getBoundingClientRect();
+        const visibleTop = listRect.top + list.clientTop; const visibleBottom = visibleTop + list.clientHeight;
+        if (optionRect.top < visibleTop) list.scrollTop -= visibleTop - optionRect.top;
+        else if (optionRect.bottom > visibleBottom) list.scrollTop += optionRect.bottom - visibleBottom;
+      });
+    }, { flush: 'post', immediate: true });
     stop = () => { clearTimeout(outsideTimer); resolve(); layer(); interactions(); scroll(); observer.disconnect(); if (--entry.users === 0) registry.delete(owner); if (!registry.size) delete app.provides[layersKey]; };
   });
   onBeforeUnmount(() => stop());

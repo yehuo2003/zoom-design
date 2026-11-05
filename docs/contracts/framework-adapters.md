@@ -67,20 +67,20 @@ reset 分两阶段：先在最终未取消的下一任务内，以当前已确�
 
 其他非法 JS 布尔值：disabled/readonly/loading fail closed（非 null/undefined 非 boolean 则 true），clearable/loop/portal/required/invalid 归 false，matchTriggerWidth 回退 true，并开发告警；各框架合法布尔转换在此之前完成。offset 非负有限，非法回退 4；minQueryLength 非负整数，非法回退 0。文本只接受 string，非法回退各自记录默认；open 受控非法值回退 false，query 非字符串回退 ''。枚举回退默认。getPopupContainer 非函数或返回未连接/跨 document 非 HTMLElement，portal 回退 inline 并告警；filterOption 非函数则使用默认过滤，抛错则报告并产生空列表。id/name/form 非字符串视为未提供并告警。附加原生属性不能注入 value/name/form/type/disabled/readonly、role、组件计算 ARIA、data-zoom-* 或内联事件字符串；键名先按大小写归一检查，class/style 与合法回调按框架机制合并。
 
-### 4.4.2 最小规划示例（当前不可用）
+### 4.4.2 Vue 实际用法与 React/Angular 规划示例
 
-以下仅用于评审静态语法/语义，不包含不存在的 import，也没有在原生框架工程编译或运行。公开组件、Angular selector/模板 directive、CVA 均由对应实施任务交付。
+Vue Select 与 Combobox 已分别由 Task11/12 交付；完整 API、真实示例与验收范围见 [Select 组件文档](../components/select.md) 和 [Combobox 组件文档](../components/combobox.md)。下方 Vue 示例使用真实公开导入；React/Angular 小节仍是规划映射，产品组件尚未实施。
 
-Vue 规划用法，当前不可用（Task11/12）：
+Vue 3 实际用法：
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
+import { ZCombobox } from '@zoom-design/vue/combobox';
 const value = ref<string | number | null>(0);
 const query = ref('零');
 const open = ref(false);
 const options = [{ value: 0, label: '零' }, { value: '', label: '空值' }];
-// ZCombobox 的 import 随 Task12 真实公开入口补齐。
 </script>
 <template>
   <ZCombobox v-model="value" v-model:query="query" v-model:open="open"

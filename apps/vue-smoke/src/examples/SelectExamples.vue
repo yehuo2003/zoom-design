@@ -5,11 +5,16 @@ import SelectBehaviorExamples from './SelectBehaviorExamples.vue';
 import SelectFormExamples from './SelectFormExamples.vue';
 import SelectAppearanceExamples from './SelectAppearanceExamples.vue';
 
-const props = withDefaults(defineProps<{ brand?: 'purple' | 'teal'; initialOpen?: boolean }>(), { brand: 'purple', initialOpen: false });
+const props = withDefaults(defineProps<{ brand?: 'purple' | 'teal'; initialOpen?: boolean; largeList?: boolean }>(), { brand: 'purple', initialOpen: false, largeList: false });
 const open = shallowRef(props.initialOpen);
 const mounted = shallowRef(true);
+const reordered = shallowRef(false);
 const style = computed(() => ({ '--zoom-color-primary': props.brand === 'teal' ? '#0f766e' : '#7c3aed' }));
-const options = [{ value: 0, label: 'Zero' }, { value: '', label: 'Empty string' }, { value: 'blue', label: 'Blue' }];
+const options = computed(() => {
+  const source = props.largeList ? Array.from({ length: 100 }, (_, value) => ({ value, label: `Option ${value}` })) : [{ value: 0, label: 'Zero' }, { value: '', label: 'Empty string' }, { value: 'blue', label: 'Blue' }];
+  return reordered.value ? [...source].reverse() : source;
+});
+const selectedValue = computed(() => props.largeList ? 79 : 0);
 function popupHost(trigger: HTMLElement) { return trigger.ownerDocument.getElementById('ssr-popup-host'); }
 </script>
 
@@ -19,7 +24,8 @@ function popupHost(trigger: HTMLElement) { return trigger.ownerDocument.getEleme
     <section :style="style" :data-select-brand="brand" aria-labelledby="ssr-title">
       <h2 id="ssr-title">Request-local SSR &amp; portal</h2>
       <button @click="mounted = !mounted">Toggle SSR select</button>
-      <ZSelect v-if="mounted" id="ssr-select" v-model:open="open" :model-value="0" :options="options" portal :get-popup-container="popupHost" aria-label="SSR select" />
+      <button v-if="largeList" @click="reordered = !reordered">Reverse large list options</button>
+      <ZSelect v-if="mounted" id="ssr-select" v-model:open="open" :model-value="selectedValue" :options="options" portal :get-popup-container="popupHost" aria-label="SSR select" />
       <div id="ssr-popup-host" :style="style" />
     </section>
     <SelectBehaviorExamples />

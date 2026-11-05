@@ -1,5 +1,5 @@
-import { readFileSync, realpathSync, lstatSync, existsSync } from 'node:fs';
-import { resolve, relative, isAbsolute, dirname, sep, posix } from 'node:path';
+import { readFileSync, readdirSync, realpathSync, lstatSync, existsSync } from 'node:fs';
+import { resolve, relative, isAbsolute, dirname, join, sep, posix } from 'node:path';
 import { gunzipSync, gzipSync, brotliCompressSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { inspectThemeFiles } from './theme-contract.mjs';
@@ -76,6 +76,20 @@ export function readTarball(file) {
   }
   if (!files.size) throw Error('Empty tarball');
   return files;
+}
+// Inspect only files shipped by the installed package. npm may place valid nested
+// dependencies under its root node_modules; tarballs are checked separately above.
+export function installedPackageFiles(directory) {
+  const files = new Map();
+  function read(prefix = '') {
+    for (const entry of readdirSync(join(directory, prefix), { withFileTypes: true })) {
+      if (!prefix && entry.isDirectory() && entry.name === 'node_modules') continue;
+      const path = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) read(path);
+      else if (entry.isFile()) files.set(path, readFileSync(join(directory, path)));
+    }
+  }
+  read(); return files;
 }
 function targets(value) {
   return typeof value === 'string' ? [value] : value && typeof value === 'object' ? Object.values(value).flatMap(targets) : [];

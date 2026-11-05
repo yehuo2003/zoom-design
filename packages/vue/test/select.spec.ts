@@ -35,6 +35,14 @@ it('T11.5/6 keyboard navigation changes highlight only, confirms once and Tab st
   await trigger.trigger('keydown', { key: 'Enter' }); expect(w.emitted('update:modelValue')?.[0]).toEqual(['0']);
   await trigger.trigger('click'); const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }); trigger.element.dispatchEvent(event); await nextTick(); expect(event.defaultPrevented).toBe(false); expect(w.find('[role=listbox]').exists()).toBe(false);
 });
+it('T11.5 scrolls the initially highlighted option into the popup viewport', async () => {
+  const longOptions = Array.from({ length: 100 }, (_, value) => ({ value, label: `Option ${value}` }));
+  const w = setup({ options: longOptions, modelValue: 79, open: true }); const popup = w.get('[role="listbox"]').element as HTMLElement; const option = w.get('[data-zoom-highlighted]').element as HTMLElement;
+  Object.defineProperty(popup, 'clientHeight', { configurable: true, value: 318 }); Object.defineProperty(popup, 'scrollTop', { configurable: true, writable: true, value: 0 });
+  vi.spyOn(popup, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 50, width: 200, height: 318, top: 50, right: 200, bottom: 368, left: 0, toJSON() {} });
+  vi.spyOn(option, 'getBoundingClientRect').mockReturnValue({ x: 0, y: 2656, width: 200, height: 36, top: 2656, right: 200, bottom: 2692, left: 0, toJSON() {} });
+  await nextTick(); await nextTick(); expect(popup.scrollTop).toBe(2324);
+});
 it('T11.7 disabled/readonly/loading prevent mutation but readonly/loading remain focusable and selected labels remain', async () => {
   const w = setup({ modelValue: 0, readonly: true }); expect(w.get('[role=combobox]').attributes('disabled')).toBeUndefined(); await w.get('[role=combobox]').trigger('click'); expect(w.find('[role=listbox]').exists()).toBe(false);
   await w.setProps({ readonly: false, loading: true }); expect(w.get('[role=combobox]').attributes('aria-busy')).toBe('true');
@@ -56,6 +64,18 @@ it('T11.10/11 bridges a single successful field and restores proxy after rejecte
   form.reset(); await vi.runAllTimersAsync(); await nextTick(); expect(w.emitted('update:modelValue')?.[0]).toEqual([null]); expect(form.checkValidity()).toBe(true);
   await w.setProps({ modelValue: 'unknown' }); expect([...new FormData(form).entries()]).toEqual([]); expect(form.checkValidity()).toBe(false); expect(document.activeElement).toBe(w.get('[role=combobox]').element);
   vi.useRealTimers();
+});
+it('T11.10 preserves an explicit empty form owner and dynamically switches native ownership', async () => {
+  const outer = document.createElement('form'); const external = document.createElement('form'); external.id = 'external-owner'; document.body.append(outer, external);
+  const w = mount(Select, { props: { options, modelValue: 0, name: 'choice' }, attachTo: outer }); wrappers.push(w);
+  const fields = () => [w.get('.zoom-select__proxy').element, w.get('input[type="hidden"]').element];
+  expect(fields().map(field => field.form)).toEqual([outer, outer]); expect([...new FormData(outer).entries()]).toEqual([['choice', '0']]);
+  await w.setProps({ form: '' }); expect(fields().map(field => field.getAttribute('form'))).toEqual(['', '']);
+  expect(fields().map(field => field.form)).toEqual([null, null]); expect([...new FormData(outer).entries()]).toEqual([]);
+  await w.setProps({ form: 'external-owner' }); expect(fields().map(field => field.form)).toEqual([external, external]);
+  expect([...new FormData(external).entries()]).toEqual([['choice', '0']]);
+  await w.setProps({ form: undefined }); expect(fields().map(field => field.form)).toEqual([outer, outer]);
+  expect([...new FormData(outer).entries()]).toEqual([['choice', '0']]);
 });
 it('T11.3 keeps stable typed option IDs through reorder, removal and disabled selection', async () => {
   const w = setup({ modelValue: 0, open: true }); const zero = w.findAll('[role=option]')[0]!.attributes('id');

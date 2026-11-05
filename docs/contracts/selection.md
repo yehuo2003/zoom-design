@@ -153,7 +153,7 @@ Combobox 输入 role=combobox、aria-autocomplete=list，焦点留在输入。op
 
 ### 4.10 Core 最小公开集合（Task9 实现）
 
-以下是冻结的类型签名，当前入口仍为空；禁止为通过检查提前放入占位实现。
+以下是冻结的类型签名，Task9 已从 `@zoom-design/core` 根入口真实导出；API 与用法见 [Core 用法](../../packages/core/README.md)。
 
 ```ts
 type HighlightAction = 'next' | 'previous' | 'first' | 'last';

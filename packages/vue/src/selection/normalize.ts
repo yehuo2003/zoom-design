@@ -13,6 +13,11 @@ export function normalizeSelection(props: SelectProps) {
     if (typeof value === 'string') return value;
     issues.push(`Invalid ${name}; using default`); return fallback;
   };
+  const optionalText = (name: keyof SelectProps) => {
+    const value = props[name]; if (value === undefined) return undefined;
+    if (typeof value === 'string') return value;
+    issues.push(`Invalid ${name}; omitting value`); return undefined;
+  };
   let value: SelectionValue = null;
   if (typeof props.modelValue === 'string' || (typeof props.modelValue === 'number' && Number.isFinite(props.modelValue))) value = props.modelValue;
   else if (props.modelValue != null) issues.push('Invalid modelValue; using null');
@@ -24,6 +29,6 @@ export function normalizeSelection(props: SelectProps) {
   return { value, options: normalized.options, size, placement, offset, issues,
     disabled: bool('disabled', true), readonly: bool('readonly', true), loading: bool('loading', true), clearable: bool('clearable'), loop: bool('loop'), portal: bool('portal'), required: bool('required'), invalid: bool('invalid'), matchTriggerWidth: bool('matchTriggerWidth', true, true),
     open: bool('open'), placeholder: text('placeholder'), emptyText: text('emptyText', '暂无选项'), loadingText: text('loadingText', '加载中'), clearLabel: text('clearLabel', '清空'),
-    id: text('id') || undefined, name: text('name') || undefined, form: text('form') || undefined,
+    id: text('id') || undefined, name: text('name') || undefined, form: optionalText('form'),
   };
 }
