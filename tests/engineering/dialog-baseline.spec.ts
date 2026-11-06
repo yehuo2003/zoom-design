@@ -3,13 +3,14 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { runBin } from '../../scripts/run-local-bin.mjs';
+import { verifyDialogDiagnostics } from './dialog-type-contract.mjs';
 
 const root = process.cwd();
 const fixture = resolve(root, 'packages/vue/test/dialog-types');
 
-describe('Task13.1 source Dialog contract', () => {
+describe('Task13.1/13.9 Dialog public contract', () => {
   for (const workspace of ['packages/vue', '.']) {
-    it(`T13.1.5/6 ${workspace} TypeScript accepts the planned API and rejects unsupported calls`, () => {
+    it(`T13.1.5/6 ${workspace} TypeScript accepts the public API and rejects unsupported calls`, () => {
       const base = resolve(root, workspace);
       const positive = runBin(base, 'typescript', 'tsc', ['-p', resolve(fixture, 'tsconfig.ts.json')], 'pipe');
       expect(positive.stdout + positive.stderr).toBe('');
@@ -19,13 +20,7 @@ describe('Task13.1 source Dialog contract', () => {
       const output = negative.stdout + negative.stderr;
       expect(negative.status).not.toBe(0);
       expect(output).not.toMatch(/TS2305|TS2307/);
-      const actual = [...output.matchAll(/invalid\.ts\((\d+),\d+\): error TS(\d+):/g)]
-        .map(([, line, code]) => `${line}:TS${code}`);
-      expect(actual).toEqual([
-        '4:TS2353', '5:TS2322', '6:TS2322', '8:TS2339', '9:TS2353',
-        '10:TS2353', '11:TS2322', '13:TS2554', '14:TS2322',
-        '15:TS2322', '17:TS2540',
-      ]);
+      expect(() => verifyDialogDiagnostics(output)).not.toThrow();
     });
   }
 

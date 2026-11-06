@@ -1,6 +1,6 @@
 # Task13 Dialog 阶段验收记录
 
-日期：2026-11-05；最近更新：2026-11-06。Task13.1–13.7 已获用户确认（Task13.7 于 2026-11-06 确认）；Task13.8 开发中。Task13.9–13.12 未开始。
+日期：2026-11-05；最近更新：2026-11-06。Task13.1–13.8 已获用户确认（Task13.7–13.8 于 2026-11-06 确认）；Task13.9 开发中。Task13.10–13.12 未开始。
 
 ## Task13.3 DOM 兼容增强
 
@@ -99,4 +99,21 @@ Dialog 在实际打开周期记录深层 invoker、解析一次 initialFocus，�
 | Vue smoke 类型检查、浏览器构建 | 通过 |
 | 独立 tarball 消费和 packed 水合 | Task13.10 范围，本阶段未执行；Firefox 浏览器环境仍待复验 |
 
-执行命令：`node scripts/check-vue-ssr.mjs`、`npx vitest run --reporter=verbose tests/engineering/dialog-preview.spec.ts`、`node scripts/check-dialog-preview.mjs`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npm run build --workspace @zoom-design/vue-smoke`、`node scripts/run-local-bin.mjs --workspace apps/vue-smoke --package vite --bin vite -- build --config vite.config.ts --ssr src/ssr.ts --outDir ../../.artifacts/task13/vue-smoke-server`、`node scripts/check-dev.mjs`，以及三个既有 Dialog 浏览器配置。受限 Windows 宿主拒绝 `taskkill` 时，进程组改用直接终止受管子进程；watch 回归已复跑通过，临时改动已还原。Task13.8 状态保持进行中，等待用户验收；未执行 Git 提交、推送或发布。
+执行命令：`node scripts/check-vue-ssr.mjs`、`npx vitest run --reporter=verbose tests/engineering/dialog-preview.spec.ts`、`node scripts/check-dialog-preview.mjs`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npm run build --workspace @zoom-design/vue-smoke`、`node scripts/run-local-bin.mjs --workspace apps/vue-smoke --package vite --bin vite -- build --config vite.config.ts --ssr src/ssr.ts --outDir ../../.artifacts/task13/vue-smoke-server`、`node scripts/check-dev.mjs`，以及三个既有 Dialog 浏览器配置。受限 Windows 宿主拒绝 `taskkill` 时，进程组改用直接终止受管子进程；watch 回归已复跑通过，临时改动已还原。用户于 2026-11-06 确认 Task13.8 验收通过；未执行 Git 提交、推送或发布。
+
+## Task13.9 声明、精确出口、单测与覆盖门禁
+
+状态：开发与专项自动验证已完成，等待用户验收；尚未标记 Task13.9 已完成。
+
+| 场景 | 结果 |
+| --- | --- |
+| T13.9.1 根与 `/dialog` 运行出口 | 通过；`ZDialog` 同一实例，Vue 仅四个批准运行名称，Core 六个、DOM 十二个运行名称精确匹配 |
+| T13.9.2 私有深路径 | 通过；源码、overlay、Dialog 内部模块与 `dist` 深路径均被 `exports` 拒绝 |
+| T13.9.3 TS6/TS7 真实声明 | 通过；两版 plain TS 正例直接加载 `dist` 声明，Core 14、DOM 15 个公开类型及增量签名匹配，未解析到产品 `src` |
+| T13.9.4 vue-tsc SFC | 通过；本地 TS6 编译 root/subpath 组件的 props、事件、五类 slots、close 插槽上下文及 `focus` expose |
+| T13.9.5 精确负例 | 通过；TS6、TS7 与 vue-tsc 对原因、readonly、attrs、受控事件、close 插槽参数及未公开实例方法按文件/行/列/TS 代码精确命中；缺模块诊断会拒绝 |
+| T13.9.6 产物与失败清理 | 通过；缺 `dialog/index.js`、两项声明或 `dialog/style.css` 及模拟构建失败均拒绝并清理隔离 `dist`；真实 Vue 构建通过 |
+| T13.9.7 生产覆盖 | 通过；Vue 汇总四项 92.20%/95.87%/88.51%/96.39%，Dialog/overlay 可执行文件纳入；DOM 汇总四项 94.77%/98.97%/88.79%/98.85%，每文件四项最低 81.33% |
+| T13.9.8 既有回归 | 通过；Vue 129/129、DOM 39/39、Core 25/25、工程 136/136、Vue Chromium 76/76 |
+
+执行命令：`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npx vitest run --reporter=verbose tests/engineering/dialog-contract.spec.ts tests/engineering/dialog-build-gate.spec.ts`、`npx vitest run --reporter=verbose tests/engineering/coverage-gate.spec.ts`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:coverage --workspace @zoom-design/dom`、`npm run test:unit --workspace @zoom-design/core`、`npm run test:engineering`、`npm run test:e2e --workspace @zoom-design/vue`。首次工程回归有两个旧 Task13.1 夹具行号断言失败；改为复用新的精确公开声明诊断后，单文件 4/4 与全量 136/136 通过。Chromium 的 76 项全部完成后，本次 Vite 服务端口已关闭但进程未退出；只终止该次受管服务进程，随后 Playwright 写出 `results.json` 和 `counts.json`，命令退出码为 0。独立 tarball、packed 类型/水合及体积属于 Task13.10，本阶段未验证；未执行 Git 提交、推送或发布。

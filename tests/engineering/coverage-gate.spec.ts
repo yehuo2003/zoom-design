@@ -43,3 +43,20 @@ it('T10.16 DOM per-file thresholds reject a weak production file even with a pas
   const coverage = { [join(directory, 'good.ts')]: entry(Array(20).fill(1)), [join(directory, 'weak.ts')]: entry([1, 0]), [join(root, 'packages/dom/test/fixtures/listener.ts')]: entry([1]) };
   expect(() => classifyCoverage('dom', coverage, root)).toThrow(/production file.*weak.ts.*50%/);
 });
+it('T13.9.7 requires new Dialog and overlay production files in Vue coverage', async () => {
+  const { classifyCoverage } = await import('../../scripts/coverage-report.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'zoom-coverage-')); roots.push(root);
+  const dialog = join(root, 'packages/vue/src/dialog/Dialog.vue');
+  const overlay = join(root, 'packages/vue/src/overlay/session.ts');
+  mkdirSync(join(root, 'packages/vue/src/dialog'), { recursive: true });
+  mkdirSync(join(root, 'packages/vue/src/overlay'), { recursive: true });
+  writeFileSync(dialog, '<script setup lang="ts">const open = true;</script><template><div v-if="open" /></template>');
+  writeFileSync(overlay, 'export function createSession() { return true; }');
+  const entry = { s: { 0: 1 }, f: { 0: 1 }, b: { 0: [1] }, statementMap: { 0: { start: { line: 1 } } } };
+  const coverage = { [join(root, 'packages/vue/test/fixtures/probe.ts')]: entry, [dialog]: entry };
+  expect(() => classifyCoverage('vue', coverage, root)).toThrow(/production source has no coverage.*session\.ts/);
+  const report = classifyCoverage('vue', { ...coverage, [overlay]: entry }, root);
+  expect(report.production.status).toBe('PASS');
+  expect(report.production.files).toEqual([dialog, overlay].map(file => file.replaceAll('\\', '/')));
+  for (const value of Object.values(report.production.metrics)) expect((value as { percent: number }).percent).toBe(100);
+});

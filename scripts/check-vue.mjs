@@ -6,6 +6,8 @@ import { runBin, packagePath, readJson } from './run-local-bin.mjs';
 import { resolveVueCompiler } from './run-vue-tsc.mjs';
 import { verifyComboboxDiagnostics } from '../tests/engineering/packed/combobox-type-contract.mjs';
 import { verifySelectDiagnostics } from '../tests/engineering/packed/select-type-contract.mjs';
+import { verifyDialogDiagnostics, verifyDialogResolution } from '../tests/engineering/dialog-type-contract.mjs';
+import { assertFrameworkArtifacts } from './framework-artifacts.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const workspace = join(root, 'packages/vue');
@@ -27,6 +29,7 @@ try {
   if (readJson(vueTscManifest).version !== '3.3.13') throw Error('Vue requires vue-tsc3.3.13');
   results.push({ label: 'actual Vue compiler resolution', ...compiler, vueTscManifest });
   if (['core', 'dom'].some(name => !existsSync(join(root, `packages/${name}/dist/index.d.ts`)))) record('Vue Core/DOM declaration prerequisites', spawnSync(process.execPath, [join(root, 'scripts/build-platform.mjs'), 'dom'], { cwd: root, encoding: 'utf8', shell: false }));
+  assertFrameworkArtifacts('vue', join(workspace, 'dist'));
   vueTsc('tsconfig.json');
   vueTsc('tsconfig.build.json');
   record('TS6 public Button declaration consumer', runBin(workspace, 'typescript', 'tsc', ['-p', 'test/button-types/tsconfig.ts.json'], 'pipe'));
@@ -52,6 +55,20 @@ try {
   const comboboxNegative = vueTsc('test/combobox-types/tsconfig.negative.json', 2);
   verifyComboboxDiagnostics(`${comboboxNegative.stdout}${comboboxNegative.stderr}`, true);
   console.log('Combobox TS6/TS7/vue-tsc exact product diagnostics: PASS');
+  for (const compilerWorkspace of [workspace, join(root, 'packages/core')]) {
+    const config = join(workspace, 'test/dialog-types/tsconfig.ts.json');
+    record(`Dialog ${compilerWorkspace} public declaration consumer`, runBin(compilerWorkspace, 'typescript', 'tsc', ['-p', config], 'pipe'));
+    const files = runBin(compilerWorkspace, 'typescript', 'tsc', ['-p', config, '--listFilesOnly'], 'pipe');
+    record(`Dialog ${compilerWorkspace} emitted declaration resolution`, files);
+    verifyDialogResolution(files.stdout);
+    const negative = runBin(compilerWorkspace, 'typescript', 'tsc', ['-p', join(workspace, 'test/dialog-types/tsconfig.ts.negative.json')], 'pipe');
+    record(`Dialog ${compilerWorkspace} negative declarations`, negative, compilerWorkspace === workspace ? 2 : 1);
+    verifyDialogDiagnostics(`${negative.stdout}${negative.stderr}`);
+  }
+  vueTsc('test/dialog-types/tsconfig.json');
+  const dialogNegative = vueTsc('test/dialog-types/tsconfig.negative.json', 2);
+  verifyDialogDiagnostics(`${dialogNegative.stdout}${dialogNegative.stderr}`, true);
+  console.log('Dialog TS6/TS7/vue-tsc exact product diagnostics: PASS');
   record('private SFC fixture JavaScript build', runBin(workspace, 'vite', 'vite', ['build', '--config', 'test/fixtures/vite.config.ts'], 'pipe'));
   const js = readFileSync(join(root, '.artifacts/fixtures/vue/index.js'), 'utf8');
   if (!/from ["']vue["']/.test(js) || js.includes('function createRenderer(')) throw Error('Private SFC fixture must externalize Vue');

@@ -1,11 +1,11 @@
-import type { DialogProps, DialogPanelAttributes, DialogEmits, DialogExpose, DialogCloseSlotContext } from '../../src/dialog/types';
+import { ZDialog } from '@zoom-design/vue';
+import type { DialogProps, DialogPanelAttributes, DialogCloseSlotContext } from '@zoom-design/vue/dialog';
 import type { DialogCloseDetails, DialogCloseReason } from '@zoom-design/core';
 
+type Props = InstanceType<typeof ZDialog>['$props'];
 const uncontrolled: DialogProps = { defaultOpen: true };
 const programmatic: DialogCloseReason = 'programmatic';
-const invalidUpdate: DialogEmits['update:open'] = [true];
-declare const expose: DialogExpose;
-expose.close();
+const invalidUpdate: Props = { 'onUpdate:open': (open: true) => void open };
 const role: DialogPanelAttributes = { role: 'alertdialog' };
 const ariaModal: DialogPanelAttributes = { 'aria-modal': true };
 const inlineHandler: DialogPanelAttributes = { onClick: 'alert(1)' };
@@ -15,4 +15,8 @@ const focus: DialogProps = { initialFocus: () => 42 };
 const container: DialogProps = { getContainer: (trigger: HTMLElement) => trigger };
 declare const details: DialogCloseDetails;
 details.open = false;
+details.previousOpen = true;
+details.reason = 'escape';
+declare const dialog: InstanceType<typeof ZDialog>;
+dialog.close();
 void [uncontrolled, programmatic, invalidUpdate, role, ariaModal, inlineHandler, focus, container];

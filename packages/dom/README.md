@@ -1,6 +1,6 @@
 # @zoom-design/dom
 
-框架无关的浏览器交互基础。Task10 提供十二个函数和十二个类型；Task13.3 为 Dialog 协调增加三个类型及现有函数的增强返回值。能力包括定位、文档层级、焦点、模态隔离/滚动锁和原生表单生命周期。导入本包不访问浏览器资源；在 Node 中调用浏览器操作会明确抛出 `Unsupported browser environment`。它不保存组件模型、不渲染 Select/Combobox/Dialog。
+框架无关的浏览器交互基础。公开运行函数保持十二个；Task10 的十二个类型加上 Task13.3 的三个协调类型后，公开类型共十五个。能力包括定位、文档层级、焦点、模态隔离/滚动锁和原生表单生命周期。导入本包不访问浏览器资源；在 Node 中调用浏览器操作会明确抛出 `Unsupported browser environment`。它不保存组件模型、不渲染 Select/Combobox/Dialog。
 
 只支持根入口的 ESM 与声明，src/dist 深层导入关闭。生产构建 TS7.0.2、ES2022 + DOM/DOM.Iterable、strict、skipLibCheck=false；真实声明以 TS6.0.3/TS7.0.2 复验。运行依赖为 Core0.0.0 与 Floating UI DOM1.8.0，无框架或视觉样式依赖。
 
