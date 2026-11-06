@@ -29,6 +29,7 @@
 .zoom-#{$component}[data-zoom-disabled] .zoom-#{$component}__trigger { cursor: not-allowed; }
 .zoom-#{$component}__popup {
   position: absolute; z-index: var(--zoom-#{$component}-z-index, var(--_zoom-overlay-layer-z, 1000)); left: 0; top: 100%;
+  pointer-events: auto;
   min-inline-size: 24px; max-inline-size: calc(100vw - 1rem); max-block-size: var(--zoom-#{$component}-popup-max-block-size, 20rem); overflow: auto;
   background: var(--zoom-#{$component}-popup-bg, var(--zoom-color-surface, #{defaults.$color-surface})); color: var(--zoom-#{$component}-fg, var(--zoom-color-text, #{defaults.$color-text}));
   border: 1px solid var(--zoom-#{$component}-border-color, var(--zoom-color-border, #{defaults.$color-border})); border-radius: var(--zoom-#{$component}-radius, var(--zoom-radius-md, .375rem));

@@ -30,6 +30,7 @@ export class OverlayOwner {
   private modalSequence = 0;
   private sequence = 0;
   private disposed = false;
+  private relocating = false;
 
   constructor(readonly parent: OverlayOwner | null) {}
 
@@ -42,6 +43,12 @@ export class OverlayOwner {
   get depth(): number { let depth = 0; for (let cursor = this.parent; cursor; cursor = cursor.parent) depth++; return depth; }
   get modalScope(): HTMLElement | null { return this.modalLease?.scope ?? null; }
   get modalOrder(): number { return this.modalSequence; }
+  get relocatingInChain(): boolean {
+    for (let cursor: OverlayOwner | null = this; cursor; cursor = cursor.parent) if (cursor.relocating) return true;
+    return false;
+  }
+
+  setRelocating(value: boolean) { this.relocating = value; }
 
   setDemand(demand: OverlayDemand) {
     if (this.disposed) return;
@@ -62,7 +69,7 @@ export class OverlayOwner {
     session.withdraw(this);
   }
 
-  dispose() { if (this.disposed) return; this.disposed = true; this.clear(); }
+  dispose() { if (this.disposed) return; this.disposed = true; this.relocating = false; this.clear(); }
 
   belongsTo(session: OverlaySession): boolean { return this.session === session; }
   hasAncestor(ancestor: OverlayOwner): boolean { for (let cursor = this.parent; cursor; cursor = cursor.parent) if (cursor === ancestor) return true; return false; }
@@ -117,6 +124,10 @@ export class OverlayOwner {
 
   releaseModal() {
     this.modalLease?.cleanup(); this.modalLease = null; this.modalSequence = 0;
+  }
+
+  updateModalAllowedNodes(nodes: readonly HTMLElement[]) {
+    this.modalLease?.updateAllowedNodes(nodes);
   }
 
   acquireModal(session: OverlaySession, demand: OverlayModalDemand, initialFocus: HTMLElement | null = demand.initialFocus ?? null) {

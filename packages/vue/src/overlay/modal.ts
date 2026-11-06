@@ -20,6 +20,10 @@ export class OverlayModal {
     if (!this.disposed) this.handle.updateAllowedNodes(demand.allowedNodes ?? []);
   }
 
+  updateAllowedNodes(nodes: readonly HTMLElement[]) {
+    if (!this.disposed) this.handle.updateAllowedNodes(nodes);
+  }
+
   cleanup() {
     if (this.disposed) return;
     this.disposed = true;

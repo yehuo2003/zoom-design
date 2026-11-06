@@ -129,6 +129,25 @@ export class OverlaySession {
     }
   }
 
+  private reconcileAllowedNodes() {
+    const active = [...this.owners].filter(owner => owner.active);
+    for (const modal of active) {
+      const scope = modal.modalScope;
+      if (!scope) continue;
+      const allowed = new Set(modal.demand?.modal?.allowedNodes ?? []);
+      for (const descendant of active) {
+        if (descendant === modal || descendant.modalScope || !descendant.hasAncestor(modal)) continue;
+        let nearest = descendant.parent;
+        while (nearest && !nearest.modalScope) nearest = nearest.parent;
+        if (nearest !== modal) continue;
+        for (const node of descendant.demand?.nodes ?? []) {
+          if (node.isConnected && node.ownerDocument === this.ownerDocument && !containsComposed(scope, node)) allowed.add(node);
+        }
+      }
+      modal.updateModalAllowedNodes([...allowed]);
+    }
+  }
+
   private flush() {
     if (this.disposed) return;
     if (this.flushing) { this.dirty = true; return; }
@@ -147,6 +166,7 @@ export class OverlaySession {
             else if (!this.blocked(owner) && owner.activate(this)) { this.activationVersion++; activated.push(owner); }
           }
           this.reconcileModalOrder();
+          this.reconcileAllowedNodes();
         }, () => {
           const latest = activated.filter(owner => owner.active).at(-1);
           if (latest && !latest.demand?.modal) latest.demand?.onActivate?.();

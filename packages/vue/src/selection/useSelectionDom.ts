@@ -8,16 +8,23 @@ export function useSelectionDom(props: SelectProps, state: Pick<SelectionState, 
   const target = shallowRef<HTMLElement | null>(null);
   const overlayOwner = useOverlayOwner();
   const focusEvents = new WeakSet<Event>(); let outsideBlur = false; let outsideTimer: ReturnType<typeof setTimeout> | undefined;
+  let migrating = false;
   let stop = () => {};
   onMounted(() => {
     const owner = trigger.value!.ownerDocument;
+    function setTarget(next: HTMLElement | null) {
+      if (target.value === next) return;
+      target.value = next;
+      migrating = true;
+      void nextTick(() => { migrating = false; });
+    }
     function resolveTarget() {
-      if (!state.opened.value || !state.normalized.value.portal) { target.value = null; return; }
+      if (!state.opened.value || !state.normalized.value.portal) { setTarget(null); return; }
       try {
         const candidate = typeof props.getPopupContainer === 'function' ? props.getPopupContainer(trigger.value!) : null;
-        if (candidate instanceof owner.defaultView!.HTMLElement && candidate.isConnected && candidate.ownerDocument === owner && !popup.value?.contains(candidate)) target.value = candidate;
-        else { target.value = null; warn('portal requires a connected same-document popup container; using inline'); }
-      } catch { target.value = null; warn('popup container callback failed; using inline'); }
+        if (candidate instanceof owner.defaultView!.HTMLElement && candidate.isConnected && candidate.ownerDocument === owner && !popup.value?.contains(candidate)) setTarget(candidate);
+        else { setTarget(null); warn('portal requires a connected same-document popup container; using inline'); }
+      } catch { setTarget(null); warn('popup container callback failed; using inline'); }
     }
     const resolve = watchEffect(resolveTarget, { flush: 'post' });
     const portalObserver = watch(state.opened, (open, _before, onCleanup) => {
@@ -74,9 +81,14 @@ export function useSelectionDom(props: SelectProps, state: Pick<SelectionState, 
     blur() { trigger.value?.blur(); },
     focusout(event: FocusEvent) {
       if (focusEvents.has(event)) return; focusEvents.add(event);
-      if (outsideBlur) return;
+      if (outsideBlur || migrating || overlayOwner.relocatingInChain || !root.value?.isConnected || target.value && !target.value.isConnected) return;
       const nodes = [trigger.value, popup.value, root.value].filter((node): node is HTMLElement => node !== null);
-      if (!isWithin(nodes, event.relatedTarget)) state.requestOpen(false, 'blur');
+      if (event.relatedTarget === null) {
+        void nextTick(() => {
+          if (!state.opened.value || outsideBlur || migrating || overlayOwner.relocatingInChain || !root.value?.isConnected || target.value && !target.value.isConnected) return;
+          if (!isWithin(nodes, trigger.value?.ownerDocument.activeElement ?? null)) state.requestOpen(false, 'blur');
+        });
+      } else if (!isWithin(nodes, event.relatedTarget)) state.requestOpen(false, 'blur');
     },
   };
 }

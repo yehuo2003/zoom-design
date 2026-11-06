@@ -1,6 +1,6 @@
 # Task13 Dialog 阶段验收记录
 
-日期：2026-11-05。Task13.1–13.5 已获用户确认；Task13.6 自动验证通过，待用户验收。Task13.7–13.12 未开始。
+日期：2026-11-05。Task13.1–13.6 已获用户确认；Task13.7 开发中。Task13.8–13.12 未开始。
 
 ## Task13.3 DOM 兼容增强
 
@@ -63,4 +63,23 @@ Dialog 在实际打开周期记录深层 invoker、解析一次 initialFocus，�
 | Chromium 焦点与锁 | 2/2 通过 |
 | Chromium Task13.5 受控请求回归 | 3/3 通过 |
 
-执行命令：`npx vitest run --config vitest.config.ts packages/vue/test/dialog-focus.spec.ts --reporter=verbose`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/dom`、`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npx playwright test --config tests/engineering/dialog-focus/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-state/playwright.config.ts`。并行构建与浏览器测试曾碰到构建清理产物时样式入口短暂不可解析，构建完成后串行重跑两组浏览器测试均通过。Task13.6 待用户验收；嵌套选择浮层与 portal 迁移仍属 Task13.7。未执行 Git 提交、推送或发布。
+执行命令：`npx vitest run --config vitest.config.ts packages/vue/test/dialog-focus.spec.ts --reporter=verbose`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/dom`、`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npx playwright test --config tests/engineering/dialog-focus/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-state/playwright.config.ts`。并行构建与浏览器测试曾碰到构建清理产物时样式入口短暂不可解析，构建完成后串行重跑两组浏览器测试均通过。用户已确认 Task13.6 验收；嵌套选择浮层与 portal 迁移仍属 Task13.7。未执行 Git 提交、推送或发布。
+
+## Task13.7 嵌套选择组件、混合模态与 Portal
+
+共享 overlay session 按最近的有效 modal owner 收集活动后代节点，跨 nonmodal owner 继续追溯，精确放行实际迁出的 panel/popup，不放行整个共享 host。Dialog 校验外置目标的连通性、同 Document 和自包含关系；初始 inline 后迁移，目标切换或移除时保留 panel/title 身份、层序和合法输入焦点，失效目标回退 inline。Select/Combobox 在迁移期间避免把浏览器的暂时失焦当成业务离焦。组合示例包含选择浮层、IME、两种混合模态、内部 form 与页脚显式 form owner、父层拒绝关闭和共享品牌 host。
+
+| 验证 | 结果 |
+| --- | --- |
+| T13.7.1–T13.7.7 组合单测 | 8/8 通过，T13.7.4 覆盖两种组合 |
+| Vue 全量单测与覆盖率 | 129/129 通过；生产文件门禁通过 |
+| Vue 覆盖率汇总 | statements 92.24%，branches 88.54%，functions 95.89%，lines 96.42% |
+| DOM 全量单测 | 39/39 通过 |
+| Vue build/typecheck，Vue smoke typecheck | 通过 |
+| Chromium 组合 E2E | 7/7 通过，含真实点击和 elementFromPoint |
+| Task13.5/13.6 Chromium 回归 | 3/3、2/2 通过 |
+| pack 工程单测 | 10/10 通过，含合法 npm 嵌套依赖正例 |
+| Vue 既有 Chromium E2E | 逐项输出 76/76 通过；退出阶段挂起后人工中断，未生成汇总门禁 |
+| Firefox 组合 E2E | 七个用例均在创建页面前报 Target crashed，未验证浏览器行为 |
+
+执行命令：`npx vitest run --reporter=verbose packages/vue/test/dialog-composition.spec.ts`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/dom`、`npx vitest run --reporter=verbose tests/engineering/pack.spec.ts`、`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npx playwright test --config tests/engineering/dialog-composition/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-state/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-focus/playwright.config.ts`、`node scripts/e2e.mjs --mode workspace --package vue --browser chromium`。Firefox 在双项目组合配置中创建页面前崩溃；2026-11-06 使用独立空白页再次于 `browser.newPage()` 复现 `Target crashed`，未进入应用页面，不能将其视作组件通过或失败。IME 浏览器事件为合成 composition 自动化，真实系统 IME 尚未手工观察。Task13.7 仍待用户验收，未执行 Git 提交、推送或发布。

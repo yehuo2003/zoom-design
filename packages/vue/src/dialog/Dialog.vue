@@ -68,7 +68,7 @@ function rootAttributes() {
 }
 
 const { requestClose } = useDialogState(n, panel, emit);
-useDialogDom(n, panel, root, requestClose, error => warn(`Cannot register dialog layer: ${String(error)}`), warn);
+const dom = useDialogDom(n, panel, root, requestClose, error => warn(`Cannot register dialog layer: ${String(error)}`), warn);
 function closeButton(event?: Event) { requestClose('close-button', event); }
 function focus(options?: FocusOptions) {
   if (n.value.open && panel.value?.isConnected) panel.value.focus(options);
@@ -77,7 +77,7 @@ defineExpose<DialogExpose>({ focus });
 </script>
 
 <template>
-  <Teleport to="body" disabled>
+  <Teleport :to="dom.target.value || 'body'" :disabled="!dom.target.value">
     <div v-if="n.open" ref="root" v-bind="rootAttributes()" :class="['zoom-dialog', props.class]" :style="props.style" :data-zoom-modal="n.modal ? true : undefined">
       <div v-if="n.modal" class="zoom-dialog__backdrop" aria-hidden="true" />
       <div ref="panel" v-bind="panelAttributes()"

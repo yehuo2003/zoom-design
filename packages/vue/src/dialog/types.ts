@@ -11,7 +11,7 @@ export interface DialogPanelAttributes extends Pick<HTMLAttributes,
   [attribute: `data-${string}`]: string | number | boolean | undefined;
 }
 
-/** Controlled ZDialog props; portal resources are added in a later Task13 stage. */
+/** Controlled ZDialog props with an explicit same-document portal container. */
 export interface DialogProps extends /* @vue-ignore */ DialogNaming {
   open?: boolean;
   modal?: boolean;
