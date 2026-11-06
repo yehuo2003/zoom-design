@@ -15,7 +15,7 @@ describe('T11.14 Select engineering boundaries', () => {
     expect(qualityPlan('typecheck', 'vue').filter(stage => stage.script === 'build').map(stage => stage.package)).toEqual(['core', 'dom', 'vue']);
   });
   it('loads exact public root/subpath runtime exports in Node and closes internals', () => {
-    const result = spawnSync(process.execPath, ['--input-type=module', '-e', `import assert from 'node:assert/strict'; assert.equal(typeof document,'undefined');const root=await import('@zoom-design/vue');const sub=await import('@zoom-design/vue/select');assert.deepEqual(Object.keys(root),['ZButton','ZCombobox','ZSelect']);assert.deepEqual(Object.keys(sub),['ZSelect']);assert.equal(root.ZSelect,sub.ZSelect);assert.ok(import.meta.resolve('@zoom-design/vue/select/style.css').endsWith('/dist/select/style.css'));await assert.rejects(import('@zoom-design/vue/src/select/Select.vue'),{code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});`], { encoding: 'utf8' });
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e', `import assert from 'node:assert/strict'; assert.equal(typeof document,'undefined');const root=await import('@zoom-design/vue');const sub=await import('@zoom-design/vue/select');assert.deepEqual(Object.keys(root),['ZButton','ZCombobox','ZDialog','ZSelect']);assert.deepEqual(Object.keys(sub),['ZSelect']);assert.equal(root.ZSelect,sub.ZSelect);assert.ok(import.meta.resolve('@zoom-design/vue/select/style.css').endsWith('/dist/select/style.css'));await assert.rejects(import('@zoom-design/vue/src/select/Select.vue'),{code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});`], { encoding: 'utf8' });
     expect(result.status, result.stdout + result.stderr).toBe(0);
   });
   for (const compiler of ['packages/vue', 'packages/core']) it(`${compiler} consumes real declarations and rejects ten precise errors`, () => {
@@ -37,7 +37,7 @@ describe('T11.14 Select engineering boundaries', () => {
   });
   it('rejects missing packed Select JS/types/CSS and undeclared Core/DOM runtime dependencies', () => {
     const manifest = JSON.parse(readFileSync('packages/vue/package.json', 'utf8'));
-    const paths = ['package.json', 'dist/index.js', 'dist/types/index.d.ts', 'dist/button/index.js', 'dist/types/button/index.d.ts', 'dist/button/style.css', 'dist/select/index.js', 'dist/types/select/index.d.ts', 'dist/select/style.css', 'dist/combobox/index.js', 'dist/types/combobox/index.d.ts', 'dist/combobox/style.css', 'dist/style.css', 'dist/theme.css', ...['_index.scss', '_defaults.scss', '_theme.scss', '_density.scss'].map(name => `dist/styles/theme/${name}`)];
+    const paths = ['package.json', 'dist/index.js', 'dist/types/index.d.ts', 'dist/button/index.js', 'dist/types/button/index.d.ts', 'dist/button/style.css', 'dist/select/index.js', 'dist/types/select/index.d.ts', 'dist/select/style.css', 'dist/combobox/index.js', 'dist/types/combobox/index.d.ts', 'dist/combobox/style.css', 'dist/dialog/index.js', 'dist/types/dialog/index.d.ts', 'dist/dialog/style.css', 'dist/style.css', 'dist/theme.css', ...['_index.scss', '_defaults.scss', '_theme.scss', '_density.scss'].map(name => `dist/styles/theme/${name}`)];
     const files = new Map(paths.map(path => [path, path === 'package.json' ? Buffer.from(JSON.stringify(manifest)) : readFileSync(resolve('packages/vue', path))]));
     expect(() => inspectPackageFiles(files, '@zoom-design/vue')).not.toThrow();
     for (const path of ['dist/select/index.js', 'dist/types/select/index.d.ts', 'dist/select/style.css']) {

@@ -1,4 +1,5 @@
-import { mountFloating, registerLayer, createLayerContext, trapFocus, createModalContext, getFormOwner, observeFormBridge } from '@zoom-design/dom';
+import { mountFloating, registerLayer, createLayerContext, acquireModal, trapFocus, createModalContext, getFormOwner, observeFormBridge } from '@zoom-design/dom';
+import type { ModalContext } from '@zoom-design/dom';
 declare const element: HTMLElement, input: HTMLInputElement;
 mountFloating(element, element, { placement: 'left' });
 mountFloating(element, element, { offset: '4' });
@@ -7,3 +8,7 @@ registerLayer(createLayerContext(document), { nodes: [element], onDismiss(reason
 trapFocus(createModalContext(document), element, { initialFocus: window });
 getFormOwner(element);
 observeFormBridge({ proxy: input, submission: input, trigger: element, onReset() {}, onInvalid() {} });
+registerLayer(createLayerContext(document), { nodes: [element], onDismiss() {} }).updateNodes([window]);
+acquireModal(createModalContext(document), { scope: element }).updateAllowedNodes([window]);
+declare const legacyModalContext: ModalContext;
+legacyModalContext.batch(() => {});

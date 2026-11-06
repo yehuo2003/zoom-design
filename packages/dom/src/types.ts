@@ -9,8 +9,11 @@ export interface LayerOptions {
   readonly closeOnEscape?: boolean; readonly closeOnOutside?: boolean;
 }
 export interface LayerHandle { cleanup(): void }
+export interface RegisteredLayerHandle extends LayerHandle { updateNodes(nodes: readonly HTMLElement[]): void }
 export interface ModalContext { readonly ownerDocument: Document }
+export interface ManagedModalContext extends ModalContext { batch<T>(action: () => T, afterCommit?: () => void): T }
 export interface ModalOptions { readonly scope: HTMLElement; readonly allowedNodes?: readonly HTMLElement[] }
+export type ModalHandle = Cleanup & { updateAllowedNodes(nodes: readonly HTMLElement[]): void };
 export interface FocusTrapOptions { readonly initialFocus?: HTMLElement | null }
 export interface FormBridgeOptions {
   readonly proxy: HTMLSelectElement; readonly submission: HTMLInputElement; readonly trigger: HTMLElement;

@@ -112,7 +112,7 @@ try {
         const combobox = await import('@zoom-design/vue/combobox');
         if (JSON.stringify(Object.keys(combobox)) !== '["ZCombobox"]' || combobox.ZCombobox !== adapter.ZCombobox) throw Error('Vue Combobox runtime API differs between root and subpath');
         const select = await import('@zoom-design/vue/select');
-        if (JSON.stringify(Object.keys(adapter)) !== '["ZButton","ZCombobox","ZSelect"]' || JSON.stringify(Object.keys(component)) !== '["ZButton"]' || component.ZButton !== adapter.ZButton || JSON.stringify(Object.keys(select)) !== '["ZSelect"]' || select.ZSelect !== adapter.ZSelect) throw Error('Vue public runtime API differs between root and component subpaths');
+        if (JSON.stringify(Object.keys(adapter)) !== '["ZButton","ZCombobox","ZDialog","ZSelect"]' || JSON.stringify(Object.keys(component)) !== '["ZButton"]' || component.ZButton !== adapter.ZButton || JSON.stringify(Object.keys(select)) !== '["ZSelect"]' || select.ZSelect !== adapter.ZSelect) throw Error('Vue public runtime API differs between root and component subpaths');
       }
       const server = join(directory, 'server/ssr.js');
       if (existsSync(server)) {

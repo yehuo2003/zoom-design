@@ -7,3 +7,4 @@ export type {
   QueryChangeReason, QueryChangeDetails, OpenChangeReason, OpenChangeDetails,
   HighlightAction, OptionIssue, NormalizedOptions,
 } from './selection/index.js';
+export type { DialogCloseReason, DialogCloseDetails } from './dialog/types.js';

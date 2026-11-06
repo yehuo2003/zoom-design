@@ -152,12 +152,18 @@ it('T11.12/15 portal resolves only after mount and cleans the popup when unmount
   const host = document.createElement('div'); document.body.append(host); const w = setup({ open: true, portal: true, getPopupContainer: () => host }); await nextTick(); await nextTick(); expect(host.querySelector('[role=listbox]')).not.toBeNull();
   w.unmount(); wrappers.pop(); expect(host.querySelector('[role=listbox]')).toBeNull();
   const warnings = vi.spyOn(console, 'warn').mockImplementation(() => {}); const other = setup({ open: true, portal: true, getPopupContainer: () => document.createElement('div') }); await nextTick(); expect(other.find('[role=listbox]').exists()).toBe(true); expect(warnings).toHaveBeenCalled();
+  const lateHost = document.createElement('div'); document.body.append(lateHost);
+  const late = setup({ open: false, portal: true, getPopupContainer: () => lateHost });
+  lateHost.remove(); await late.setProps({ open: true }); await nextTick();
+  expect(late.find('[role=listbox]').exists()).toBe(true);
+  expect(lateHost.querySelector('[role=listbox]')).toBeNull();
 });
-it('T11.6 external value updates do not reorder two active sibling layers', async () => {
-  const values = reactive<{ first: string | null }>({ first: null }); const requests: string[] = [];
-  const Host = defineComponent({ setup: () => () => [h(Select, { options, modelValue: values.first, open: true, 'onUpdate:open': () => requests.push('first') }), h(Select, { options, open: true, 'onUpdate:open': () => requests.push('second') })] });
+it('T11.6/T13.4.5 external value and geometry updates do not reorder two active sibling layers', async () => {
+  const values = reactive<{ first: string | null; offset: number }>({ first: null, offset: 4 }); const requests: string[] = [];
+  const Host = defineComponent({ setup: () => () => [h(Select, { options, modelValue: values.first, offset: values.offset, open: true, 'onUpdate:open': () => requests.push('first') }), h(Select, { options, open: true, 'onUpdate:open': () => requests.push('second') })] });
   const w = mount(Host, { attachTo: document.body }); wrappers.push(w); await nextTick(); await nextTick(); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); expect(requests).toEqual(['second']);
   requests.length = 0; values.first = ''; await nextTick(); await nextTick(); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); expect(requests).toEqual(['second']);
+  requests.length = 0; values.offset = 8; await nextTick(); await nextTick(); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); expect(requests).toEqual(['second']);
 });
 it('T11.8/13 arbitrary UTF-16 values have unique stable ARIA IDs and do not crash SSR', async () => {
   const options = [{ value: '\ud800', label: 'High surrogate' }, { value: '\ud801', label: 'Other surrogate' }, { value: '😀', label: 'Emoji' }];

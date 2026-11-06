@@ -1,0 +1,102 @@
+@use "sass:meta";
+@use "../../../../design/styles/defaults" as defaults;
+
+.zoom-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zoom-dialog-z-index, var(--_zoom-overlay-layer-z, 1000));
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: var(--zoom-dialog-viewport-gap, 1rem);
+  pointer-events: none;
+  font-family: var(--zoom-dialog-font-family, var(--zoom-font-family, #{meta.inspect(defaults.$font-family)}));
+  font-size: var(--zoom-dialog-font-size, var(--zoom-font-size-md, var(--zoom-font-size-base, 1rem)));
+  line-height: var(--zoom-dialog-line-height, var(--zoom-line-height, 1.5));
+  color: var(--zoom-dialog-color, var(--zoom-color-text, #111827));
+}
+.zoom-dialog[data-zoom-modal] { pointer-events: auto; }
+.zoom-dialog__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--zoom-dialog-backdrop-color, rgb(0 0 0 / 45%));
+}
+.zoom-dialog__panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--zoom-dialog-gap, calc(var(--zoom-control-gap, .5rem) * 2));
+  box-sizing: border-box;
+  inline-size: min(100%, var(--zoom-dialog-inline-size, 32rem));
+  max-inline-size: 100%;
+  max-block-size: calc(100vh - 2 * var(--zoom-dialog-viewport-gap, 1rem));
+  max-block-size: var(--zoom-dialog-max-block-size, calc(100dvh - 2 * var(--zoom-dialog-viewport-gap, 1rem)));
+  min-block-size: 0;
+  overflow: hidden;
+  padding: var(--zoom-dialog-padding, calc(var(--zoom-control-gap, .5rem) * 3));
+  border: 1px solid var(--zoom-dialog-border-color, var(--zoom-color-border, #6b7280));
+  border-radius: var(--zoom-dialog-radius, var(--zoom-radius-md, .375rem));
+  background: var(--zoom-dialog-background, var(--zoom-color-surface, #fff));
+  box-shadow: var(--zoom-dialog-shadow, 0 1rem 3rem rgb(0 0 0 / 20%));
+  pointer-events: auto;
+}
+.zoom-dialog__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--zoom-dialog-gap, calc(var(--zoom-control-gap, .5rem) * 2));
+  min-inline-size: 0;
+}
+.zoom-dialog__heading { min-inline-size: 0; }
+.zoom-dialog__title {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--zoom-dialog-title-font-size, var(--zoom-font-size-lg, 1.125rem));
+  font-weight: var(--zoom-dialog-title-font-weight, 600);
+}
+.zoom-dialog__description {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  color: var(--zoom-dialog-muted-color, var(--zoom-color-text-muted, #4b5563));
+}
+.zoom-dialog__close,
+.zoom-dialog__close-slot {
+  grid-column: 2;
+  grid-row: 1;
+  min-inline-size: var(--zoom-dialog-close-size, var(--zoom-control-min-size-md, 2.25rem));
+  min-block-size: var(--zoom-dialog-close-size, var(--zoom-control-min-size-md, 2.25rem));
+}
+.zoom-dialog__close {
+  display: inline-grid;
+  place-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--zoom-dialog-radius, var(--zoom-radius-md, .375rem));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.25em;
+  cursor: pointer;
+}
+.zoom-dialog__close:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.zoom-dialog__close:focus-visible,
+.zoom-dialog__panel:focus-visible {
+  outline: var(--zoom-dialog-focus-width, var(--zoom-focus-width, 2px)) solid var(--zoom-dialog-focus-color, var(--zoom-color-focus, var(--zoom-color-primary, #2563eb)));
+  outline-offset: var(--zoom-dialog-focus-offset, var(--zoom-focus-offset, 2px));
+}
+.zoom-dialog__content {
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+.zoom-dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--zoom-dialog-gap, calc(var(--zoom-control-gap, .5rem) * 2));
+  min-inline-size: 0;
+}

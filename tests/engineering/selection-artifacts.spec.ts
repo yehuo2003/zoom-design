@@ -17,11 +17,11 @@ describe('T9.13/T9.14/T9.16 real Core selection artifacts', () => {
       expect(() => verifySelectionDiagnostics(negative.stdout + negative.stderr)).not.toThrow();
     });
   }
-  it('matches all twelve approved erased types and six named functions; all Core JS/declarations stay browser/framework free', () => {
+  it('matches fourteen approved erased types and six named functions; all Core JS/declarations stay browser/framework free', () => {
     const ts = createRequire(resolve(root, 'packages/vue/package.json'))('typescript');
     const entry = ts.createSourceFile('index.d.ts', readFileSync('packages/core/dist/index.d.ts', 'utf8'), ts.ScriptTarget.Latest, true);
     const types = entry.statements.filter((statement: any) => statement.isTypeOnly).flatMap((statement: any) => statement.exportClause.elements.map((element: any) => element.name.text)).sort();
-    expect(types).toEqual(['OptionValue', 'SelectionValue', 'SelectionOption', 'SelectionReason', 'SelectionChangeDetails', 'QueryChangeReason', 'QueryChangeDetails', 'OpenChangeReason', 'OpenChangeDetails', 'HighlightAction', 'OptionIssue', 'NormalizedOptions'].sort());
+    expect(types).toEqual(['OptionValue', 'SelectionValue', 'SelectionOption', 'SelectionReason', 'SelectionChangeDetails', 'QueryChangeReason', 'QueryChangeDetails', 'OpenChangeReason', 'OpenChangeDetails', 'HighlightAction', 'OptionIssue', 'NormalizedOptions', 'DialogCloseReason', 'DialogCloseDetails'].sort());
     const files = (directory: string): string[] => readdirSync(directory, { withFileTypes: true }).flatMap(item => item.isDirectory() ? files(join(directory, item.name)) : [join(directory, item.name)]);
     for (const file of files('packages/core/dist')) expect(readFileSync(file, 'utf8')).not.toMatch(/\b(window|document|HTMLElement|Ref|VNode|ReactNode|TemplateRef)\b|from ["'](?:vue|react|@angular|node:)|\.s?css/);
   });

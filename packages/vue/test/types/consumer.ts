@@ -7,11 +7,11 @@ type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B 
 type Expect<T extends true> = T;
 type Probe = InstanceType<typeof BuildProbe>;
 type LabelIsString = Expect<Equal<Probe['$props']['label'], string>>;
-type PublicSurfaceIsApproved = Expect<Equal<keyof typeof PublicVue, 'ZButton' | 'ZCombobox' | 'ZSelect'>>;
+type PublicSurfaceIsApproved = Expect<Equal<keyof typeof PublicVue, 'ZButton' | 'ZCombobox' | 'ZDialog' | 'ZSelect'>>;
 // @ts-expect-error The exact public runtime surface must include Select.
 type MissingSelectIsRejected = Expect<Equal<keyof typeof PublicVue, 'ZButton'>>;
 // @ts-expect-error Private engineering components must never enter the runtime surface.
-type AdditionalExportIsRejected = Expect<Equal<keyof typeof PublicVue, 'ZButton' | 'ZCombobox' | 'ZSelect' | 'BuildProbe'>>;
+type AdditionalExportIsRejected = Expect<Equal<keyof typeof PublicVue, 'ZButton' | 'ZCombobox' | 'ZDialog' | 'ZSelect' | 'BuildProbe'>>;
 const props: Probe['$props'] = { label: 'Initial', onChanged: (count: number) => void count };
 // @ts-expect-error Emitted fixture declarations must reject a numeric label.
 const invalidProps: Probe['$props'] = { label: 3 };

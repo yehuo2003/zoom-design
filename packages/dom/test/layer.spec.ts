@@ -40,4 +40,22 @@ describe('T10.5–8 document-local layers', () => {
     const handle = registerLayer(context, { nodes: [trigger, popup], onDismiss: dismiss }); cleanups.push(handle.cleanup);
     trigger.focus(); popup.focus(); expect(isWithin([trigger, popup], document.activeElement)).toBe(true); expect(dismiss).not.toHaveBeenCalled();
   });
+  it('T13.5.7 ignores composed Escape from an active IME target and clears stale composition', () => {
+    const editor = button(); const context = createLayerContext(document); const dismiss = vi.fn();
+    const handle = registerLayer(context, { nodes: [editor], onDismiss: dismiss }); cleanups.push(handle.cleanup);
+    editor.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true, composed: true }));
+    editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+    expect(dismiss).not.toHaveBeenCalled();
+    editor.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, composed: true }));
+    const legacy = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true });
+    Object.defineProperty(legacy, 'keyCode', { value: 229 });
+    editor.dispatchEvent(legacy);
+    expect(dismiss).not.toHaveBeenCalled();
+    editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+    expect(dismiss).toHaveBeenCalledTimes(1);
+    editor.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true, composed: true }));
+    editor.remove();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
+    expect(dismiss).toHaveBeenCalledTimes(2);
+  });
 });

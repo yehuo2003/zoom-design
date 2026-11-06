@@ -30,6 +30,11 @@
       "import": "./dist/combobox/index.js"
     },
     "./combobox/style.css": "./dist/combobox/style.css",
+    "./dialog": {
+      "types": "./dist/types/dialog/index.d.ts",
+      "import": "./dist/dialog/index.js"
+    },
+    "./dialog/style.css": "./dist/dialog/style.css",
     "./style.css": "./dist/style.css",
     "./theme.css": "./dist/theme.css",
     "./theme.scss": {

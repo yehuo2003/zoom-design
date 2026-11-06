@@ -82,7 +82,15 @@ export function trapFocus(context: ModalContext, scope: HTMLElement, options: Fo
     state.traps.delete(scope);
     if (previousTabindex === null) scope.removeAttribute('tabindex'); else scope.setAttribute('tabindex', previousTabindex);
   };
-  const trap = { activate() { if (active || disposed) return; active = true; initial(); initialized = true; }, deactivate() { active = false; }, redirect() { if (active && !disposed) initial(); }, cleanup };
+  const trap = { activate() {
+    if (disposed) return;
+    const current = activeElement(owner);
+    const legal = current instanceof owner.defaultView!.HTMLElement && inside(current) && available(current);
+    if (active && legal) return;
+    active = true;
+    if (!initialized || !legal) initial();
+    initialized = true;
+  }, deactivate() { active = false; }, redirect() { if (active && !disposed) initial(); }, cleanup };
   try { owner.addEventListener('keydown', keydown, true); owner.addEventListener('focusin', focusin, true); state.traps.set(scope, trap); state.notify(); } catch (error) { cleanup(); throw error; }
   return cleanup;
 }

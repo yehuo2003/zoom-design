@@ -1,6 +1,6 @@
 # @zoom-design/vue
 
-Vue 3 原生组件包，提供 `ZButton`、Task11 已验收的 `ZSelect`，Task12已完成且通过用户验收的 `ZCombobox`，均使用根入口或各自子路径命名导入。Task11 于2026-10-30用户验收通过，见 [Select 验收记录](../../docs/engineering/task11-acceptance.md)；Combobox 的独立验证状态见 [Task12](../../docs/engineering/task12-acceptance.md)。
+Vue 3 原生组件包，提供 `ZButton`、Task11 已验收的 `ZSelect`，Task12已完成且通过用户验收的 `ZCombobox`，均使用根入口或各自子路径命名导入。Task13.1–13.5 已通过用户验收；Task13.6 已接入 `ZDialog` 模态焦点、背景隔离、滚动锁和生命周期并通过自动验证，等待用户验收。嵌套选择浮层与 portal 属于后续子任务。Task11 于2026-10-30用户验收通过，见 [Select 验收记录](../../docs/engineering/task11-acceptance.md)；Combobox 的独立验证状态见 [Task12](../../docs/engineering/task12-acceptance.md)。
 
 ```ts
 import { ZButton } from '@zoom-design/vue/button';
@@ -13,6 +13,8 @@ import '@zoom-design/vue/button/style.css';
 import '@zoom-design/vue/select/style.css';
 import '@zoom-design/vue/combobox/style.css';
 ```
+
+Dialog 的独立入口为 `@zoom-design/vue/dialog`，样式为 `@zoom-design/vue/dialog/style.css`。`open` 始终由应用控制；默认关闭按钮、close 插槽、Escape 与 outside 按 `update:open(false)` → `close-request(details)` 请求关闭。应用不回写时继续打开。接受/拒绝/异步保存示例位于 `apps/vue-smoke/dialog-state.html`，局部外观夹具位于 `apps/vue-smoke/dialog-shell.html`。模态焦点、隔离、滚动锁和 portal 尚未接入。
 
 也可从 `@zoom-design/vue` 同时命名导入组件与公开类型，样式仅导入聚合 `@zoom-design/vue/style.css`。单组件 CSS 有 regular 默认回退，容器密度需 `theme.css`，JS 不隐式加载样式。普通 CSS 用户无需 Sass，可选 `theme.scss` 仅公开主题。
 

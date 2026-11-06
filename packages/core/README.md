@@ -1,6 +1,6 @@
 # @zoom-design/core
 
-框架无关的纯选择规则。Task9 提供六个命名函数与十二个只读类型；没有 DOM、框架运行依赖、样式、定时器、事件订阅或全局状态。应用持有 value/query/highlight，Core 只派生结果，不自动回写应用值。版本为 0.0.0，尚未公开发布。
+框架无关的纯选择规则与 Dialog 关闭详情类型。Task9 提供六个命名函数与十二个选择类型；Task13.1 增加两个纯类型，运行函数仍为六个。没有 DOM、框架运行依赖、样式、定时器、事件订阅或全局状态。应用持有 value/query/highlight，Core 只派生结果，不自动回写应用值。版本为 0.0.0，尚未公开发布。
 
 ```ts
 import {
@@ -38,7 +38,7 @@ const candidate = findTypeaheadMatch(options, null, '字'); // '0'
 
 `OptionValue=string|number`，number 必须有限；`SelectionValue=OptionValue|null`。0 与 '' 均合法，0 与 '0' 不相等，-0 与 0 相等。不支持对象值、boolean、bigint 或 symbol。选项删除后只返回无匹配，调用者的 value 不变；重加相同类型值即可恢复。invalid-disabled 归 true 并返回诊断，undefined 表示没有该可选配置。
 
-类型出口：OptionValue、SelectionValue、SelectionOption、SelectionReason、SelectionChangeDetails、QueryChangeReason、QueryChangeDetails、OpenChangeReason、OpenChangeDetails、HighlightAction、OptionIssue、NormalizedOptions。所有详情是数据，不携带原生 Event、Ref、VNode、ReactNode 或 DOM 节点。完整原因、默认和边界见 [共同契约](../../docs/contracts/selection.md)、[框架适配](../../docs/contracts/framework-adapters.md)。
+类型出口：OptionValue、SelectionValue、SelectionOption、SelectionReason、SelectionChangeDetails、QueryChangeReason、QueryChangeDetails、OpenChangeReason、OpenChangeDetails、HighlightAction、OptionIssue、NormalizedOptions、DialogCloseReason、DialogCloseDetails。DialogCloseReason 仅为 escape/outside/close-button；DialogCloseDetails 的 readonly open=false、previousOpen=true 表示关闭请求，并非已关闭通知。所有详情是数据，不携带原生 Event、Ref、VNode、ReactNode 或 DOM 节点。完整原因、默认和边界见 [共同契约](../../docs/contracts/selection.md)、[Dialog 契约](../../docs/contracts/dialog.md)、[框架适配](../../docs/contracts/framework-adapters.md)。
 
 500ms typeahead 时间窗口、query 输入、IME、原生表单、ARIA 与 DOM 资源管理均由适配层/DOM 后续任务负责。filterOption 自定义回调在适配层处理，不增加 Core 第七个函数。
 

@@ -8,6 +8,23 @@
 
 React/Angular 列均为后续适配设计，示例在相应产品实现前必须标“规划”。
 
+#### 4.3.1 Dialog 增量映射（Task13.1）
+
+Vue 已有 DialogProps/Emits/Slots/Expose、纯归一化、ZDialog 渲染外壳、产品入口和独立 CSS；Task13.5 已获验收，Task13.6 已实现模态焦点、背景隔离、滚动锁及生命周期并通过自动验证，等待用户验收，portal 仍待后续子任务。React/Angular Dialog 均为**规划，当前不可用**，不声明真实组件 import 或 selector。共享关闭详情来自 Core 的 DialogCloseReason（escape/outside/close-button）和 readonly DialogCloseDetails（open=false、previousOpen=true）。
+
+| 语义 | Vue 规划产品 | React 规划，当前不可用 | Angular 规划，当前不可用 |
+| --- | --- | --- | --- |
+| 受控输入 | `open` / `update:open(false)` | `open` / `onOpenChange(false, details)` | `open` / `openChange(false)` |
+| 请求详情 | 紧接 `update:open` 的 `close-request(details)` | 紧接 `onOpenChange` 的 `onCloseRequest(details)` | 紧接 `openChange` 的 `closeRequest(details)` |
+| 容器与文案 | `portal`、`getContainer(): HTMLElement\|null`、`closeLabel` | 同语义；未来用 createPortal | 同语义；模板适配待实现 |
+| 内容 | default/title/description/footer/close；close 作用域 `{ requestClose }` | children/title/description/footer/renderClose | 内容投影及 TemplateRef；directive 名称待定 |
+| 原生属性 | root class/style/data-*；受限 `panelAttrs` | root className/style；受限 panelProps | 宿主 class/style；受限 panelAttrs |
+| 实例 | 仅 `focus(options?: FocusOptions): void` | 同语义 ref handle | 同语义实例方法 |
+
+Dialog 的 `modal`、`closeOnEscape`、`closeOnOutside`、`restoreFocus` 默认 true；`open`、`portal` 默认 false。initialFocus/returnFocus/getContainer 均由应用提供回调；getContainer 无 trigger 参数。aria-labelledby 优先于 aria-label，之后才用 title 插槽 ID；aria-describedby 显式空串禁用自动描述关联。Vue 关闭请求同步成对发出，父层拒绝回写时保持实际打开及资源；卸载只释放实际建立的资源。详见 [Dialog 契约](dialog.md)。
+
+#### 4.3.2 Select/Combobox 映射（已交付 Vue 产品）
+
 | 语义 | Vue3 本轮 | React 规划 | Angular 规划 |
 | --- | --- | --- | --- |
 | 组件名 | ZSelect / ZCombobox | ZSelect / ZCombobox | ZSelectComponent / ZComboboxComponent；selector 待适配任务冻结 |

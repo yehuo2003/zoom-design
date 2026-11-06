@@ -2,7 +2,7 @@ export const domFunctions = ['acquireModal', 'createLayerContext', 'createModalC
 export function verifyDOMDiagnostics(output) {
   const actual = [...output.matchAll(/(?:^|\n)([^\r\n]+)\((\d+),\d+\): error TS(\d+):/g)]
     .map(match => `${match[1].replaceAll('\\', '/').split('/').pop()}:${match[2]}:TS${match[3]}`).sort();
-  const expected = ['3:TS2322', '4:TS2322', '5:TS2740', '6:TS2322', '7:TS2322', '8:TS2345', '9:TS2740'].map(item => `invalid.ts:${item}`).sort();
+  const expected = ['4:TS2322', '5:TS2322', '6:TS2740', '7:TS2322', '8:TS2322', '9:TS2345', '10:TS2740', '11:TS2740', '12:TS2740', '14:TS2339'].map(item => `invalid.ts:${item}`).sort();
   if (JSON.stringify(actual) !== JSON.stringify(expected)) throw Error(`DOM exact diagnostics mismatch: ${JSON.stringify(actual)}\n${output}`);
 }
 export function verifyDOMNode(api) {

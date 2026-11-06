@@ -183,7 +183,7 @@ TS7 只以标准 ES2022 声明语法发出，禁止不兼容 TS6 的声明特性
 
 ### 4.11 DOM 最小公开集合（Task10 实现）
 
-所有 DOM 目标以 ownerDocument/defaultView 为准。以下接口中的数组均只读；Cleanup=()=>void 且幂等。配置更新通过 cleanup 后重建，只有定位提供 update；不增加通用订阅/全局服务。
+所有 DOM 目标以 ownerDocument/defaultView 为准。以下接口中的数组均只读；Cleanup=()=>void 且幂等。Task13.3 增加 layer nodes、modal allowedNodes 原位更新与同步 batch；其他配置仍通过 cleanup 后重建，不增加通用订阅/全局服务。
 
 ```ts
 type Cleanup = () => void;
@@ -203,14 +203,17 @@ interface LayerOptions {
   closeOnEscape?: boolean; closeOnOutside?: boolean;
 }
 interface LayerHandle { cleanup(): void }
-registerLayer(context: LayerContext, options: LayerOptions): LayerHandle;
+interface RegisteredLayerHandle extends LayerHandle { updateNodes(nodes: readonly HTMLElement[]): void }
+registerLayer(context: LayerContext, options: LayerOptions): RegisteredLayerHandle;
 isWithin(nodes: readonly HTMLElement[], target: EventTarget | null, event?: Event): boolean;
 focusElement(target: HTMLElement | null, options?: FocusOptions): boolean;
 restoreFocus(preferred: HTMLElement | null, fallback?: HTMLElement | null): boolean;
 trapFocus(context: ModalContext, scope: HTMLElement, options?: { initialFocus?: HTMLElement | null }): Cleanup;
 interface ModalContext { readonly ownerDocument: Document }
-createModalContext(ownerDocument: Document): ModalContext;
-acquireModal(context: ModalContext, options: { scope: HTMLElement; allowedNodes?: readonly HTMLElement[] }): Cleanup;
+interface ManagedModalContext extends ModalContext { batch<T>(action: () => T, afterCommit?: () => void): T }
+type ModalHandle = Cleanup & { updateAllowedNodes(nodes: readonly HTMLElement[]): void };
+createModalContext(ownerDocument: Document): ManagedModalContext;
+acquireModal(context: ModalContext, options: { scope: HTMLElement; allowedNodes?: readonly HTMLElement[] }): ModalHandle;
 getFormOwner(control: HTMLSelectElement | HTMLInputElement): HTMLFormElement | null;
 isFieldsetDisabled(control: HTMLElement): boolean;
 observeFormBridge(options: {
@@ -224,11 +227,13 @@ Floating defaults 为 bottom-start、4、true；异步失败由 onError 报告�
 
 Layer 按注册顺序选择逻辑顶层，parent 只表达祖先关系，父层不能被早于其子的事件穿透。onDismiss 是请求，不能自行移除 layer；父层拒绝关闭时重复的独立用户意图可再请求。同一个 PointerEvent 只路由一次；composedPath 包括 Shadow DOM；父层逻辑内部含已注册子层的节点。顶层 closeOnOutside/closeOnEscape=false 时吞掉本次下传机会，不关闭更低层。最后一个 layer 清理时卸载文档监听；context 是显式实例，不在模块级缓存 Document/状态。
 
+Task13.3 的 updateNodes/updateAllowedNodes 先校验全集同 Document 且连通、去重后一次替换；无效节点拒绝整个更新，旧集合仍生效。清理后更新无副作用，原有 LayerHandle、ModalContext 和可调用 Cleanup 赋值继续成立。batch 只包同步 action；最外层暂停旧 trap、延迟隔离与滚动锁差分，在 finally 按最终 entries 提交资源，随后执行成功 action 注册的 afterCommit，最后通知最新顶层。外层 action 抛错时不运行本批 afterCommit，仍收敛资源并重抛原错误；afterCommit 抛错也完成最终通知。无变更 batch 不释放/重加滚动锁。旧 trap 恢复时保留当前仍合法的深层焦点，allowedNodes 更新仅纠正失效焦点。
+
 trapFocus 仅用于 modal；Tab/Shift+Tab 环绕 scope 内可聚焦节点，全部不可聚焦时聚焦具有 tabindex=-1 的 scope。trapFocus 与 acquireModal 必须传入同一 ModalContext；context 按 acquireModal 登记的 scope 顺序调度，仅最上 scope 的 trap 激活。先 acquireModal 再 trapFocus；嵌套关闭后自动恢复前一个仍登记的 trap。任意顺序 cleanup 必须撤销该 scope/trap 的资源和待执行焦点操作，不影响其他实例；不得另建模块级 document 栈。acquireModal 负责背景 inert 和滚动锁的按文档引用计数，允许层节点不受隔离；保留/恢复原有 inline overflow/padding、inert 与 aria 属性，不能 inert 活动层祖先。焦点恢复顺序为存活且可聚焦的显式目标、原触发器、传入 fallback；无目标安全返回 false，不强制 body 获焦。
 
 observeFormBridge 只做 owner 重绑、reset 最终取消状态观察、invalid 与 cleanup；不能保存 selected value/query。refresh 用于 form/name/disabled 变化后的同步重绑，监听 form ID/控件移动所需的 observer 在 cleanup 回收。reset 使用下一任务（例如 setTimeout(0)）读取最终 defaultPrevented，不能只用 queueMicrotask：可信用户点击触发时微任务可能在两个 listener 之间执行。回调在默认动作之后执行，adapter 发请求后 nextTick 再同步 proxy/submission。cleanup/owner 变化使待执行 reset 任务失效并清理计时器；invalid 在代理自身监听，回调同步阻止错误焦点并转到 trigger。表单代理与 popup 分别管理，禁止代理随 portal。
 
-批准导出限于上列 12 个函数及其具名配置/handle/context 类型；Task10 不导出内部栈、全局单例、Floating UI 类型或 private probe。所有挂载/作用域函数在 Node 调用时用清晰的 unsupported-browser 错误退出，不留下半初始化状态；getFormOwner 等函数的参数也必须在使用前检查环境。
+批准运行导出仍限于上列 12 个函数；Task13.3 增加三个擦除的公开类型，总计 15 个。内部栈、全局单例、Floating UI 类型和 private probe 不导出。所有挂载/作用域函数在 Node 调用时用清晰的 unsupported-browser 错误退出，不留下半初始化状态；getFormOwner 等函数的参数也必须在使用前检查环境。
 
 ### 4.12 样式 token 冻结（Task11/12 实现）
 

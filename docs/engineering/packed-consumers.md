@@ -18,7 +18,7 @@ platform安装Core/DOM；Vue、React、Angular各安装Core/DOM和自己的适�
 
 Task9 起，四个消费者额外以纯 ES2022（无 DOM ambient）编译 Core 选择函数的真实声明，分别运行有效用法和九项逐行核对的负例；Node 解析核验后实际调用全部六个函数，不再只导入空入口。平台消费者的 `/selection` 与 workspace 使用同一套公开函数行为断言。具体候选结果见 [Task9 验收](task9-acceptance.md)，这些检查不代表后续框架 Select/Combobox 产品已经可用。
 
-Task10 起，四个消费者还用自身 TS6/TS7 编译器、ES2022/DOM 严格检查 DOM 十二个函数与十二个类型的真实声明，核对七项精确类型诊断；Node 无浏览器全局时导入并检查十二个操作均给出 unsupported 错误。平台消费者 `/layers` 复制公开 DOM 示例（不复制 DOM 生产源码），同一套三浏览器场景运行真实 tarball 函数。结果见 [Task10 验收](task10-acceptance.md)。
+Task10 起，四个消费者还用自身 TS6/TS7 编译器、ES2022/DOM 严格检查 DOM 真实声明。Task13.3 增量后为十二个运行函数、十五个公开类型和十项精确类型诊断；Node 无浏览器全局时导入并检查十二个操作均给出 unsupported 错误。平台消费者 `/layers` 复制公开 DOM 示例（不复制 DOM 生产源码），同一套三浏览器场景运行真实 tarball 函数。Task10 历史结果见 [Task10 验收](task10-acceptance.md)，Task13.3 增量需以新产物复验。
 
 验证器从消费者自身执行import.meta.resolve，核对实际文件、原生realpath、非链接安装、CSS公开出口及内部深层路径拒绝。Node无window/document时导入公开JS；Vue产品Button、主题及原工程probe分别SSR，React保留工程SSR。图验证单一运行时，并检查实际外部Vue导入与runtime实现片段，允许createVNode等合法外部helper；Angular使用APF编译图和peer解析。
 

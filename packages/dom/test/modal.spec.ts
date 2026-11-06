@@ -26,7 +26,10 @@ it('T10.9 traps only the top scope, resumes the parent and restores safe connect
   const parentTrap = trapFocus(f.context, f.parent); cleanups.push(parentTrap); expect(document.activeElement).toBe(f.first);
   const child = acquireModal(f.context, { scope: f.child }); cleanups.push(child); const childTrap = trapFocus(f.context, f.child); cleanups.push(childTrap); expect(document.activeElement).toBe(f.nested);
   const tab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }); document.dispatchEvent(tab); expect(tab.defaultPrevented).toBe(true); expect(document.activeElement).toBe(f.nested);
-  child(); childTrap(); expect(document.activeElement).toBe(f.first); parentTrap(); parent();
+  child(); childTrap(); expect(document.activeElement).toBe(f.nested);
+  const parentTab = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+  document.dispatchEvent(parentTab); expect(parentTab.defaultPrevented).toBe(true); expect(document.activeElement).toBe(f.first);
+  parentTrap(); parent();
   const removed = document.createElement('button'); expect(restoreFocus(removed, document.querySelector('#return'))).toBe(true); expect(document.activeElement?.id).toBe('return');
   expect(focusElement(null)).toBe(false); expect(restoreFocus(null)).toBe(false);
 });
