@@ -9,6 +9,7 @@ export const test = base.extend<{ runtimeErrors: RuntimeErrors; _runtimeGuard: v
     imports.vueButton = /\/packages\/vue\/dist\/button\/index\.js/;
     imports.vueSelect = /\/packages\/vue\/dist\/select\/index\.js/;
     imports.vueCombobox = /\/packages\/vue\/dist\/combobox\/index\.js/;
+    imports.vueDialog = /\/packages\/vue\/dist\/dialog\/index\.js/;
     if (testInfo.config.metadata.mode === 'packed') {
       const response = await request.get('/__imports');
       expect(response.ok()).toBe(true);

@@ -3,6 +3,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, extname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { inside } from './pack-contracts.mjs';
+import { ssrCapture } from './ssr-capture.mjs';
 
 export async function staticSmoke({ workspace, output, app, mode, port, readiness }) {
   if (!existsSync(join(output, 'index.html'))) throw Error(`${app} production browser output missing`);
@@ -43,9 +44,8 @@ export async function staticSmoke({ workspace, output, app, mode, port, readines
         const html = readFileSync(join(output, 'index.html'), 'utf8');
         if (!html.includes('<div id="app"></div>')) throw Error('Missing production SSR placeholder');
         const markup = await render(request.url);
-        const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");window.__zoomSSRSelect=document.getElementById("ssr-select");window.__zoomSSRSelectPopup=document.getElementById("ssr-select-listbox");window.__zoomSSRCombobox=document.getElementById("ssr-combobox");window.__zoomSSRComboboxPopup=document.getElementById("ssr-combobox-listbox");</script>';
         response.setHeader('Content-Type', 'text/html');
-        return response.end(html.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${capture}`));
+        return response.end(html.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${ssrCapture}`));
       }
       let file = resolve(output, `.${pathname}`);
       if (!inside(output, file)) { response.writeHead(403); return response.end(); }

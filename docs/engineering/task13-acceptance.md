@@ -1,6 +1,6 @@
 # Task13 Dialog 阶段验收记录
 
-日期：2026-11-05。Task13.1–13.6 已获用户确认；Task13.7 开发中。Task13.8–13.12 未开始。
+日期：2026-11-05；最近更新：2026-11-06。Task13.1–13.7 已获用户确认（Task13.7 于 2026-11-06 确认）；Task13.8 开发中。Task13.9–13.12 未开始。
 
 ## Task13.3 DOM 兼容增强
 
@@ -82,4 +82,21 @@ Dialog 在实际打开周期记录深层 invoker、解析一次 initialFocus，�
 | Vue 既有 Chromium E2E | 逐项输出 76/76 通过；退出阶段挂起后人工中断，未生成汇总门禁 |
 | Firefox 组合 E2E | 七个用例均在创建页面前报 Target crashed，未验证浏览器行为 |
 
-执行命令：`npx vitest run --reporter=verbose packages/vue/test/dialog-composition.spec.ts`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/dom`、`npx vitest run --reporter=verbose tests/engineering/pack.spec.ts`、`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npx playwright test --config tests/engineering/dialog-composition/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-state/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-focus/playwright.config.ts`、`node scripts/e2e.mjs --mode workspace --package vue --browser chromium`。Firefox 在双项目组合配置中创建页面前崩溃；2026-11-06 使用独立空白页再次于 `browser.newPage()` 复现 `Target crashed`，未进入应用页面，不能将其视作组件通过或失败。IME 浏览器事件为合成 composition 自动化，真实系统 IME 尚未手工观察。Task13.7 仍待用户验收，未执行 Git 提交、推送或发布。
+执行命令：`npx vitest run --reporter=verbose packages/vue/test/dialog-composition.spec.ts`、`npm run test:coverage --workspace @zoom-design/vue`、`npm run test:unit --workspace @zoom-design/dom`、`npx vitest run --reporter=verbose tests/engineering/pack.spec.ts`、`npm run build --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npx playwright test --config tests/engineering/dialog-composition/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-state/playwright.config.ts`、`npx playwright test --config tests/engineering/dialog-focus/playwright.config.ts`、`node scripts/e2e.mjs --mode workspace --package vue --browser chromium`。Firefox 在双项目组合配置中创建页面前崩溃；2026-11-06 使用独立空白页再次于 `browser.newPage()` 复现 `Target crashed`，未进入应用页面，不能将其视作组件通过或失败。IME 浏览器事件为合成 composition 自动化，真实系统 IME 尚未手工观察。Task13.7 已于 2026-11-06 获用户验收，未执行 Git 提交、推送或发布。
+
+## Task13.8 真实预览、SSR 与水合
+
+四类 Dialog 预览共用请求本地的路由/query 解析：基础 SSR、受控行为、外观、组合。基础场景只从公开 `/dialog` 入口导入，浏览器按页加载独立 Dialog CSS；组合页额外加载选择组件的公开入口与 CSS。服务端打开态保留真实 inline panel/title/正文，客户端水合后才迁移到合法 host。workspace 与生产静态服务使用同一段服务端节点捕获脚本；packed 消费者接入相同 Dialog SSR 契约。
+
+| 验证 | 结果 |
+| --- | --- |
+| T13.8.1–T13.8.3 Node SSR 契约 | 通过；无浏览器全局，closed/open、品牌、显式及生成 ID、inline portal、请求隔离 |
+| 独立构建的 Vue SSR 产物 | 构建通过，重新导入 emitted `ssr.js` 执行 Dialog SSR 契约通过 |
+| 路由解析工程单测 | 2/2 通过 |
+| T13.8.1–T13.8.7 Chromium 专项浏览器 | 6/6 通过，包含既有 Select/Combobox SSR 水合回归；server root/panel/title 原节点复用，无 warning，资源数与初焦正确 |
+| T13.8.8 开发预览 watch | 7/7 通过：Core/DOM/独立 Dialog SCSS 更新，旧选择组件与 Dialog 预览，失败构建停止旧服务 |
+| 既有 Dialog 浏览器回归 | Task13.7 7/7、Task13.5 3/3、Task13.6 2/2 通过 |
+| Vue smoke 类型检查、浏览器构建 | 通过 |
+| 独立 tarball 消费和 packed 水合 | Task13.10 范围，本阶段未执行；Firefox 浏览器环境仍待复验 |
+
+执行命令：`node scripts/check-vue-ssr.mjs`、`npx vitest run --reporter=verbose tests/engineering/dialog-preview.spec.ts`、`node scripts/check-dialog-preview.mjs`、`npm run typecheck --workspace @zoom-design/vue-smoke`、`npm run build --workspace @zoom-design/vue-smoke`、`node scripts/run-local-bin.mjs --workspace apps/vue-smoke --package vite --bin vite -- build --config vite.config.ts --ssr src/ssr.ts --outDir ../../.artifacts/task13/vue-smoke-server`、`node scripts/check-dev.mjs`，以及三个既有 Dialog 浏览器配置。受限 Windows 宿主拒绝 `taskkill` 时，进程组改用直接终止受管子进程；watch 回归已复跑通过，临时改动已还原。Task13.8 状态保持进行中，等待用户验收；未执行 Git 提交、推送或发布。

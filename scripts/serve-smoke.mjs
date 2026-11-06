@@ -7,6 +7,7 @@ import { existsSync, readFileSync, statSync, realpathSync } from 'node:fs';
 import { parseArgs } from './run-local-bin.mjs';
 import { assertIsolatedRoot, assertNoLinks } from './pack-contracts.mjs';
 import { staticSmoke } from './smoke-static.mjs';
+import { ssrCapture } from './ssr-capture.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { options, args } = parseArgs(process.argv.slice(2), ['--app', '--mode', '--port', '--consumer-root']);
@@ -71,10 +72,9 @@ try {
         try {
           const { render } = await vite.ssrLoadModule('/src/ssr.ts');
           const markup = await render(request.url);
-          const capture = '<script>window.__zoomSSRNode=document.getElementById("app").firstElementChild;window.__zoomSSRButton=document.querySelector("[data-testid=action]");window.__zoomSSRSelect=document.getElementById("ssr-select");window.__zoomSSRSelectPopup=document.getElementById("ssr-select-listbox");window.__zoomSSRCombobox=document.getElementById("ssr-combobox");window.__zoomSSRComboboxPopup=document.getElementById("ssr-combobox-listbox");</script>';
           const source = readFileSync(join(workspace, 'index.html'), 'utf8');
           if (!source.includes('<div id="app"></div>')) throw Error('SSR host must provide #app placeholder');
-          const template = source.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${capture}`);
+          const template = source.replace('<div id="app"></div>', `<div id="app" data-ssr="true">${markup}</div>${ssrCapture}`);
           const html = await vite.transformIndexHtml('/ssr', template);
           response.setHeader('Content-Type', 'text/html'); response.setHeader('Cache-Control', 'no-store'); response.end(html);
         } catch (error) { vite.ssrFixStacktrace(error); console.error(error); response.statusCode = 500; response.end(error.message); }

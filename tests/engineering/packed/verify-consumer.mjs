@@ -7,6 +7,7 @@ import { packagePath, readJson } from './run-local-bin.mjs';
 import { verifyDOMNode, domFunctions } from './dom-type-contract.mjs';
 import { verifyComboboxSSR } from './combobox-ssr-contract.mjs';
 import { verifySelectSSR } from './select-ssr-contract.mjs';
+import { verifyDialogSSR } from './dialog-ssr-contract.mjs';
 
 // This file is copied into each consumer. All resolution starts here, outside the repo.
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -130,6 +131,7 @@ try {
           resolved.ssr.button = { render: 'PASS', isolation: 'PASS' };
           resolved.ssr.combobox = await verifyComboboxSSR(render);
           resolved.ssr.select = await verifySelectSSR(render);
+          resolved.ssr.dialog = await verifyDialogSSR(render);
         }
       }
     }

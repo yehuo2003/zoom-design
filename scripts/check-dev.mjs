@@ -8,7 +8,7 @@ import { ProcessGroup } from './process-group.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifacts = join(root, '.artifacts/task3'); mkdirSync(artifacts, { recursive: true });
-const style = join(root, 'packages/vue/src/styles/style.scss'); const source = join(root, 'packages/vue/src/index.ts');
+const style = join(root, 'packages/vue/src/dialog/style.scss'); const source = join(root, 'packages/vue/src/index.ts');
 const originalStyle = readFileSync(style); const originalSource = readFileSync(source);
 const platformSources = ['core', 'dom'].map(name => ({ name, file: join(root, `packages/${name}/src/index.ts`), original: readFileSync(join(root, `packages/${name}/src/index.ts`)) }));
 writeFileSync(join(artifacts, 'dev-original-style.scss'), originalStyle); writeFileSync(join(artifacts, 'dev-original-index.ts'), originalSource);
@@ -44,28 +44,38 @@ try {
   for (const name of ['core', 'dom', 'vue']) assert.ok(existsSync(join(root, `packages/${name}/dist/index.js`)), `${name} rebuilt from clean output`);
   evidence.push({ check: 'clean Core/DOM/Vue outputs prepare in dependency order before dev readiness', status: 'PASS' });
   browser = await chromium.launch({ headless: true }); const page = await browser.newPage();
-  await page.goto('http://127.0.0.1:5171');
-  await page.getByRole('button', { name: 'Increment', exact: true }).click();
-  evidence.push({ check: 'native Vue preview interaction', status: 'PASS' });
+  await page.goto('http://127.0.0.1:5171/dialog');
+  await page.getByRole('button', { name: 'Open SSR dialog' }).click();
+  await page.getByRole('dialog', { name: 'SSR dialog purple' }).waitFor();
+  evidence.push({ check: 'native Dialog preview through its public subpath', status: 'PASS' });
   for (const entry of platformSources) {
     const output = join(root, 'packages/vue/dist/index.js'); const before = statSync(output).mtimeMs;
     writeFileSync(entry.file, Buffer.concat([entry.original, Buffer.from(`\n// Task11 ${entry.name} dev watch proof\n`)]));
     await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > before && await listening(), `${entry.name} source rebuilds Vue preview`);
-    await page.goto('http://127.0.0.1:5171/select'); await page.getByRole('combobox', { name: 'Choose value', exact: true }).waitFor();
-    await page.goto('http://127.0.0.1:5171/combobox'); await page.getByRole('combobox', { name: 'Choose searchable value', exact: true }).waitFor();
-    evidence.push({ check: `${entry.name} source change rebuilds dependency chain and functional Select/Combobox previews`, status: 'PASS' });
+    await page.goto('http://127.0.0.1:5171/select');
+    await page.getByRole('combobox', { name: 'Choose value', exact: true }).waitFor();
+    await page.goto('http://127.0.0.1:5171/combobox');
+    await page.getByRole('combobox', { name: 'Choose searchable value', exact: true }).waitFor();
+    await page.goto('http://127.0.0.1:5171/dialog');
+    await page.getByRole('button', { name: 'Open SSR dialog' }).click();
+    await page.getByRole('dialog', { name: 'SSR dialog purple' }).waitFor();
+    evidence.push({ check: `${entry.name} source change rebuilds dependency chain and functional Select/Combobox/Dialog previews`, status: 'PASS' });
     const restoreBefore = statSync(output).mtimeMs;
     writeFileSync(entry.file, entry.original);
     await waitFor(async () => existsSync(output) && statSync(output).mtimeMs > restoreBefore && await listening(), `${entry.name} source restored preview`);
   }
-  await page.goto('http://127.0.0.1:5171');
-  writeFileSync(style, Buffer.concat([originalStyle, Buffer.from('\n.zoom-engineering-probe { --zoom-dev-watch-proof: passed; }\n')]));
+  await page.goto('http://127.0.0.1:5171/dialog?open=true');
+  await page.getByRole('dialog', { name: 'SSR dialog purple' }).waitFor();
+  const dialogCss = join(root, 'packages/vue/dist/dialog/style.css'); const cssBefore = statSync(dialogCss).mtimeMs;
+  writeFileSync(style, Buffer.concat([originalStyle, Buffer.from('\n.zoom-dialog__panel { --zoom-dev-watch-proof: passed; }\n')]));
+  await waitFor(async () => existsSync(dialogCss) && statSync(dialogCss).mtimeMs > cssBefore && await listening(), 'Dialog independent CSS rebuilds');
+  await page.reload();
   await page.waitForFunction(() => {
-    const element = document.querySelector('.zoom-engineering-probe');
+    const element = document.querySelector('.zoom-dialog__panel');
     return element && getComputedStyle(element).getPropertyValue('--zoom-dev-watch-proof').trim() === 'passed';
   }, undefined, { timeout: 20000 });
-  await page.screenshot({ path: join(artifacts, 'vue-dev-watch.png'), fullPage: true });
-  evidence.push({ check: 'SCSS change rebuilt and appeared in live preview', status: 'PASS' });
+  await page.screenshot({ path: join(artifacts, 'vue-dialog-dev-watch.png'), fullPage: true });
+  evidence.push({ check: 'Dialog independent SCSS change rebuilt and appeared in live preview', status: 'PASS' });
   writeFileSync(source, Buffer.concat([originalSource, Buffer.from('\nconst invalidEngineeringBuild: string = 1;\n')]));
   await waitFor(() => child.exitCode !== null, 'failed package type rebuild exits');
   const failed = await exit; assert.notEqual(failed.code, 0);

@@ -24,8 +24,12 @@ export class ProcessGroup {
         const killer = spawn(executable, ['/pid', String(child.pid), '/t', '/f'], { stdio: 'ignore', windowsHide: true, shell: false });
         killer.once('error', reject);
         killer.once('exit', code => {
-          if (code === 0 || child.exitCode !== null || child.signalCode !== null) accept();
-          else reject(Error(`Cannot terminate managed process tree ${child.pid} (${code})`));
+          if (code === 0 || child.exitCode !== null || child.signalCode !== null) return accept();
+          // Restricted Windows hosts can deny taskkill for an owned child.
+          // A direct child signal still closes its preview listener and lets us await 'close'.
+          if (child.kill('SIGTERM')) return accept();
+          try { process.kill(child.pid, 0); reject(Error(`Cannot terminate managed process tree ${child.pid} (${code})`)); }
+          catch (error) { if (error.code === 'ESRCH') accept(); else reject(Error(`Cannot terminate managed process tree ${child.pid} (${code})`)); }
         });
       });
     } else {

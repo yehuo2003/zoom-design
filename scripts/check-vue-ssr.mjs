@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { verifyComboboxSSR } from '../tests/engineering/packed/combobox-ssr-contract.mjs';
 import { verifySelectSSR } from '../tests/engineering/packed/select-ssr-contract.mjs';
+import { verifyDialogSSR } from '../tests/engineering/packed/dialog-ssr-contract.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const server = await createServer({ configFile: join(root, 'apps/vue-smoke/vite.config.ts'), server: { middlewareMode: true }, appType: 'custom' });
@@ -16,6 +17,8 @@ try {
   console.log('Vue server-renderer native SFC markup: PASS');
   await verifySelectSSR(render);
   await verifyComboboxSSR(render);
+  await verifyDialogSSR(render);
   console.log('Vue Combobox SSR initial query/open inline portal and request isolation: PASS');
   console.log('Vue Select SSR closed/open inline portal and request isolation: PASS');
+  console.log('Vue Dialog SSR closed/open inline portal, stable IDs and request isolation: PASS');
 } finally { await server.close(); }

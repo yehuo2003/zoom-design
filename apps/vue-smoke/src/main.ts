@@ -1,26 +1,24 @@
 import { createApp, createSSRApp } from 'vue';
-import '@zoom-design/vue/style.css';
-import { selectExample } from './examples.js';
+import { exampleProps, loadExampleHost, selectExample } from './examples.js';
 
 const status = document.querySelector('[role="status"]')!;
 try {
   const scenario = selectExample(window.location.href);
-  if (scenario.example === 'button') await import('@zoom-design/vue/button');
+  if (scenario.example === 'dialog') {
+    await import('@zoom-design/vue/dialog');
+    await import('@zoom-design/vue/dialog/style.css');
+    if (scenario.dialogView === 'composition') {
+      await Promise.all([import('@zoom-design/vue/select'), import('@zoom-design/vue/combobox'), import('@zoom-design/vue/select/style.css'), import('@zoom-design/vue/combobox/style.css')]);
+    }
+  } else if (scenario.example === 'button') await import('@zoom-design/vue/button');
   else if (scenario.example === 'combobox') await import('@zoom-design/vue/combobox');
   else if (scenario.example === 'select') await import('@zoom-design/vue/select');
   else await import('@zoom-design/vue');
-  const { default: Host } = scenario.example === 'button'
-    ? await import('./examples/ButtonExamples.vue')
-    : scenario.example === 'combobox'
-    ? await import('./examples/ComboboxExamples.vue')
-    : scenario.example === 'select'
-    ? await import('./examples/SelectExamples.vue')
-    : scenario.example === 'theme'
-    ? await import('./examples/ThemeExamples.vue')
-    : await import('./ProbeHost.vue');
+  if (scenario.example !== 'dialog') await import('@zoom-design/vue/style.css');
+  const Host = await loadExampleHost(scenario);
   const root = document.getElementById('app')!;
-  const hostProps = { brand: scenario.brand, initialOpen: scenario.initialOpen, initialQuery: scenario.initialQuery, initialValue: scenario.initialValue, ...(scenario.example === 'select' ? { largeList: scenario.largeList } : {}) };
-  const app = root.dataset.ssr === 'true' ? createSSRApp(Host, hostProps) : createApp(Host, hostProps);
+  const app = root.dataset.ssr === 'true' ? createSSRApp(Host, exampleProps(scenario)) : createApp(Host, exampleProps(scenario));
+  if (scenario.idPrefix) app.config.idPrefix = scenario.idPrefix;
   app.mount(root);
   root.dataset.hydrated = String(root.dataset.ssr === 'true');
   status.textContent = 'Vue package imports ready';
