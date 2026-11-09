@@ -10,7 +10,7 @@ React/Angular 列均为后续适配设计，示例在相应产品实现前必须
 
 #### 4.3.1 Dialog 增量映射（Task13.1）
 
-Vue 已有 DialogProps/Emits/Slots/Expose、纯归一化、ZDialog 渲染外壳、产品入口和独立 CSS；Task13.5 已获验收，Task13.6 已实现模态焦点、背景隔离、滚动锁及生命周期并通过自动验证，等待用户验收，portal 仍待后续子任务。React/Angular Dialog 均为**规划，当前不可用**，不声明真实组件 import 或 selector。共享关闭详情来自 Core 的 DialogCloseReason（escape/outside/close-button）和 readonly DialogCloseDetails（open=false、previousOpen=true）。
+Vue 已有 DialogProps/Emits/Slots/Expose、纯归一化、ZDialog 产品入口和独立 CSS；Task13.1–13.12 已获用户验收，包含模态焦点、背景隔离、滚动锁、嵌套选择、显式 portal、SSR/水合、独立 tarball 消费和三浏览器综合回归。完整 Vue 用法见[Dialog 组件文档](../components/dialog.md)。React/Angular Dialog 均为**规划，当前不可用**，不声明真实组件 import 或 selector。共享关闭详情来自 Core 的 DialogCloseReason（escape/outside/close-button）和 readonly DialogCloseDetails（open=false、previousOpen=true）。
 
 | 语义 | Vue 规划产品 | React 规划，当前不可用 | Angular 规划，当前不可用 |
 | --- | --- | --- | --- |

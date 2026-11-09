@@ -16,13 +16,13 @@ Zoom Design 是面向 Web（以 PC 为主）的多框架组件库项目。规划
 
 ## 当前状态
 
-Task1–12已获用户确认完成（Task11/12于2026-10-30确认，Task7/8/9/10于2026-10-29确认）。Vue `ZButton`通过40/40自动验收，Task11 新增 `ZSelect`，根与组件子路径均为命名导出，已获用户验收，Task12的ZCombobox已于2026-10-30用户验收通过（自动验收16/16）；React/Angular已有共享主题资产，公开功能入口仍为空。Core 在 Task9 增加六个纯选择函数与十二个类型；DOM 在 Task10 增加十二个浏览器函数与十二个类型。Task7 的完整CI与普通Node/npm干净副本历史结果为95项单测、workspace和packed各132项三浏览器；新候选另按当前 Task 验收记录。根工作区保持private；五个子包已配置公开发布、MIT许可与作者linzhuming，版本仍为0.0.0，尚未发布。产品用法见[Button](docs/components/button.md)、[Select](docs/components/select.md)、[Combobox](docs/components/combobox.md)；Linux实机未执行。
+Task1–12已获用户确认完成（Task11/12于2026-10-30确认，Task7/8/9/10于2026-10-29确认）。Vue `ZButton`通过40/40自动验收，Task11 新增 `ZSelect`，根与组件子路径均为命名导出，已获用户验收，Task12的ZCombobox已于2026-10-30用户验收通过（自动验收16/16）。Vue Dialog 的 Task13.1–13.12 已获用户验收；Task13.12 自动回归通过并于2026-11-09验收；React/Angular已有共享主题资产，公开功能入口仍为空。Core 在 Task9 增加六个纯选择函数与十二个类型；DOM 在 Task10 增加十二个浏览器函数与十二个类型。Task7 的完整CI与普通Node/npm干净副本历史结果为95项单测、workspace和packed各132项三浏览器；新候选另按当前 Task 验收记录。根工作区保持private；五个子包已配置公开发布、MIT许可与作者linzhuming，版本仍为0.0.0，尚未发布。产品用法见[Button](docs/components/button.md)、[Select](docs/components/select.md)、[Combobox](docs/components/combobox.md)、[Dialog](docs/components/dialog.md)；Linux实机未执行。
 
-Task6已于2026-10-28获用户确认完成：同源三框架theme.css和可选theme.scss，26/26自动检查通过，见[Task6验收](docs/engineering/task6-acceptance.md)。Vue的聚合style.css现包含主题、已实现的Button/Select/Combobox和Task13.2的Dialog外壳样式；/theme保留原生主题样本，/button及产品SSR使用公开ZButton。公共参数见[主题说明](docs/theming.md)。
+Task6已于2026-10-28获用户确认完成：同源三框架theme.css和可选theme.scss，26/26自动检查通过，见[Task6验收](docs/engineering/task6-acceptance.md)。Vue的聚合style.css现包含主题及已实现的 Button/Select/Combobox/Dialog 样式；/theme保留原生主题样本，各组件可选独立 CSS。公共参数见[主题说明](docs/theming.md)。
 
-Task13.1已于2026-11-05获用户验收通过。Task13.2正在开发：Vue已增加Dialog受控渲染外壳、根/子路径与独立CSS；关闭请求、焦点陷阱、模态资源和正式`/dialog`预览尚未交付，当前仅提供局部外观夹具与针对性验证。
+Task13.1–13.12 已获用户验收通过；Vue Dialog 已提供受控关闭请求、模态焦点/隔离/锁、嵌套选择、显式 portal、SSR/水合和独立 tarball 消费。Task13.11 已交付[组件文档与可编译示例](docs/components/dialog.md)，Task13.12 的 workspace/packed 三浏览器自动回归各 324/324；阶段结果见[Task13 验收](docs/engineering/task13-acceptance.md)。Task14 尚未启动。
 
-Task8 已于 2026-10-29 获用户确认验收通过：已整理 [Selection 契约](docs/contracts/selection.md)、[三框架映射](docs/contracts/framework-adapters.md)、[Dialog 契约](docs/contracts/dialog.md) 与 [基础方案 ADR](docs/engineering/adr-0001-selection-foundations.md)，修正公开包/private/LICENSE 门禁。当前工具版本见 [10-29 快照](docs/engineering/versions-2026-10-29.json)，本轮结果见 [Task8 验收](docs/engineering/task8-acceptance.md)。Select/Combobox/Dialog 产品仍分别属于 Task11/12/13，Core/DOM 的新 API 属于 Task9/10。
+Task8 已于 2026-10-29 获用户确认验收通过：已整理 [Selection 契约](docs/contracts/selection.md)、[三框架映射](docs/contracts/framework-adapters.md)、[Dialog 契约](docs/contracts/dialog.md) 与 [基础方案 ADR](docs/engineering/adr-0001-selection-foundations.md)，修正公开包/private/LICENSE 门禁。当前工具版本见 [10-29 快照](docs/engineering/versions-2026-10-29.json)，该阶段结果见 [Task8 验收](docs/engineering/task8-acceptance.md)；产品实施分别见 Task11/12/13。
 
 Task9 已于 2026-10-29 用户验收通过：[Core 用法与 API](packages/core/README.md)、`dev:platform` 的 `/selection` 公开函数示例、[Task9 验收](docs/engineering/task9-acceptance.md)。该阶段提供选择规则，Vue Select/Combobox 产品仍待后续实现。
 

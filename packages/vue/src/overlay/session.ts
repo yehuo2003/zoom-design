@@ -2,19 +2,10 @@ import { nextTick } from 'vue';
 import { createLayerContext, createModalContext } from '@zoom-design/dom';
 import type { LayerContext, ManagedModalContext } from '@zoom-design/dom';
 import type { OverlayOwner } from './owner';
+import { containsComposed } from './focus';
 
 const sessionKey = Symbol('zoom-overlay-session');
 type SessionDocument = Document & { [sessionKey]?: OverlaySession };
-
-function containsComposed(ancestor: Element, node: Node): boolean {
-  if (ancestor.contains(node)) return true;
-  let cursor: Element | null = node instanceof ancestor.ownerDocument.defaultView!.Element ? node : node.parentElement;
-  while (cursor) {
-    if (cursor === ancestor) return true;
-    cursor = cursor.assignedSlot ?? cursor.parentElement ?? ((cursor.getRootNode() as ShadowRoot).host as Element | undefined) ?? null;
-  }
-  return false;
-}
 
 export class OverlaySession {
   readonly layers: LayerContext;
@@ -31,6 +22,7 @@ export class OverlaySession {
   private activationVersion = 0;
   private modalOrder = 0;
   private returnScheduled = false;
+  private readonly activations: OverlayOwner[] = [];
   private readonly returns: { owner: OverlayOwner; restore: (() => void) | null; current: () => boolean; version: number }[] = [];
 
   constructor(readonly ownerDocument: Document) {
@@ -42,6 +34,7 @@ export class OverlaySession {
 
   get leaseCount(): number { return this.owners.size; }
   get observerActive(): boolean { return this.observer !== null; }
+  get focusDeferred(): boolean { return this.returnScheduled; }
   nextOrder(): number { return ++this.order; }
   nextZIndex(): number { return ++this.zIndex; }
   nextModalOrder(): number { return ++this.modalOrder; }
@@ -51,30 +44,50 @@ export class OverlaySession {
     return true;
   }
 
-  /** One focus decision after the current Vue render and modal batch have settled. */
+  /** Register before render finishes; restoration commits before surviving traps resume. */
   queueReturn(owner: OverlayOwner, restore: (() => void) | null, current: () => boolean): void {
     const foreground = [...this.owners].filter(candidate => candidate.active).sort((a, b) => b.zIndex - a.zIndex)[0];
     if (!foreground || (foreground !== owner && !foreground.hasAncestor(owner))) return;
     this.returns.push({ owner, restore, current, version: this.activationVersion });
+    // Release trap listeners, while modal isolation and scroll ownership remain synchronous.
+    for (const candidate of this.owners) candidate.suspendTrap();
     if (this.returnScheduled) return;
     this.returnScheduled = true;
     void nextTick(() => queueMicrotask(() => {
-      this.returnScheduled = false;
-      const pending = this.returns.splice(0).filter(item => item.current());
-      if (!pending.length) return;
-      let chosen = pending[0]!;
-      for (const item of pending.slice(1)) {
-        if (chosen.owner.hasAncestor(item.owner) || !item.owner.hasAncestor(chosen.owner)) chosen = item;
-      }
-      // A newly activated overlay owns its initial focus. An old close cannot take it back.
-      if (chosen.version !== this.activationVersion) return;
-      const replacement = peekOverlaySession(this.ownerDocument);
-      if (replacement && replacement !== this) return;
-      chosen.restore?.();
+      this.modals.batch(() => { if (!this.disposed) this.flush(); }, () => {
+        this.returnScheduled = false;
+        try { this.restorePendingFocus(); }
+        finally {
+          if (!this.returnScheduled) {
+            this.activatePendingFocus();
+            for (const candidate of this.owners) candidate.resumeTrap();
+          }
+        }
+      });
     }));
   }
 
-  topModalScope(): HTMLElement | null { return this.topModal()?.modalScope ?? null; }
+  private restorePendingFocus(): void {
+    const pending = this.returns.filter(item => item.current());
+    // A prepared close may still be waiting for its post-render withdrawal.
+    if (pending.some(item => item.owner.active)) return;
+    this.returns.length = 0;
+    if (!pending.length) return;
+    let chosen = pending[0]!;
+    for (const item of pending.slice(1)) {
+      if (chosen.owner.hasAncestor(item.owner) || !item.owner.hasAncestor(chosen.owner)) chosen = item;
+    }
+    // A newly activated overlay owns its initial focus. An old close cannot take it back.
+    if (chosen.version !== this.activationVersion) return;
+    const replacement = peekOverlaySession(this.ownerDocument);
+    if (replacement && replacement !== this) return;
+    chosen.restore?.();
+  }
+
+  topModalFocusRoots(): readonly HTMLElement[] {
+    const top = this.topModal();
+    return top?.modalScope ? [top.modalScope, ...this.allowedNodes(top)] : [];
+  }
 
   add(owner: OverlayOwner) { this.owners.add(owner); this.schedule(); }
 
@@ -129,23 +142,30 @@ export class OverlaySession {
     }
   }
 
-  private reconcileAllowedNodes() {
-    const active = [...this.owners].filter(owner => owner.active);
-    for (const modal of active) {
-      const scope = modal.modalScope;
-      if (!scope) continue;
-      const allowed = new Set(modal.demand?.modal?.allowedNodes ?? []);
-      for (const descendant of active) {
-        if (descendant === modal || descendant.modalScope || !descendant.hasAncestor(modal)) continue;
-        let nearest = descendant.parent;
-        while (nearest && !nearest.modalScope) nearest = nearest.parent;
-        if (nearest !== modal) continue;
-        for (const node of descendant.demand?.nodes ?? []) {
-          if (node.isConnected && node.ownerDocument === this.ownerDocument && !containsComposed(scope, node)) allowed.add(node);
-        }
+  private allowedNodes(modal: OverlayOwner): HTMLElement[] {
+    const scope = modal.modalScope!;
+    const allowed = new Set(modal.demand?.modal?.allowedNodes ?? []);
+    for (const descendant of this.owners) {
+      if (!descendant.active || descendant === modal || descendant.modalScope || !descendant.hasAncestor(modal)) continue;
+      let nearest = descendant.parent;
+      while (nearest && !nearest.modalScope) nearest = nearest.parent;
+      if (nearest !== modal) continue;
+      for (const node of descendant.demand?.nodes ?? []) {
+        if (node.isConnected && node.ownerDocument === this.ownerDocument && !containsComposed(scope, node)) allowed.add(node);
       }
-      modal.updateModalAllowedNodes([...allowed]);
     }
+    return [...allowed];
+  }
+
+  private reconcileAllowedNodes() {
+    for (const modal of this.owners) if (modal.active && modal.modalScope) modal.updateModalAllowedNodes(this.allowedNodes(modal));
+  }
+
+  private activatePendingFocus() {
+    const foreground = [...this.owners].filter(owner => owner.active).sort((a, b) => b.zIndex - a.zIndex)[0];
+    const latest = this.activations.splice(0).filter(owner => owner.active && owner.demand?.onActivate && !owner.demand.modal &&
+      (owner === foreground || foreground?.hasAncestor(owner)) && !this.blocked(owner)).at(-1);
+    latest?.demand?.onActivate?.();
   }
 
   private flush() {
@@ -155,7 +175,6 @@ export class OverlaySession {
     try {
       do {
         this.dirty = false;
-        const activated: OverlayOwner[] = [];
         this.modals.batch(() => {
           const descendantsFirst = [...this.owners].filter(owner => owner.active).sort((a, b) => b.depth - a.depth || b.order - a.order);
           for (const owner of descendantsFirst) if (!owner.ready(this) || !owner.ancestorsReady(this)) owner.deactivate();
@@ -163,13 +182,13 @@ export class OverlaySession {
           for (const owner of parentsFirst) {
             if (!owner.ready(this) || !owner.ancestorsActive(this)) continue;
             if (owner.active) owner.update(this);
-            else if (!this.blocked(owner) && owner.activate(this)) { this.activationVersion++; activated.push(owner); }
+            else if (!this.blocked(owner) && owner.activate(this)) { this.activationVersion++; this.activations.push(owner); }
           }
           this.reconcileModalOrder();
           this.reconcileAllowedNodes();
         }, () => {
-          const latest = activated.filter(owner => owner.active).at(-1);
-          if (latest && !latest.demand?.modal) latest.demand?.onActivate?.();
+          // Selection popups delegate initial focus to their newly activated Dialog ancestor.
+          if (!this.returnScheduled) this.activatePendingFocus();
         });
       } while (this.dirty);
     } finally { this.flushing = false; }

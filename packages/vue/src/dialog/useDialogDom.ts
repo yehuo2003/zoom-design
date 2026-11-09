@@ -12,6 +12,7 @@ interface OpenCycle {
   initial: HTMLElement | null;
   initialResolved: boolean;
   panel: HTMLElement | null;
+  returnQueued: boolean;
 }
 
 export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: Readonly<Ref<HTMLElement | null>>, root: Readonly<Ref<HTMLElement | null>>,
@@ -30,15 +31,15 @@ export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: R
 
   function setTarget(next: HTMLElement | null) {
     if (target.value === next) return;
-    const prior = target.value;
     const rootNode = root.value;
     const active = rootNode ? deepActiveElement(rootNode.ownerDocument) : null;
-    if (prior && rootNode) {
+    // An established open cycle can move from inline just as it can move between hosts.
+    if (rootNode && cycle?.panel) {
       if (active && containsComposed(rootNode, active)) pendingPortalFocus = active;
       else if (!rootNode.isConnected && lastInsideFocus && containsComposed(rootNode, lastInsideFocus)) pendingPortalFocus = lastInsideFocus;
       else pendingPortalFocus = null;
+      portalRelocating = true;
     }
-    if (prior) portalRelocating = true;
     if (portalRelocating) owner.setRelocating(true);
     target.value = next;
     const token = ++portalGeneration;
@@ -46,8 +47,11 @@ export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: R
       if (token !== portalGeneration) return;
       const focused = pendingPortalFocus;
       if (focused && normalized.value.open && root.value && containsComposed(root.value, focused)) {
-        const modalScope = peekOverlaySession(focused.ownerDocument)?.topModalScope() ?? null;
-        focusAllowed(focused, focused.ownerDocument, modalScope, null);
+        const current = deepActiveElement(focused.ownerDocument);
+        if (!current || containsComposed(root.value, current)) {
+          const modalRoots = peekOverlaySession(focused.ownerDocument)?.topModalFocusRoots() ?? [];
+          focusAllowed(focused, focused.ownerDocument, modalRoots, null);
+        }
       }
       pendingPortalFocus = null;
       portalRelocating = false;
@@ -71,29 +75,28 @@ export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: R
 
   function restore(cycleToClose: OpenCycle, callback: NormalizedDialog['returnFocus'], ownerDocument: Document) {
     const activeSession = peekOverlaySession(ownerDocument);
-    const modalScope = activeSession?.topModalScope() ?? null;
+    const modalRoots = activeSession?.topModalFocusRoots() ?? [];
     let custom: unknown = null;
     if (callback) {
       try { custom = callback(); }
       catch { warn('returnFocus callback threw; using the recorded invoker or parent'); }
       if (custom != null) {
-        if (focusAllowed(custom, ownerDocument, modalScope, cycleToClose.panel)) return;
+        if (focusAllowed(custom, ownerDocument, modalRoots, cycleToClose.panel)) return;
         warn('Invalid returnFocus target; using the recorded invoker or parent');
       }
     }
-    if (focusAllowed(cycleToClose.invoker, ownerDocument, modalScope, cycleToClose.panel)) return;
+    if (focusAllowed(cycleToClose.invoker, ownerDocument, modalRoots, cycleToClose.panel)) return;
     const parent = owner.parent;
     const parentScope = parent?.active ? parent.demand?.modal?.scope ?? parent.demand?.nodes[0] ?? null : null;
     if (!parentScope) return;
     const active = deepActiveElement(ownerDocument);
-    if (active && containsComposed(parentScope, active) && focusAllowed(active, ownerDocument, modalScope, cycleToClose.panel)) return;
-    focusAllowed(parentScope, ownerDocument, modalScope, cycleToClose.panel);
+    if (active && containsComposed(parentScope, active) && focusAllowed(active, ownerDocument, modalRoots, cycleToClose.panel)) return;
+    focusAllowed(parentScope, ownerDocument, modalRoots, cycleToClose.panel);
   }
 
-  function endCycle() {
-    const closing = cycle;
-    cycle = null;
-    if (!closing) { owner.clear(); return; }
+  function queueCycleReturn(closing: OpenCycle) {
+    if (closing.returnQueued) return;
+    closing.returnQueued = true;
     const token = ++generation;
     if (owner.active) {
       const ownerDocument = closing.panel?.ownerDocument ?? owner.demand?.document;
@@ -104,6 +107,12 @@ export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: R
           () => generation === token && (unmounting || !normalized.value.open));
       }
     }
+  }
+
+  function endCycle() {
+    const closing = cycle;
+    cycle = null;
+    if (closing) queueCycleReturn(closing);
     owner.clear();
   }
 
@@ -141,11 +150,13 @@ export function useDialogDom(normalized: ComputedRef<NormalizedDialog>, panel: R
     if (open) {
       if (!cycle) {
         const ownerDocument = panel.value?.ownerDocument ?? root.value?.ownerDocument ?? (typeof document === 'undefined' ? null : document);
-        cycle = { invoker: ownerDocument ? deepActiveElement(ownerDocument) : null, initial: null, initialResolved: false, panel: null };
+        cycle = { invoker: ownerDocument ? deepActiveElement(ownerDocument) : null, initial: null, initialResolved: false, panel: null, returnQueued: false };
       }
+      cycle.returnQueued = false;
       generation++;
     } else if (cycle) {
-      generation++;
+      // Register all closing cycles during render, before any post-render modal commit.
+      queueCycleReturn(cycle);
     }
   }, { immediate: true, flush: 'sync' });
 

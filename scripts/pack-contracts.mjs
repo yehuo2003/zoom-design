@@ -156,6 +156,15 @@ export function measureReferencedAssets(directory, html, chunks) {
     if (!/\.(?:js|css)$/.test(path) || path.includes('..') || isAbsolute(path)) throw Error(`Invalid size asset ${path}`);
     seen.add(path);
     const file = resolve(directory, path); if (!inside(directory, file)) throw Error('Asset outside browser output');
+    // Vite may report a CSS-only dynamic import as a temporary JS chunk in
+    // generateBundle, then remove that empty JS file from the final output.
+    // Its emitted CSS remains reachable and must still be counted.
+    if (!existsSync(file)) {
+      const placeholder = graph.get(path);
+      if (!placeholder?.modules?.length || !placeholder.modules.every(id => /\.css(?:\?|$)/.test(id)) || !placeholder.css?.length) throw Error(`Missing referenced asset ${path}`);
+      pending.push(...placeholder.css);
+      continue;
+    }
     const bytes = readFileSync(file);
     assets.push({ path, sha256: sha256(bytes), raw: bytes.length, gzip: gzipSync(bytes).length, brotli: brotliCompressSync(bytes).length });
     const chunk = graph.get(path);

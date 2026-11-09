@@ -7,6 +7,7 @@ import { verifySelectionDiagnostics } from './selection-type-contract.mjs';
 import { verifyDOMDiagnostics } from './dom-type-contract.mjs';
 import { verifyComboboxDiagnostics } from './combobox-type-contract.mjs';
 import { verifySelectDiagnostics } from './select-type-contract.mjs';
+import { verifyDialogDiagnostics, verifyDialogResolution } from './dialog-type-contract.mjs';
 
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { app } = readJson(resolve(directory, '.pack-spec.json'));
@@ -32,6 +33,9 @@ function run(label, tool, bin, args, negative) {
   if (label === 'Combobox template negative control') verifyComboboxDiagnostics(output, true);
   if (label === 'Select plain declaration negative control') verifySelectDiagnostics(output);
   if (label === 'Select template negative control') verifySelectDiagnostics(output, true);
+  if (label === 'Dialog plain declaration negative control') verifyDialogDiagnostics(output);
+  if (label === 'Dialog template negative control') verifyDialogDiagnostics(output, true);
+  if (label === 'Dialog packed declaration resolution') verifyDialogResolution(output);
   console.log(`${app} ${label}: PASS${negative ? ' (expected diagnostics)' : ''}`);
 }
 try {
@@ -46,6 +50,9 @@ try {
     run('Select plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.select-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2769/]);
     run('Combobox real root/subpath declarations', 'typescript', 'tsc', ['-p', 'tsconfig.combobox-ts.json']);
     run('Combobox plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.combobox-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2769/]);
+    run('Dialog real root/subpath declarations', 'typescript', 'tsc', ['-p', 'tsconfig.dialog-ts.json']);
+    run('Dialog packed declaration resolution', 'typescript', 'tsc', ['-p', 'tsconfig.dialog-ts.json', '--listFilesOnly']);
+    run('Dialog plain declaration negative control', 'typescript', 'tsc', ['-p', 'tsconfig.dialog-ts-negative.json'], [/invalid\.ts/, /TS2322/, /TS2353/]);
     const native = app === 'vue' ? ['vue-tsc', 'vue-tsc'] : app === 'angular' ? ['@angular/compiler-cli', 'ngc'] : ['typescript', 'tsc'];
     run('native source and public declarations', ...native, ['-p', app === 'angular' ? 'tsconfig.app.json' : 'tsconfig.json', '--noEmit']);
     if (app === 'vue') {
@@ -56,6 +63,8 @@ try {
       run('Combobox template negative control', ...native, ['-p', 'tsconfig.combobox-negative.json'], [/invalid\.ts\(16,\d+\): error TS2769/, /Invalid\.vue\(9,\d+\): error TS2322/]);
       run('Select vue-tsc declarations and slots', ...native, ['-p', 'tsconfig.select.json']);
       run('Select template negative control', ...native, ['-p', 'tsconfig.select-negative.json'], [/invalid\.ts\(14,\d+\): error TS2769/, /Invalid\.vue\(9,\d+\): error TS2322/]);
+      run('Dialog vue-tsc declarations and slots', ...native, ['-p', 'tsconfig.dialog.json']);
+      run('Dialog template negative control', ...native, ['-p', 'tsconfig.dialog-negative.json'], [/invalid\.ts\(6,\d+\): error TS2353/, /Invalid\.vue\(10,\d+\): error TS2322/]);
     }
     if (app !== 'platform') run('native template/JSX negative control', ...native, ['-p', 'tsconfig.negative.json', '--noEmit'], app === 'angular' ? [/Type 'number' is not assignable to type 'string'/, /Argument of type 'number' is not assignable to parameter of type 'string'/] : [/Type 'number' is not assignable to type 'string'/, /string.*number|number.*string/s]);
   } else if (action === 'build') {

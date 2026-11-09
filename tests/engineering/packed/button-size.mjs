@@ -33,7 +33,7 @@ for (const scenario of ['button', 'named', 'unused']) {
   }
   const emitted = graph.chunks.map(chunk => readFileSync(join(output, chunk.fileName), 'utf8')).join('\n');
   if (scenario === 'unused') assertUnusedButtonEvidence(graph, emitted);
-  else if (!/zoom-button/.test(emitted)) throw Error(`${scenario}: final emitted Button implementation evidence failed`);
+  else if (!/zoom-button/.test(emitted) || /zoom-dialog|ZDialog/.test(emitted)) throw Error(`${scenario}: final emitted Button implementation evidence failed or retained Dialog`);
   let negative;
   if (scenario === 'unused') {
     try {

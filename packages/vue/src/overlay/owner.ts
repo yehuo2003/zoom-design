@@ -130,8 +130,14 @@ export class OverlayOwner {
     this.modalLease?.updateAllowedNodes(nodes);
   }
 
+  suspendTrap() { this.modalLease?.suspendTrap(); }
+  resumeTrap() {
+    try { this.modalLease?.resumeTrap(); }
+    catch (error) { this.deactivate(); this.requested?.onError?.(error); }
+  }
+
   acquireModal(session: OverlaySession, demand: OverlayModalDemand, initialFocus: HTMLElement | null = demand.initialFocus ?? null) {
-    this.modalLease = new OverlayModal(session.modals, { ...demand, initialFocus });
+    this.modalLease = new OverlayModal(session.modals, { ...demand, initialFocus }, session.focusDeferred);
     this.modalSequence = session.nextModalOrder();
   }
 }

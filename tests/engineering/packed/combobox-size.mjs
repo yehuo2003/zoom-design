@@ -33,7 +33,7 @@ for (const scenario of ['combobox', 'named', 'unused']) {
   check(graph, emitted);
   for (const chunk of graph.chunks) for (const css of chunk.css ?? []) {
     const text = readFileSync(join(output, css), 'utf8');
-    if (!/zoom-combobox/.test(text) || /zoom-button|zoom-select|zoom-engineering|:root/.test(text)) throw Error('Combobox scenario must reference Combobox-only CSS');
+    if (!/zoom-combobox/.test(text) || /zoom-button|zoom-select|zoom-dialog|zoom-engineering|:root/.test(text)) throw Error('Combobox scenario must reference Combobox-only CSS');
   }
   let negative;
   if (scenario === 'unused') {

@@ -8,11 +8,11 @@ export function containsSelectImplementation(emitted) {
 export function assertComboboxOnlyEvidence(graph, emitted) {
   if (!graph.moduleIds.some(id => /\/node_modules\/@zoom-design\/vue\/dist\/(?:combobox[-/]).*\.js/.test(id.replaceAll('\\', '/')))) throw Error('Combobox graph never encountered Combobox implementation');
   if (!/zoom-combobox/.test(emitted)) throw Error('Combobox implementation missing from final output');
-  if (/zoom-button|ZButton/.test(emitted) || containsSelectImplementation(emitted)) throw Error('Combobox build retained Button/Select implementation');
+  if (/zoom-button|ZButton|zoom-dialog|ZDialog/.test(emitted) || containsSelectImplementation(emitted)) throw Error('Combobox build retained Button/Select/Dialog implementation');
   const css = graph.chunks.flatMap(chunk => chunk.css ?? []);
   if (!css.length) throw Error('Combobox build has no referenced CSS');
 }
 export function assertUnusedComboboxEvidence(graph, emitted) {
   if (!graph.moduleIds.some(id => /\/node_modules\/@zoom-design\/vue\/dist\/(?:combobox[-/]).*\.js/.test(id.replaceAll('\\', '/')))) throw Error('Unused graph never encountered Combobox implementation');
-  if (/zoom-combobox|ZCombobox|zoom-button|zoom-select/.test(emitted)) throw Error('Unused build retained Combobox implementation');
+  if (/zoom-combobox|ZCombobox|zoom-button|zoom-select|zoom-dialog|ZDialog/.test(emitted)) throw Error('Unused build retained Combobox or Dialog implementation');
 }

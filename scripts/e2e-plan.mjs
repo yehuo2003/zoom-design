@@ -1,6 +1,8 @@
 import { isAbsolute } from 'node:path';
 
-export const hosts = { platform: 4170, vue: 4171, react: 4172, angular: 4173 };
+const portOffset = Number(process.env.ZOOM_SMOKE_PORT_OFFSET ?? 0);
+if (!Number.isInteger(portOffset) || portOffset < 0 || 4173 + portOffset > 65535) throw Error('ZOOM_SMOKE_PORT_OFFSET must keep all smoke ports within 4170–65535');
+export const hosts = { platform: 4170 + portOffset, vue: 4171 + portOffset, react: 4172 + portOffset, angular: 4173 + portOffset };
 export function e2eSelection({ package: selection = 'all', browser = 'chromium', mode = 'workspace', consumerRoot } = {}) {
   if (!['all', 'platform', 'core', 'dom', 'vue', 'react', 'angular'].includes(selection)) throw Error(`Unknown package ${selection}`);
   if (!['chromium', 'firefox', 'webkit', 'all'].includes(browser)) throw Error(`Unknown browser ${browser}`);

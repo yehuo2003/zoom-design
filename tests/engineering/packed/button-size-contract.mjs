@@ -6,5 +6,5 @@ export function minimalButtonEntry(scenario) {
 }
 export function assertUnusedButtonEvidence(graph, emitted) {
   if (!graph.moduleIds.some(id => /\/node_modules\/@zoom-design\/vue\/dist\/(?:button[-/]).*\.js/.test(id.replaceAll('\\', '/')))) throw Error('Unused graph never encountered Button implementation');
-  if (/zoom-button|ZButton|expected a Boolean/.test(emitted)) throw Error('Unused build retained Button implementation');
+  if (/zoom-button|ZButton|expected a Boolean|zoom-dialog|ZDialog/.test(emitted)) throw Error('Unused build retained Button or Dialog implementation');
 }

@@ -101,6 +101,16 @@ describe('Task5 packed consumer gates', () => {
       expect(result.total).toEqual({ raw: values.reduce((sum, value) => sum + value.length, 0), gzip: values.reduce((sum, value) => sum + gzipSync(value).length, 0), brotli: values.reduce((sum, value) => sum + brotliCompressSync(value).length, 0) });
     } finally { rmSync(directory, { recursive: true, force: true }); }
   });
+  it('counts final CSS from a removed CSS-only Vite JS placeholder', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'zoom-css-placeholder-'));
+    try {
+      writeFileSync(join(directory, 'entry.js'), 'import "./style.css"');
+      writeFileSync(join(directory, 'style.css'), '.zoom-dialog{}');
+      const chunks = [{ fileName: 'entry.js', imports: [], dynamicImports: ['style.js'], modules: ['entry.ts'], css: [] }, { fileName: 'style.js', imports: [], dynamicImports: [], modules: ['dialog/style.css'], css: ['style.css'] }];
+      expect(measureReferencedAssets(directory, '<script src="/entry.js"></script>', chunks).assets.map(asset => asset.path).sort()).toEqual(['entry.js', 'style.css']);
+      expect(() => measureReferencedAssets(directory, '<script src="/entry.js"></script>', [{ ...chunks[0], dynamicImports: ['missing.js'] }])).toThrow(/Missing referenced asset/);
+    } finally { rmSync(directory, { recursive: true, force: true }); }
+  });
   it('keeps native Angular build emission enabled and uses only standalone configs', () => {
     const config = consumerTypeConfig('angular');
     expect(config.compilerOptions.noEmit).not.toBe(true);

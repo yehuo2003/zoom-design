@@ -65,9 +65,9 @@ export function trapFocus(context: ModalContext, scope: HTMLElement, options: Fo
   const keydown = (event: KeyboardEvent) => {
     if (!active || disposed || event.key !== 'Tab') return;
     const nodes = tabbables(scopes()); const current = activeElement(owner); const index = nodes.findIndex(node => node === current);
-    if (!nodes.length || index < 0 || (event.shiftKey ? index === 0 : index === nodes.length - 1)) {
-      event.preventDefault(); focusElement(nodes[event.shiftKey ? nodes.length - 1 : 0] ?? scope);
-    }
+    // Portal scopes have a logical order independent of the document's native Tab order.
+    const next = index < 0 || !nodes.length ? (event.shiftKey ? nodes.length - 1 : 0) : (index + (event.shiftKey ? -1 : 1) + nodes.length) % nodes.length;
+    event.preventDefault(); focusElement(nodes[next] ?? scope);
   };
   const focusin = (event: FocusEvent) => {
     if (!active || disposed || redirecting) return;

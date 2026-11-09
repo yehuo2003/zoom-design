@@ -33,7 +33,7 @@ for (const scenario of ['select', 'named', 'unused']) {
   check(graph, emitted);
   for (const chunk of graph.chunks) for (const css of chunk.css ?? []) {
     const text = readFileSync(join(output, css), 'utf8');
-    if (!/zoom-select/.test(text) || /zoom-button|zoom-engineering|:root/.test(text)) throw Error('Select scenario must reference Select-only CSS');
+    if (!/zoom-select/.test(text) || /zoom-button|zoom-dialog|zoom-engineering|:root/.test(text)) throw Error('Select scenario must reference Select-only CSS');
   }
   let negative;
   if (scenario === 'unused') {

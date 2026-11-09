@@ -1,20 +1,9 @@
 import { focusElement } from '@zoom-design/dom';
+import { containsComposed } from '../overlay/focus';
+export { containsComposed, deepActiveElement } from '../overlay/focus';
 
 function parentElement(node: Element): HTMLElement | null {
   return node.assignedSlot ?? node.parentElement ?? ((node.getRootNode() as ShadowRoot).host as HTMLElement | undefined) ?? null;
-}
-
-export function containsComposed(ancestor: Element, node: Node): boolean {
-  if (ancestor.contains(node)) return true;
-  let element: Element | null = node.nodeType === 1 ? node as Element : node.parentElement;
-  while (element) { if (element === ancestor) return true; element = parentElement(element); }
-  return false;
-}
-
-export function deepActiveElement(owner: Document): HTMLElement | null {
-  let active = owner.activeElement;
-  while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
-  return active instanceof owner.defaultView!.HTMLElement && active !== owner.body ? active : null;
 }
 
 /** Check callback values before giving them to the DOM trap. Actual focus is verified by focusElement. */
@@ -57,9 +46,9 @@ export function focusDialogInitial(scope: HTMLElement, preferred: HTMLElement | 
   return focusElement(scope, { preventScroll: true });
 }
 
-export function focusAllowed(value: unknown, owner: Document, modalScope: HTMLElement | null, closingScope: HTMLElement | null): boolean {
+export function focusAllowed(value: unknown, owner: Document, modalRoots: readonly HTMLElement[], closingScope: HTMLElement | null): boolean {
   if (!(value instanceof owner.defaultView!.HTMLElement) || value.ownerDocument !== owner || !value.isConnected) return false;
   if (closingScope && containsComposed(closingScope, value)) return false;
-  if (modalScope && !containsComposed(modalScope, value)) return false;
+  if (modalRoots.length && !modalRoots.some(root => containsComposed(root, value))) return false;
   return focusElement(value, { preventScroll: true });
 }

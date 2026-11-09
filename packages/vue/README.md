@@ -1,6 +1,6 @@
 # @zoom-design/vue
 
-Vue 3 原生组件包，公开运行入口精确提供 `ZButton`、`ZCombobox`、`ZDialog`、`ZSelect`；根入口与各组件子路径可命名导入。Task13.1–13.8 已通过用户验收，Task13.9 的声明、出口与覆盖门禁正在验证。Task11 于2026-10-30用户验收通过，见 [Select 验收记录](../../docs/engineering/task11-acceptance.md)；Combobox 的独立验证状态见 [Task12](../../docs/engineering/task12-acceptance.md)。
+Vue 3 原生组件包，公开运行入口精确提供 `ZButton`、`ZCombobox`、`ZDialog`、`ZSelect`；根入口与各组件子路径可命名导入。Task13.1–13.12 已通过用户验收；Task13.12 workspace/packed 三浏览器自动回归各 324/324。Task11 于2026-10-30用户验收通过，见 [Select 验收记录](../../docs/engineering/task11-acceptance.md)；Combobox 的独立验证状态见 [Task12](../../docs/engineering/task12-acceptance.md)。
 
 ```ts
 import { ZButton } from '@zoom-design/vue/button';
@@ -27,7 +27,7 @@ Select 接受同步平面 options，modelValue 始终受控，默认 null，合�
 
 Combobox 分离已确认 value、可编辑 query 与临时高亮；query/open 首帧固定内部或受控模式。编辑只请求 query，确认已有选项才请求 value；没有自由文本值提交。IME 草稿、取消/重置和尾随 input 去重独立处理。原生表单只提交确认值，Combobox CSS 不依赖先导入 Select。
 
-Button、Select、Combobox 的参数见 [Button](../../docs/components/button.md)、[Select](../../docs/components/select.md)、[Combobox](../../docs/components/combobox.md)；Dialog 的完整参数、事件、slots、ref、属性落点和 SSR 边界见 [Dialog 契约](../../docs/contracts/dialog.md)。主题见[主题](../../docs/theming.md)。共同数据与框架差异见 [Selection 契约](../../docs/contracts/selection.md)、[框架适配](../../docs/contracts/framework-adapters.md)。React/Angular Select、Combobox 与 Dialog 仍为规划。私有 tests/fixtures 不进入发布包。
+Button、Select、Combobox、Dialog 的参数与用法分别见 [Button](../../docs/components/button.md)、[Select](../../docs/components/select.md)、[Combobox](../../docs/components/combobox.md)、[Dialog](../../docs/components/dialog.md)；Dialog 语义基线见 [Dialog 契约](../../docs/contracts/dialog.md)。主题见[主题](../../docs/theming.md)。共同数据与框架差异见 [Selection 契约](../../docs/contracts/selection.md)、[框架适配](../../docs/contracts/framework-adapters.md)。React/Angular Select、Combobox 与 Dialog 仍为规划。私有 tests/fixtures 不进入发布包。
 
 ## 工程基线
 

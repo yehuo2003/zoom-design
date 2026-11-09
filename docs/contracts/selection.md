@@ -2,7 +2,7 @@
 
 冻结日期：2026-10-29。Task8 契约 v1；以下是 Task9–13 的实施输入，尚未实现的公共导出不代表当前可用。产品支持范围见[组件矩阵](../components/README.md)。
 
-Task8、Task9、Task10 已获用户验收通过。4.10 Core 六函数与十二个类型见 [Core 用法](../../packages/core/README.md)，4.11 DOM 能力见 [DOM 用法](../../packages/dom/README.md)。Task11 Vue Select已于2026-10-30用户验收通过，实际API/范围见 [Select文档](../components/select.md) 与 [Task11记录](../engineering/task11-acceptance.md)；Task12 Combobox已于2026-10-30用户验收通过，自动验收16/16通过，见 [Combobox文档](../components/combobox.md)。Dialog和React/Angular产品待后续实施。
+Task8、Task9、Task10 已获用户验收通过。4.10 Core 六函数与十二个类型见 [Core 用法](../../packages/core/README.md)，4.11 DOM 能力见 [DOM 用法](../../packages/dom/README.md)。Task11 Vue Select已于2026-10-30用户验收通过，实际API/范围见 [Select文档](../components/select.md) 与 [Task11记录](../engineering/task11-acceptance.md)；Task12 Combobox已于2026-10-30用户验收通过，自动验收16/16通过，见 [Combobox文档](../components/combobox.md)。Vue Dialog 的 Task13.1–13.10 已验收，见 [Dialog 文档](../components/dialog.md)；React/Angular 产品仍待实施。
 
 ### 4.1 值、选项与输入归一化
 

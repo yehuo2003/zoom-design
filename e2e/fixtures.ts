@@ -20,6 +20,7 @@ export const test = base.extend<{ runtimeErrors: RuntimeErrors; _runtimeGuard: v
         expect(actual.vueButton).toMatch(/^\/.+\.js$/);
         expect(actual.vueSelect).toMatch(/^\/.+\.js$/);
         expect(actual.vueCombobox).toMatch(/^\/.+\.js$/);
+        expect(actual.vueDialog).toMatch(/^\/.+\.js$/);
       }
       for (const [name, path] of Object.entries(actual)) imports[name] = `**${path}`;
     }

@@ -11,7 +11,7 @@ import '@zoom-design/vue/theme.css';
 // React 使用 @zoom-design/react/theme.css；Angular 使用 @zoom-design/angular/theme.css。
 ```
 
-Vue的`style.css`聚合主题、Button、Select和Combobox；按需使用`theme.css`与`button/style.css`，不要再重复导入聚合入口。Button CSS自身具备默认regular回退；data-zoom-density需主题规则。React/Angular聚合入口仍只包含已交付的主题。JS入口不隐式加载样式，三个包保留CSS sideEffects。
+Vue的`style.css`聚合主题、Button、Select、Combobox和Dialog；按需使用`theme.css`与各组件的`style.css`，不要再重复导入聚合入口。组件独立CSS自身具备默认regular回退；data-zoom-density需主题规则。React/Angular聚合入口仍只包含已交付的主题。JS入口不隐式加载样式，三个包保留CSS sideEffects。
 
 ```css
 .brand-a {

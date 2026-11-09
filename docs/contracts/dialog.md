@@ -1,6 +1,6 @@
 # Dialog 关闭、焦点与模态边界
 
-冻结日期：2026-10-29。Task8 契约 v1；2026-11-05 的 Task13.1 补充增量 API 与类型基线并已获用户验收。Task13.2–13.8 已通过用户验收；Dialog 的模态焦点、嵌套选择浮层、portal 迁移及 SSR/水合已有专项验证。Task13.9 正在补齐声明、出口与覆盖门禁。产品支持范围见[组件矩阵](../components/README.md)。
+冻结日期：2026-10-29。Task8 契约 v1；2026-11-05 的 Task13.1 补充增量 API 与类型基线并已获用户验收。Task13.2–13.10 已通过用户验收；Dialog 的模态焦点、嵌套选择浮层、portal 迁移、SSR/水合、声明、出口与独立 tarball 消费已有专项验证。使用说明见[Dialog 组件文档](../components/dialog.md)，产品支持范围见[组件矩阵](../components/README.md)。
 
 ### 4.9 Dialog 契约（Task8 冻结与 Task13.1 增量）
 

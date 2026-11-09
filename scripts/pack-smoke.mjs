@@ -120,6 +120,7 @@ function runtimeGraph(state, app, directory) {
       imports.vueButton = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './button').fileName}`;
       imports.vueCombobox = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './combobox').fileName}`;
       imports.vueSelect = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './select').fileName}`;
+      imports.vueDialog = `/${publicImportChunk(graph, '@zoom-design/vue', exports, './dialog').fileName}`;
     }
   }
   for (const raw of graph.moduleIds) {
@@ -178,6 +179,9 @@ export function verifyConsumers(state) {
       save(join(state.reportDirectory, 'button-size.json'), { runId: state.runId, ...state.buttonSize });
       command(state, 'vue-minimal-select-size', process.execPath, ['scripts/select-size.mjs'], directory);
       command(state, 'vue-minimal-combobox-size', process.execPath, ['scripts/combobox-size.mjs'], directory);
+      command(state, 'vue-minimal-dialog-size', process.execPath, ['scripts/dialog-size.mjs'], directory);
+      state.dialogSize = readJson(join(directory, 'reports/dialog-size.json'));
+      save(join(state.reportDirectory, 'dialog-size.json'), { runId: state.runId, ...state.dialogSize });
       state.comboboxSize = readJson(join(directory, 'reports/combobox-size.json'));
       save(join(state.reportDirectory, 'combobox-size.json'), { runId: state.runId, ...state.comboboxSize });
       state.selectSize = readJson(join(directory, 'reports/select-size.json'));
@@ -228,14 +232,40 @@ export function negativeConsumers(state) {
   negative('undeclared-dependency', platform, () => { const manifest = JSON.parse(consumerBytes); delete manifest.dependencies['@zoom-design/core']; save(consumerManifest, manifest); }, () => writeFileSync(consumerManifest, consumerBytes), /Missing declared local dependency @zoom-design\/core/, 'preinstall');
   negative('wrong-typescript', vue, () => npm(state, 'negative-install-actual-TS7-in-Vue', ['install', '--no-save', '--package-lock=false', '--no-audit', '--no-fund', 'typescript@7.0.2'], vue), () => npm(state, 'negative-restore-Vue-ci', ['ci', '--no-audit', '--no-fund'], vue), /Wrong tool version typescript.*resolved 7.0.2/);
   const installedVue = join(vue, 'node_modules/@zoom-design/vue');
-  for (const [name, target] of [['button-js', 'dist/button/index.js'], ['button-types', 'dist/types/button/index.d.ts'], ['button-css', 'dist/button/style.css'], ['select-js', 'dist/select/index.js'], ['select-types', 'dist/types/select/index.d.ts'], ['select-css', 'dist/select/style.css'], ['combobox-js', 'dist/combobox/index.js'], ['combobox-types', 'dist/types/combobox/index.d.ts'], ['combobox-css', 'dist/combobox/style.css'], ['theme-css', 'dist/theme.css'], ['theme-partial', 'dist/styles/theme/_defaults.scss']]) {
+  for (const [name, target] of [['button-js', 'dist/button/index.js'], ['button-types', 'dist/types/button/index.d.ts'], ['button-css', 'dist/button/style.css'], ['select-js', 'dist/select/index.js'], ['select-types', 'dist/types/select/index.d.ts'], ['select-css', 'dist/select/style.css'], ['combobox-js', 'dist/combobox/index.js'], ['combobox-types', 'dist/types/combobox/index.d.ts'], ['combobox-css', 'dist/combobox/style.css'], ['dialog-js', 'dist/dialog/index.js'], ['dialog-types', 'dist/types/dialog/index.d.ts'], ['dialog-css', 'dist/dialog/style.css'], ['theme-css', 'dist/theme.css'], ['theme-partial', 'dist/styles/theme/_defaults.scss']]) {
     const file = join(installedVue, target); const backup = `${file}.negative`;
     negative(`missing-${name}`, vue, () => renameSync(file, backup), () => { if (existsSync(backup)) renameSync(backup, file); }, new RegExp(`Missing/changed installed asset.*${target.replaceAll('.', '\\.')}`));
   }
-  for (const [name, subpath, condition] of [['button-js', './button', 'import'], ['button-types', './button', 'types'], ['select-js', './select', 'import'], ['select-types', './select', 'types'], ['combobox-js', './combobox', 'import'], ['combobox-types', './combobox', 'types']]) {
+  for (const [name, subpath, condition] of [['button-js', './button', 'import'], ['button-types', './button', 'types'], ['select-js', './select', 'import'], ['select-types', './select', 'types'], ['combobox-js', './combobox', 'import'], ['combobox-types', './combobox', 'types'], ['dialog-js', './dialog', 'import'], ['dialog-types', './dialog', 'types']]) {
     negative(`wrong-${name}`, vue, () => { const manifest = JSON.parse(manifestBytes); manifest.exports[subpath][condition] = './dist/nonexistent.js'; save(manifestPath, manifest); }, () => writeFileSync(manifestPath, manifestBytes), /manifest\/exports mismatch/);
   }
-  const required = ['missing-tgz', 'wrong-exports', 'missing-css', 'undeclared-dependency', 'wrong-typescript', 'missing-button-js', 'missing-button-types', 'missing-button-css', 'missing-select-js', 'missing-select-types', 'missing-select-css', 'missing-theme-css', 'missing-theme-partial', 'wrong-button-js', 'wrong-button-types', 'wrong-select-js', 'wrong-select-types', 'missing-combobox-js', 'missing-combobox-types', 'missing-combobox-css', 'wrong-combobox-js', 'wrong-combobox-types'];
+  negative('wrong-dialog-css-export', vue, () => { const manifest = JSON.parse(manifestBytes); manifest.exports['./dialog/style.css'] = './dist/nonexistent.css'; save(manifestPath, manifest); }, () => writeFileSync(manifestPath, manifestBytes), /manifest\/exports mismatch/);
+  const dialogCss = join(installedVue, 'dist/dialog/style.css'); const dialogCssBytes = readFileSync(dialogCss);
+  try {
+    writeFileSync(dialogCss, Buffer.concat([dialogCssBytes, Buffer.from('\n.zoom-button{color:red}\n')]));
+    const result = command(state, 'negative-dialog-size-pollution', process.execPath, ['scripts/dialog-size.mjs'], vue, true, /Dialog CSS pollution/);
+    cases.push({ name: 'dialog-size-pollution', exitCode: result.status, result: 'expected rejection' });
+  } finally {
+    writeFileSync(dialogCss, dialogCssBytes);
+    if (sha256(readFileSync(dialogCss)) !== sha256(dialogCssBytes)) throw Error('Dialog CSS hash not restored');
+    command(state, 'restored-dialog-size-pollution', process.execPath, ['scripts/dialog-size.mjs'], vue);
+    command(state, 'restored-dialog-size-consumer', process.execPath, ['scripts/verify-consumer.mjs'], vue);
+    const entry = cases.find(entry => entry.name === 'dialog-size-pollution'); if (entry) entry.restored = 'PASS';
+  }
+  const server = join(vue, 'server/ssr.js'); const serverBytes = readFileSync(server); const originalServer = join(vue, 'server/ssr.negative.js');
+  try {
+    renameSync(server, originalServer);
+    writeFileSync(server, `import { render as original } from './ssr.negative.js';\nexport async function render(location) { return String(location).includes('example=dialog') ? '<div>broken Dialog SSR</div>' : original(location); }\n`);
+    const result = command(state, 'negative-dialog-ssr', process.execPath, ['scripts/verify-consumer.mjs'], vue, true, /data-dialog-brand/);
+    cases.push({ name: 'dialog-ssr', exitCode: result.status, result: 'expected rejection' });
+  } finally {
+    if (existsSync(server)) rmSync(server);
+    if (existsSync(originalServer)) renameSync(originalServer, server);
+    if (sha256(readFileSync(server)) !== sha256(serverBytes)) throw Error('Dialog SSR hash not restored');
+    command(state, 'restored-dialog-ssr', process.execPath, ['scripts/verify-consumer.mjs'], vue);
+    const entry = cases.find(entry => entry.name === 'dialog-ssr'); if (entry) entry.restored = 'PASS';
+  }
+  const required = ['missing-tgz', 'wrong-exports', 'missing-css', 'undeclared-dependency', 'wrong-typescript', 'missing-button-js', 'missing-button-types', 'missing-button-css', 'missing-select-js', 'missing-select-types', 'missing-select-css', 'missing-theme-css', 'missing-theme-partial', 'wrong-button-js', 'wrong-button-types', 'wrong-select-js', 'wrong-select-types', 'missing-combobox-js', 'missing-combobox-types', 'missing-combobox-css', 'wrong-combobox-js', 'wrong-combobox-types', 'missing-dialog-js', 'missing-dialog-types', 'missing-dialog-css', 'wrong-dialog-js', 'wrong-dialog-types', 'wrong-dialog-css-export', 'dialog-size-pollution', 'dialog-ssr'];
   if (JSON.stringify(cases.map(entry => entry.name).sort()) !== JSON.stringify(required.sort()) || cases.some(entry => entry.restored !== 'PASS')) throw Error('Required named negative classes/restorations did not all execute');
   state.negative = cases;
   state.status = 'negative-verified';

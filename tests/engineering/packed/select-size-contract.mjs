@@ -5,11 +5,11 @@ export function minimalSelectEntry(scenario) {
 export function assertSelectOnlyEvidence(graph, emitted) {
   if (!graph.moduleIds.some(id => /\/node_modules\/@zoom-design\/vue\/dist\/(?:select[-/]).*\.js/.test(id.replaceAll('\\', '/')))) throw Error('Select graph never encountered Select implementation');
   if (!/zoom-select/.test(emitted)) throw Error('Select implementation missing from final output');
-  if (/zoom-button|ZButton/.test(emitted)) throw Error('Select build retained Button implementation');
+  if (/zoom-button|ZButton|zoom-dialog|ZDialog/.test(emitted)) throw Error('Select build retained Button or Dialog implementation');
   const css = graph.chunks.flatMap(chunk => chunk.css ?? []);
   if (!css.length) throw Error('Select build has no referenced CSS');
 }
 export function assertUnusedSelectEvidence(graph, emitted) {
   if (!graph.moduleIds.some(id => /\/node_modules\/@zoom-design\/vue\/dist\/(?:select[-/]).*\.js/.test(id.replaceAll('\\', '/')))) throw Error('Unused graph never encountered Select implementation');
-  if (/zoom-select|ZSelect|zoom-button/.test(emitted)) throw Error('Unused build retained Select implementation');
+  if (/zoom-select|ZSelect|zoom-button|zoom-dialog|ZDialog/.test(emitted)) throw Error('Unused build retained Select or Dialog implementation');
 }
