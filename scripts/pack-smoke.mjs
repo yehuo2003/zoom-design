@@ -70,6 +70,8 @@ export async function packPackages(state) {
     const entry = { name: packageName, version: inspected.manifest.version, filename: record.filename, tarball, sha256: sha256(readFileSync(tarball)), integrity: record.integrity, shasum: record.shasum, packedSize: record.size, unpackedSize: record.unpackedSize, packDirectory: directory, exports: inspected.manifest.exports, dependencies: inspected.manifest.dependencies ?? {}, peerDependencies: inspected.manifest.peerDependencies ?? {}, files: inspected.files };
     state.packages.push(entry); save(join(state.reportDirectory, 'packages.json'), state.packages);
   }
+  const releaseVersion = readJson(join(root, 'package.json')).version;
+  for (const entry of state.packages) if (entry.version !== releaseVersion) throw Error(`${entry.name}: packed version ${entry.version} must match release version ${releaseVersion}`);
   state.status = 'packed';
 }
 export function prepareConsumers(state) {

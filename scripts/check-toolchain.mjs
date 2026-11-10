@@ -65,8 +65,9 @@ export function validateWorkspaceContract(workspace, manifest, locked) {
   for (const [name, range] of Object.entries(peers[workspace] ?? {})) {
     if (manifest.peerDependencies?.[name] !== range || manifest.peerDependenciesMeta?.[name]?.optional) errors.push(`${workspace}: public peer ${name} must require ${range}`);
   }
-  if (workspace === 'packages/dom' && manifest.dependencies?.['@zoom-design/core'] !== '0.0.0') errors.push(`${workspace}: runtime dependency @zoom-design/core must be 0.0.0`);
-  if (workspace === 'packages/vue') for (const name of ['@zoom-design/core', '@zoom-design/dom']) if (manifest.dependencies?.[name] !== '0.0.0') errors.push(`${workspace}: runtime dependency ${name} must be 0.0.0`);
+  if (workspace === 'packages/dom' && (!exact(manifest.version) || manifest.dependencies?.['@zoom-design/core'] !== manifest.version)) errors.push(`${workspace}: runtime dependency @zoom-design/core must match package version ${manifest.version}`);
+  if (workspace === 'packages/vue') for (const name of ['@zoom-design/core', '@zoom-design/dom']) if (!exact(manifest.version) || manifest.dependencies?.[name] !== manifest.version) errors.push(`${workspace}: runtime dependency ${name} must match package version ${manifest.version}`);
+  if (locked?.version !== manifest.version) errors.push(`${workspace}: lock version mismatch`);
   for (const field of ['dependencies', 'devDependencies', 'peerDependencies', 'peerDependenciesMeta']) {
     const sorted = value => Object.entries(value ?? {}).sort(([a], [b]) => a.localeCompare(b));
     if (JSON.stringify(sorted(manifest[field])) !== JSON.stringify(sorted(locked?.[field]))) errors.push(`${workspace}: lock ${field} mismatch`);
@@ -129,6 +130,7 @@ export function inspectToolchain(directory = root) {
   const workspaces = ['.', ...['core', 'dom', 'vue', 'react', 'angular'].map(n => `packages/${n}`), ...['platform', 'vue', 'react', 'angular'].map(n => `apps/${n}-smoke`)];
   for (const workspace of workspaces) {
     const data = readJson(join(directory, workspace, 'package.json'));
+    if (workspace.startsWith('packages/') && data.version !== manifest.version) errors.push(`${workspace}: public version must match root version ${manifest.version}`);
     const licensePath = join(directory, workspace, 'LICENSE');
     errors.push(...validatePublicationContract(workspace, data,
       existsSync(licensePath) ? readFileSync(licensePath, 'utf8') : workspace.startsWith('apps/') ? readFileSync(join(directory, 'LICENSE'), 'utf8') : '',

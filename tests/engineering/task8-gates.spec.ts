@@ -4,7 +4,7 @@ import { validatePublicationContract } from '../../scripts/check-toolchain.mjs';
 import { validatePlatformPack } from '../../scripts/platform-contracts.mjs';
 
 const license = readFileSync('LICENSE', 'utf8');
-const published = { name: '@zoom-design/core', version: '0.0.0', private: false, author: 'linzhuming', license: 'MIT', publishConfig: { access: 'public' } };
+const published = { name: '@zoom-design/core', version: '0.0.1', private: false, author: 'linzhuming', license: 'MIT', publishConfig: { access: 'public' } };
 const files = ['package.json', 'README.md', 'LICENSE', 'dist/index.js', 'dist/index.d.ts'];
 
 describe('T8.13 publication boundaries', () => {

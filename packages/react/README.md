@@ -1,15 +1,47 @@
 # @zoom-design/react
 
-计划提供适合 React 项目的原生组件与适配，包括受控状态、事件、children 和生命周期接入。
+Zoom Design 面向 React 项目的共享主题包。**当前公开版本尚未提供 React 产品组件或 hooks**；JavaScript 根入口和类型入口为空。现阶段可以使用主题 CSS 与 Sass 入口，为应用自己的控件建立统一的颜色、字体和密度。
 
-Task 3 已建立原生构建、类型检查、单测和私有宿主。公共 JS/声明入口保持空导出；工程探针只位于 `test/fixtures`，不作为产品组件发布。
+## 安装
 
-## 工程基线
+```sh
+npm install @zoom-design/react react@~19.3.1 react-dom@~19.3.1
+```
 
-本包使用 React/react-dom 19.3.1、类型 19.3.0、TypeScript 7.0.2、Vite 8.3.5 和 plugin-react 6.1.2，Node/npm 继承根配置。peer 暂限本轮验证的 19.3 发行线。
+`react` 和 `react-dom` 是 peer dependencies，当前声明的支持范围均为 `~19.3.1`。
 
-`npm run build --workspace @zoom-design/react` 按顺序生成 `dist/index.js`、`dist/types/index.d.ts`、`dist/style.css` 和 `dist/theme.css`。框架与子路径均为 external。CSS 可通过 `@zoom-design/react/style.css` 或 `@zoom-design/react/theme.css` 显式导入，可选 `theme.scss` 提供 Sass 定制；JS 不自动导入样式。当前尚无 React 产品组件。
+## 使用主题
 
-`npm run typecheck --workspace @zoom-design/react` 检查原生 JSX、声明消费与预期失败反例；`npm run check:fixtures --workspace @zoom-design/react` 另验证原生 Vite 夹具转换与 runtime external；`npm run test:unit --workspace @zoom-design/react` 执行 StrictMode 交互、props 更新及 effect 清理验证。浏览器命令为 `npm run test:e2e --workspace @zoom-design/react`。
+在应用入口引入一个 CSS 入口即可：
 
-私有宿主为 `apps/react-smoke`，通过公开包名导入实际构建和 CSS 后启用探针，并为共享服务器提供 `/ssr` 的 `renderToString`/`hydrateRoot` 路径。证据和验证边界见 [Task 3 React 报告](../../docs/engineering/task3-react-report.md)。
+```tsx
+import '@zoom-design/react/style.css';
+```
+
+当前 `style.css` 包含已交付的共享主题；若只需要主题变量，也可以改用 `@zoom-design/react/theme.css`。不要同时导入这两个入口。主题定义 `--zoom-color-primary`、`--zoom-color-text`、`--zoom-font-family` 等 CSS 变量，并通过 `data-zoom-density="regular|compact"` 提供密度几何变量。
+
+```css
+.brand {
+  --zoom-color-primary: #0f766e;
+  --zoom-color-on-primary: #ffffff;
+}
+
+/* 这里的按钮属于应用自身；本包尚未导出 Button 组件。 */
+.brand button {
+  background: var(--zoom-color-primary);
+  color: var(--zoom-color-on-primary);
+}
+```
+
+可选的 `@zoom-design/react/theme.scss` 提供 Sass 主题入口，需要应用构建工具配置 package importer；普通 CSS 使用无需 Sass。
+
+## 当前公开范围
+
+| 入口 | 内容 |
+| --- | --- |
+| `@zoom-design/react` | 空的 ESM/类型入口，尚无可命名导入的组件或 hooks。 |
+| `@zoom-design/react/style.css` | 当前交付的主题 CSS。 |
+| `@zoom-design/react/theme.css` | 共享主题与密度变量。 |
+| `@zoom-design/react/theme.scss` | 可选 Sass 主题模块。 |
+
+`ZButton`、`ZSelect`、`ZCombobox`、`ZDialog` 目前只在 Vue 包中实现，不能从本包导入。主题不会自动给应用现有的 button/input 赋予组件外观；应用样式需要主动使用这些变量。

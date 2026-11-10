@@ -18,10 +18,13 @@ export function useDialogState(normalized: ComputedRef<NormalizedDialog>, panel:
   function requestClose(reason: DialogCloseReason, event?: Event) {
     const node = panel.value;
     if (disposed || !normalized.value.open || !node?.isConnected) return;
+    const nativeEvent = event instanceof node.ownerDocument.defaultView!.Event ? event : undefined;
+    // The browser's pointer focus default runs after this capture-phase request.
+    // A modal keeps ownership even when it rejects close or opens a confirmation.
+    if (reason === 'outside' && normalized.value.modal) nativeEvent?.preventDefault();
     if (reason === 'escape' && !normalized.value.closeOnEscape) return;
     if (reason === 'outside' && !normalized.value.closeOnOutside) return;
 
-    const nativeEvent = event instanceof node.ownerDocument.defaultView!.Event ? event : undefined;
     if (nativeEvent) {
       if (seenEvents.has(nativeEvent)) return;
       const session = peekOverlaySession(node.ownerDocument);

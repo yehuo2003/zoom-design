@@ -1,6 +1,6 @@
 {
   "name": "@zoom-design/vue",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Vue components for Zoom Design",
   "private": false,
   "author": "linzhuming",
@@ -50,6 +50,7 @@
     "**/*.css"
   ],
   "scripts": {
+    "prepublishOnly": "node ../../scripts/workspace.mjs build --package vue",
     "build": "node ../../scripts/build-framework.mjs vue",
     "typecheck": "node ../../scripts/check-vue.mjs",
     "test:unit": "node ../../scripts/test-unit.mjs --standalone --package vue",
@@ -74,7 +75,7 @@
     "vue": "~3.5.44"
   },
   "dependencies": {
-    "@zoom-design/core": "0.0.0",
-    "@zoom-design/dom": "0.0.0"
+    "@zoom-design/core": "0.0.2",
+    "@zoom-design/dom": "0.0.2"
   }
 }

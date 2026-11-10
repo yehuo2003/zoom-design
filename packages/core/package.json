@@ -1,6 +1,6 @@
 {
   "name": "@zoom-design/core",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Framework-neutral behavior and algorithms",
   "private": false,
   "author": "linzhuming",
@@ -28,6 +28,7 @@
   ],
   "sideEffects": false,
   "scripts": {
+    "prepublishOnly": "node ../../scripts/workspace.mjs build --package core",
     "build": "node ../../scripts/build-platform.mjs core",
     "typecheck": "node ../../scripts/typecheck-platform.mjs core",
     "test:unit": "node ../../scripts/test-unit.mjs --standalone --package core",

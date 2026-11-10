@@ -1,6 +1,6 @@
 {
   "name": "@zoom-design/dom",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Framework-neutral browser interaction utilities",
   "private": false,
   "author": "linzhuming",
@@ -9,7 +9,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@zoom-design/core": "0.0.0",
+    "@zoom-design/core": "0.0.2",
     "@floating-ui/dom": "1.8.0"
   },
   "devDependencies": {
@@ -32,6 +32,7 @@
   ],
   "sideEffects": false,
   "scripts": {
+    "prepublishOnly": "node ../../scripts/workspace.mjs build --package dom",
     "build": "node ../../scripts/build-platform.mjs dom",
     "typecheck": "node ../../scripts/typecheck-platform.mjs dom",
     "test:unit": "node ../../scripts/test-unit.mjs --standalone --package dom",

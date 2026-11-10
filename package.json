@@ -1,6 +1,6 @@
 {
   "name": "zoom-design",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Zoom Design multi-framework component library workspace",
   "author": "linzhuming",
   "license": "MIT",
@@ -57,6 +57,7 @@
     "dev:angular": "node scripts/dev.mjs --app angular",
     "test:e2e:workspace": "node scripts/e2e.mjs --mode workspace --browser chromium",
     "check:pack": "node scripts/pack-smoke.mjs",
+    "publish:all:test": "node scripts/publish-all.mjs",
     "test:e2e:packed": "node scripts/e2e-packed.mjs"
   }
 }

@@ -89,6 +89,19 @@ describe('Task13.5 controlled Dialog close requests', () => {
     expect(wrapper.emitted('close-request')).toEqual([[{ open: false, previousOpen: true, reason: 'outside' }]]);
   });
 
+  it.each([
+    { modal: true, closeOnOutside: true, prevented: true, requests: 1 },
+    { modal: true, closeOnOutside: false, prevented: true, requests: 0 },
+    { modal: false, closeOnOutside: true, prevented: false, requests: 1 },
+  ])('T14.3 modal outside pointer default is prevented=$prevented with modal=$modal closeOnOutside=$closeOnOutside', async ({ modal, closeOnOutside, prevented, requests }) => {
+    const wrapper = dialog({ modal, closeOnOutside }); await settle();
+    const target = modal ? wrapper.get('.zoom-dialog__backdrop').element : document.body;
+    const event = new MouseEvent('pointerdown', { bubbles: true, composed: true, cancelable: true });
+    target.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(prevented);
+    expect(wrapper.emitted('close-request')?.length ?? 0).toBe(requests);
+  });
+
   it('T13.5.6 keeps a disabled top route above its lower layer and reads switches without reordering', async () => {
     const lower = dialog({ 'aria-label': 'Lower' }); await settle();
     const top = dialog({ 'aria-label': 'Top', closeOnEscape: false, closeOnOutside: false }); await settle();

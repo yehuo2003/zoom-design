@@ -1,22 +1,41 @@
 # @zoom-design/angular
 
-计划提供适合 Angular 项目的原生组件与适配，包括模板、输入输出、依赖注入和表单接入。
+Zoom Design 面向 Angular 项目的共享主题包。当前 npm 产物采用 Angular Package Format 的 partial 编译，但**尚未提供 Angular 产品组件、指令或服务**；公开入口没有可使用的 selector。现阶段可使用共享主题 CSS 与可选 Sass 入口。
 
-已提供 Angular CLI / ng-packagr 的原生 APF partial 构建、模板类型检查和 TestBed 信号探针。公共入口保持空导出；探针仅供工程验证。
-
-## 工程基线
-
-本包构建编译器固定为 TypeScript 6.0.3，Node/npm 继承根配置。局部工具命令与兼容例外见[工程基线](../../docs/engineering/baseline.md)，验证范围见[验收记录](../../docs/engineering/acceptance.md)。APF 输出到仓库根 `dist/angular`，主 JS、声明布局及 exports 由 ng-packagr 管理。
+## 安装
 
 ```sh
-npm run build --workspace @zoom-design/angular
-npm run typecheck --workspace @zoom-design/angular
-npm run test:list --workspace @zoom-design/angular
-npm run test:unit --workspace @zoom-design/angular
-npm run test:coverage --workspace @zoom-design/angular
-npm run test:e2e --workspace @zoom-design/angular
+npm install @zoom-design/angular
 ```
 
-`src/styles/style.scss` 和 `theme.scss` 在 APF 构建前编译到 `.generated`，再由 assets 复制到 `styles/style.css` 和 `styles/theme.css`；可选 `theme.scss` 提供 Sass 定制。当前尚无 Angular 产品组件。
+当前 peer dependency 范围为 `@angular/core` / `@angular/common` `~22.2.3`、`rxjs` `~7.8.2`、`tslib` `~2.8.1`。请在符合这些范围的 Angular 应用中安装。
 
-原生应用 `apps/angular-smoke` 以包名解析根目录实际 APF，使用 Angular 默认 zoneless 启动私有探针。打包消费验证已在仓库外移除本地 APF 映射；当前未实现或验证 Angular SSR / hydration。详细证据见 [仓库外消费记录](../../docs/engineering/packed-consumers.md)。
+## 使用主题
+
+在应用的 `angular.json` 中加入一个样式入口：
+
+```json
+{
+  "styles": [
+    "@zoom-design/angular/style.css",
+    "src/styles.css"
+  ]
+}
+```
+
+也可以使用 `@zoom-design/angular/theme.css` 替代 `style.css`；当前两者提供已交付的主题资源，不必同时引入。应用可覆盖 `--zoom-color-primary`、`--zoom-color-on-primary`、`--zoom-font-family` 等 CSS 变量，并用 `data-zoom-density="regular|compact"` 选择密度。主题不会自动改变普通 HTML 控件的外观。
+
+`@zoom-design/angular/theme.scss` 是可选的 Sass 主题入口，使用前需由应用构建工具配置相应 package importer。
+
+## 当前公开范围
+
+| 入口 | 内容 |
+| --- | --- |
+| `@zoom-design/angular` | APF 根入口；当前无产品组件、指令、NgModule 或服务导出。 |
+| `@zoom-design/angular/style.css` | 当前交付的主题 CSS。 |
+| `@zoom-design/angular/theme.css` | 共享主题与密度变量。 |
+| `@zoom-design/angular/theme.scss` | 可选 Sass 主题模块。 |
+
+Vue 包中的 Button、Select、Combobox 和 Dialog 尚无 Angular 对应实现。不要把仓库中的工程探针当作公开 API。
+
+仓库维护者构建本包时，输出位于根目录 `dist/angular`；发布应使用该 APF 目录，而不是直接发布 `packages/angular` 源目录。

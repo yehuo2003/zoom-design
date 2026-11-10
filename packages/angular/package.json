@@ -1,6 +1,6 @@
 {
   "name": "@zoom-design/angular",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Angular components for Zoom Design",
   "private": false,
   "author": "linzhuming",
@@ -21,6 +21,7 @@
     }
   },
   "scripts": {
+    "prepublishOnly": "node ../../scripts/guard-angular-source-publish.mjs",
     "build": "node ../../scripts/build-angular.mjs",
     "typecheck": "node ../../scripts/check-angular.mjs",
     "test:unit": "node ../../scripts/test-angular.mjs",

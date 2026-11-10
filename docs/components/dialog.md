@@ -275,6 +275,8 @@ const getHost = () => host.value;
 
 `panelAttrs` 不能覆盖 `id`、`role`、`tabindex`、`aria-modal` 或命名 ARIA；字符串事件处理器被过滤。默认关闭按钮是原生 `type="button"`。`modal=false` 不输出 `aria-modal`，也不隔离背景或锁滚动；Tab 可离开。`modal=true` 只让最上层活动 scope 接收 Escape/outside 和焦点限制，逻辑子浮层可外置。应用必须提供可访问名称与可发现的退出路径。
 
+活动模态的外部 pointerdown 会阻止浏览器默认焦点迁移，即使父层拒绝关闭或关闭意图打开另一确认层，也不会在初焦之后把焦点拉回背景。`closeOnOutside=false` 只禁用关闭请求，仍保持模态焦点；非模态保留外部点击的默认焦点行为。
+
 Dialog 本身没有 `name`、`value`、`required`、`disabled`、`form`、`reset` 或 CVA 接口，不产生 FormData 项。真实 form 的提交、校验、reset 与外部按钮 owner 使用原生 HTML 规则；内部 Select/Combobox 的已确认值各自处理。卸载/关闭不会替应用保存表单草稿。
 
 ## 主题与 22 个 CSS 变量

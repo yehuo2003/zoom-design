@@ -1,42 +1,70 @@
 # @zoom-design/vue
 
-Vue 3 原生组件包，公开运行入口精确提供 `ZButton`、`ZCombobox`、`ZDialog`、`ZSelect`；根入口与各组件子路径可命名导入。Task13.1–13.12 已通过用户验收；Task13.12 workspace/packed 三浏览器自动回归各 324/324。Task11 于2026-10-30用户验收通过，见 [Select 验收记录](../../docs/engineering/task11-acceptance.md)；Combobox 的独立验证状态见 [Task12](../../docs/engineering/task12-acceptance.md)。
+Zoom Design 的 Vue 3 组件包。目前公开提供 `ZButton`、`ZSelect`、`ZCombobox` 和 `ZDialog`，支持按组件导入、独立样式、共享主题，以及服务端渲染后的水合。组件的值和开关状态由应用控制；JavaScript 入口不会自动加载 CSS。
 
-```ts
-import { ZButton } from '@zoom-design/vue/button';
-import { ZSelect } from '@zoom-design/vue/select';
-import { ZCombobox } from '@zoom-design/vue/combobox';
-import { ZDialog } from '@zoom-design/vue/dialog';
-import type { SelectProps, SelectExpose } from '@zoom-design/vue/select';
-import type { ComboboxProps, ComboboxExpose } from '@zoom-design/vue/combobox';
-import type { DialogProps, DialogExpose, DialogSlots } from '@zoom-design/vue/dialog';
-import '@zoom-design/vue/theme.css';
-import '@zoom-design/vue/button/style.css';
-import '@zoom-design/vue/select/style.css';
-import '@zoom-design/vue/combobox/style.css';
-import '@zoom-design/vue/dialog/style.css';
+## 安装
+
+```sh
+npm install @zoom-design/vue vue@~3.5.44
 ```
 
-Dialog 的独立入口为 `@zoom-design/vue/dialog`，样式为 `@zoom-design/vue/dialog/style.css`。`open` 始终由应用控制；默认关闭按钮、close 插槽、Escape 与 outside 按 `update:open(false)` → `close-request(details)` 请求关闭。应用不回写时继续打开。模态焦点、背景隔离、滚动锁、嵌套选择浮层与显式宿主 portal 已接入；SSR 初始打开首帧 inline，水合后迁移并保留原节点。交互与预览证据见 [Task13 验收](../../docs/engineering/task13-acceptance.md)。
+`@zoom-design/core` 和 `@zoom-design/dom` 是运行依赖，会随本包安装。Vue 是 peer dependency，当前声明的支持范围为 `~3.5.44`。
 
-也可从 `@zoom-design/vue` 同时命名导入组件与公开类型，样式仅导入聚合 `@zoom-design/vue/style.css`。单组件 CSS 有 regular 默认回退，容器密度需 `theme.css`，JS 不隐式加载样式。普通 CSS 用户无需 Sass，可选 `theme.scss` 仅公开主题。
+## 快速开始
 
-Button 默认 solid/md/type=button，避免意外提交；disabled/loading 是应用状态，click 同步发出原始 MouseEvent，保留原生表单与键盘语义。Button 不调用 Core/DOM 服务。
+```vue
+<script setup lang="ts">
+import { shallowRef } from 'vue';
+import { ZButton, ZSelect, ZCombobox, ZDialog } from '@zoom-design/vue';
+import '@zoom-design/vue/style.css';
 
-Select 接受同步平面 options，modelValue 始终受控，默认 null，合法值包括数字 0 与空串；open 首帧固定内部或受控模式。用户操作发 value/open 请求，父层可拒绝，实际显示与资源服从已确认输入。Select 通过 Core 规则及 DOM 定位、交互、表单桥接实现键盘、required、reset、外部 form 和可选 portal。默认 inline 继承主题；portal host 需应用同步品牌、字体与 density。
+const options = [
+  { value: 'blue', label: '蓝色' },
+  { value: 'green', label: '绿色' },
+];
+const choice = shallowRef<string | number | null>(null);
+const search = shallowRef<string | number | null>(null);
+const dialogOpen = shallowRef(false);
+</script>
 
-Combobox 分离已确认 value、可编辑 query 与临时高亮；query/open 首帧固定内部或受控模式。编辑只请求 query，确认已有选项才请求 value；没有自由文本值提交。IME 草稿、取消/重置和尾随 input 去重独立处理。原生表单只提交确认值，Combobox CSS 不依赖先导入 Select。
+<template>
+  <main data-zoom-density="compact">
+    <ZSelect v-model="choice" :options="options" aria-label="选择颜色" />
+    <ZCombobox v-model="search" :options="options" aria-label="搜索颜色" />
+    <ZButton @click="dialogOpen = true">查看说明</ZButton>
+    <ZDialog :open="dialogOpen" @update:open="dialogOpen = $event">
+      <template #title>颜色说明</template>
+      <p>选择或搜索已有颜色选项。</p>
+    </ZDialog>
+  </main>
+</template>
+```
 
-Button、Select、Combobox、Dialog 的参数与用法分别见 [Button](../../docs/components/button.md)、[Select](../../docs/components/select.md)、[Combobox](../../docs/components/combobox.md)、[Dialog](../../docs/components/dialog.md)；Dialog 语义基线见 [Dialog 契约](../../docs/contracts/dialog.md)。主题见[主题](../../docs/theming.md)。共同数据与框架差异见 [Selection 契约](../../docs/contracts/selection.md)、[框架适配](../../docs/contracts/framework-adapters.md)。React/Angular Select、Combobox 与 Dialog 仍为规划。私有 tests/fixtures 不进入发布包。
+上例中的 `style.css` 已包含主题和四个组件的样式。`ZDialog` 的关闭操作只发出请求：如果应用不把 `open` 更新为 `false`，对话框会继续打开。
 
-## 工程基线
+## 组件
 
-本包固定Vue/compiler-sfc/compiler-dom/server-renderer3.5.44、vue-tsc3.3.13和TS6.0.3；Node/npm继承根配置。SFC宏编译显式提供文件系统以兼容根TS7的工具提升，声明检查仍使用本包TS6。局部命令与兼容例外见[工程基线](../../docs/engineering/baseline.md)。
+| 组件 | 当前能力 | 关键状态 |
+| --- | --- | --- |
+| `ZButton` | 原生按钮语义，`solid` / `outline` / `text` 外观、尺寸、禁用与加载状态。 | 默认 `type="button"`；`click` 传出原始 `MouseEvent`。 |
+| `ZSelect` | 同步选项选择、键盘操作、清除、定位浮层与原生表单桥接。 | `v-model` 对应 `modelValue`；`open` 可选受控。 |
+| `ZCombobox` | 可编辑查询与已有选项选择，支持筛选、IME、键盘和表单。 | 已确认的 `value` 与查询 `query` 分离；不会把任意输入当作自由文本值提交。 |
+| `ZDialog` | 受控对话框，默认模态；支持标题、描述、页脚、焦点管理和显式 portal。 | `open` 始终由应用控制；关闭时依次触发 `update:open(false)`、`close-request(details)`。 |
 
-本包声明直接运行依赖 `@zoom-design/core` 和 `@zoom-design/dom`，构建顺序 Core → DOM → Vue。依赖保持 external，Vue 是 peer dependency；真实 tarball 消费也需匹配的 Core、DOM 与 Vue。内部 SCSS 不作为运行时依赖。
+`Select` / `Combobox` 的值可为字符串、有限数字或 `null`；`0` 与空字符串是合法值。应用可以监听 `change`、`open-change`，Combobox 还提供 `query-change`。这些详情事件说明原因，但实际显示值仍以应用传入的受控值为准。
 
-根目录可执行 `npm run build -- --package vue`、`npm run typecheck -- --package vue`、`npm run test:unit -- --package vue`，或对应 workspace 脚本。类型检查消费真实构建声明，以 TS6/TS7 plain TS 和本地 TS6 vue-tsc 验证 Dialog props、事件、slots、expose 的正反例，均保留 `skipLibCheck=false`。Vue 可执行生产代码的 statements/functions/branches/lines 按汇总各要求 ≥80%；DOM 对每个可执行生产文件的四项各要求 ≥80%。根 unit 编排仍准备工程契约所需的其他产物；仅需聚焦组件测试时使用已准备产物的本包测试脚本。
+## 按需导入与主题
 
-`npm run dev:vue` 启动公开消费宿主：`/` 保留私有探针，`/theme` 验证主题，`/button`、`/select`、`/combobox`、`/dialog` 使用公开组件；Dialog 另有 `/dialog/behavior`、`/dialog/appearance`、`/dialog/composition`。`/ssr?example=button|select|combobox|dialog` 提供真实产品 HTML；`&open=true` 覆盖初始打开及水合后 portal 迁移，`&brand=teal` 选择请求品牌。Combobox 另有 `&query=Ze` 和 `&value=blue`，Dialog 另有 `&portal=true`、`&id=`、`&idPrefix=`；两端使用同源参数。浏览器命令为 `npm run test:e2e -- --package vue --browser chromium`，三浏览器及 packed 范围见记录。
+组件既可从包根入口命名导入，也可从 `/button`、`/select`、`/combobox`、`/dialog` 导入。按需样式示例：
 
-Button 既有结果见 [Task7](../../docs/engineering/task7-acceptance.md)；Select 的 Task11 已用户验收通过，见[验收记录](../../docs/engineering/task11-acceptance.md)。Task12 验证结果单列，不由 Select 结果推断。本包 private:false、版本 0.0.0、MIT、public publishConfig 为发布配置，尚未公开发布；根与示例 apps 保持 private。
+```ts
+import { ZSelect } from '@zoom-design/vue/select';
+import '@zoom-design/vue/theme.css';
+import '@zoom-design/vue/select/style.css';
+```
+
+选择聚合 `style.css` 或“`theme.css` + 所需组件的 `style.css`”之一，避免重复导入。`theme.css` 提供共享颜色、字体与 `data-zoom-density="regular|compact"` 密度变量；应用可在容器上覆盖 `--zoom-color-primary` 等 CSS 变量。可选 `theme.scss` 入口供已配置 Sass package importer 的项目定制主题。
+
+默认浮层在组件位置渲染。启用 `portal` 时，应用需提供同一 `Document` 中已连接的宿主；外置宿主的字体、方向、品牌变量和密度应由应用同步。SSR 初始打开的内容先以内联 HTML 输出，水合后再迁移到合法宿主。
+
+包只公开声明的根入口、组件子路径与样式子路径；`/src/*`、`/dist/*` 不是可依赖的导入地址。

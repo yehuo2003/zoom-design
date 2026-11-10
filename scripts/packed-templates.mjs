@@ -1,5 +1,6 @@
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import * as sass from 'sass';
 
 const json = (file, value) => writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 export function consumerTypeConfig(app) {
@@ -23,6 +24,18 @@ export function createConsumer(repository, directory, app, packages) {
   for (const script of ['run-local-bin.mjs', 'run-vue-tsc.mjs', 'pack-contracts.mjs', 'theme-contract.mjs']) cpSync(join(repository, 'scripts', script), join(directory, 'scripts', script));
   for (const script of ['verify-consumer.mjs', 'native-check.mjs', 'vite-graph.mjs', 'selection-type-contract.mjs', 'dom-type-contract.mjs', 'select-type-contract.mjs', 'select-ssr-contract.mjs', 'combobox-type-contract.mjs', 'combobox-ssr-contract.mjs', 'dialog-type-contract.mjs', 'dialog-ssr-contract.mjs', ...(app === 'vue' ? ['button-size.mjs', 'button-size-contract.mjs', 'select-size.mjs', 'select-size-contract.mjs', 'combobox-size.mjs', 'combobox-size-contract.mjs', 'dialog-size.mjs', 'dialog-size-contract.mjs'] : [])]) cpSync(join(repository, 'tests/engineering/packed', script), join(directory, 'scripts', script));
   cpSync(join(repository, `apps/${app}-smoke/src`), join(directory, 'src'), { recursive: true });
+  if (app === 'vue') {
+    // The private scenario uses SCSS in the workspace. Ship its compiled CSS
+    // to this standalone fixture so ordinary package consumers need no Sass.
+    const scss = join(directory, 'src/scenarios/style.scss');
+    const main = join(directory, 'src/main.ts');
+    const entry = readFileSync(main, 'utf8');
+    const importPath = "import('./scenarios/style.scss')";
+    if (!entry.includes(importPath)) throw Error('Vue scenario style import changed');
+    writeFileSync(join(directory, 'src/scenarios/style.css'), sass.compile(scss, { style: 'expanded', sourceMap: false, charset: false }).css + '\n');
+    writeFileSync(main, entry.replace(importPath, "import('./scenarios/style.css')"));
+    rmSync(scss);
+  }
   if (app !== 'angular') cpSync(join(repository, `apps/${app}-smoke/index.html`), join(directory, 'index.html'));
   const probes = app === 'platform' ? [['core', 'state.ts'], ['dom', 'listener.ts']] : [[app, app === 'vue' ? 'BuildProbe.vue' : app === 'react' ? 'BuildProbe.tsx' : 'build-probe.ts']];
   for (const [name, file] of probes) cpSync(join(repository, `packages/${name}/test/fixtures/${file}`), join(directory, 'src/fixtures', file));

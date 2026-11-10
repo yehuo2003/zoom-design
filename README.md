@@ -16,7 +16,7 @@ Zoom Design 是面向 Web（以 PC 为主）的多框架组件库项目。规划
 
 ## 当前状态
 
-Task1–12已获用户确认完成（Task11/12于2026-10-30确认，Task7/8/9/10于2026-10-29确认）。Vue `ZButton`通过40/40自动验收，Task11 新增 `ZSelect`，根与组件子路径均为命名导出，已获用户验收，Task12的ZCombobox已于2026-10-30用户验收通过（自动验收16/16）。Vue Dialog 的 Task13.1–13.12 已获用户验收；Task13.12 自动回归通过并于2026-11-09验收；React/Angular已有共享主题资产，公开功能入口仍为空。Core 在 Task9 增加六个纯选择函数与十二个类型；DOM 在 Task10 增加十二个浏览器函数与十二个类型。Task7 的完整CI与普通Node/npm干净副本历史结果为95项单测、workspace和packed各132项三浏览器；新候选另按当前 Task 验收记录。根工作区保持private；五个子包已配置公开发布、MIT许可与作者linzhuming，版本仍为0.0.0，尚未发布。产品用法见[Button](docs/components/button.md)、[Select](docs/components/select.md)、[Combobox](docs/components/combobox.md)、[Dialog](docs/components/dialog.md)；Linux实机未执行。
+Task1–12已获用户确认完成（Task11/12于2026-10-30确认，Task7/8/9/10于2026-10-29确认）。Vue `ZButton`通过40/40自动验收，Task11 新增 `ZSelect`，根与组件子路径均为命名导出，已获用户验收，Task12的ZCombobox已于2026-10-30用户验收通过（自动验收16/16）。Vue Dialog 的 Task13.1–13.12 已获用户验收；Task13.12 自动回归通过并于2026-11-09验收；React/Angular已有共享主题资产，公开功能入口仍为空。Core 在 Task9 增加六个纯选择函数与十二个类型；DOM 在 Task10 增加十二个浏览器函数与十二个类型。Task7 的完整CI与普通Node/npm干净副本历史结果为95项单测、workspace和packed各132项三浏览器；新候选另按当前 Task 验收记录。根工作区保持private；五个子包已配置公开发布、MIT许可与作者linzhuming，当前工作区版本为0.0.1；实际已发布版本以 npm 查询结果为准。产品用法见[Button](docs/components/button.md)、[Select](docs/components/select.md)、[Combobox](docs/components/combobox.md)、[Dialog](docs/components/dialog.md)；Linux实机未执行。
 
 Task6已于2026-10-28获用户确认完成：同源三框架theme.css和可选theme.scss，26/26自动检查通过，见[Task6验收](docs/engineering/task6-acceptance.md)。Vue的聚合style.css现包含主题及已实现的 Button/Select/Combobox/Dialog 样式；/theme保留原生主题样本，各组件可选独立 CSS。公共参数见[主题说明](docs/theming.md)。
 
@@ -30,7 +30,20 @@ Task10 已于 2026-10-29 用户验收通过：[DOM 用法与 API](packages/dom/R
 
 Task11：[Select 文档](docs/components/select.md)、`dev:vue` 的 `/select` 与 `/ssr?example=select&open=true`、[Task11 验收](docs/engineering/task11-acceptance.md)。Select 采用受控值、可选受控 open、原生表单桥接和按需 CSS；Task11 自动验收16/16通过：完整check204项、文档测试1项，workspace/packed三浏览器各141项；已于2026-10-30用户验收通过。
 
+## 快捷发布测试版
+
+在仓库根目录打开 PowerShell，先预览版本，再执行五包发布：
+
+```powershell
+npm run publish:all:test -- --dry-run
+npm run publish:all:test
+```
+
+预览命令只查询 npm 上已占用的版本，不修改文件或发布。正式命令会选择五包共同可用的补丁版本，同步包间依赖与锁文件，检查 npm 登录、README 和打包消费结果，然后按依赖顺序发布到 `test` 标签。完成后会逐包显示成功、失败或跳过原因，并将报告保存到 `.artifacts/release/latest.json`。发布详情见[发布说明](docs/engineering/publishing.md)。
+
 ## 本地检查
+
+五包的发布目录、顺序和 `test` 标签命令见[发布说明](docs/engineering/publishing.md)。
 
 使用 Node 26.12.1 和 npm 12.2.1；Volta 会读取项目固定版本，无 Volta 时安装相同版本即可。普通 npm 命令不依赖 Volta。
 
