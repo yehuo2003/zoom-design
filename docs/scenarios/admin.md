@@ -1,6 +1,6 @@
 # 服务目录管理后台
 
-日期：2026-11-10。Task14.1、Task14.2 已获用户验收。Task14.3 已实现可编辑表单、本地保存/失败重试、未保存关闭确认与卸载取消，自动化通过，待用户验收。完整主题组合、正式 SSR/水合与打包消费仍属后续任务。
+日期：2026-11-11。Task14.1–Task14.6 已获用户验收。后台已实现可编辑表单、本地保存/失败重试、未保存关闭确认、显示设置、长内容与 host 布局。Task14.7 正式表单/键盘/F回归已通过自动化、待用户验收；原节点水合与打包消费仍属后续任务。
 
 依据：[Task14 详细计划](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md)。现有产品 API 见 [Button](../components/button.md)、[Select](../components/select.md)、[Combobox](../components/combobox.md)、[Dialog](../components/dialog.md)。
 
@@ -24,7 +24,7 @@
 
 `normalizeScenarioConfig('admin', input)` 与 `parseScenarioConfig('admin', URLSearchParams)` 共用归一化。`createInitialScenarioState('admin', input)` 使用同样的可选输入生成独立状态，也接受已归一化的 ScenarioConfig，供 URL 分支直接生成同输入首帧。直接挂载 AdminScenario 时可传可选 `initial`（原始别名配置）或 `scenarioConfig`（已归一化配置，优先采用），均不传则使用后台默认值。函数没有 DOM、时间、随机或全局可变计数依赖。
 
-当前 UI 使用 brand/density/rtl、初始过滤、record/open/empty、instance 和 save/delay 本地模拟保存。long/large/dual/hostPosition 的完整外观与双实例行为留待 Task14.6；不将已解析配置写成已验证页面功能。
+页面「显示设置」可独立切换紫/青品牌、regular/compact 密度、系统/衬线字体、大字号和 RTL，不重置筛选、编辑草稿或保存结果。`long=true` 在编辑器中展示长标题和只读服务说明，正文内部滚动；不放宽业务字段长度限制。`large=true` 使用 1.5rem 基础字号。`hostPosition=before|after` 选择前/后候选 host，默认 after。`dual` 的同页双品牌布局仅由品牌页实现，后台不据此复制页面。
 
 ## 私有数据与字段规则
 
@@ -60,7 +60,7 @@
 4. 表格 caption 为“服务目录”，四列使用 scope=col，服务名称单元使用 scope=row。名称与备注一起构成行头可访问名称；查询结果具有独立 role=status。宽表格保留横向滚动。
 5. 行“编辑”打开“编辑服务记录”，按原 ID 精确复制草稿与只读 baseline；数字0与空串不同。初焦为真实标题 input。关闭时动态解析原行真实按钮；保存后行被筛走或没有行 invoker（例如 SSR 初始打开），使用查询按钮/列表标题作 fallback。
 
-页面从四个组件公开子路径导入。main 的场景分支只加载 theme.css、Button/Select/Combobox/Dialog 独立 CSS 和私有场景 SCSS；不加载聚合 style.css。场景 host 位于当前主题 scope 内、列表滚动区外，并由 Dialog/选择组件的公开 container 回调共同使用。
+页面从四个组件公开子路径导入。main 的场景分支只加载 theme.css、Button/Select/Combobox/Dialog 独立 CSS 和私有场景 SCSS；不加载聚合 style.css。前/后两个稳定候选 host 均位于当前主题 scope 内、列表滚动区外，任一时刻只有一个是 Dialog/选择组件公开 container 回调的目标。直接挂载时响应式改变 `scenarioConfig.hostPosition` 可迁移已打开的浮层；由公开组件维持节点和焦点，不手动搬移 Vue 节点或设置 inert。目标断开时按组件契约内联回退，恢复连接后重新使用目标。
 
 ## 编辑、保存与关闭
 
@@ -78,8 +78,12 @@
 
 ## 验证边界
 
-组件必须从公开子路径导入；页面自己的状态、Mock 和样式不进入产品最小依赖图。筛选/编辑浏览器回归分别在 `e2e/vue/admin-scenario.e2e.ts`、`admin-edit.e2e.ts`；纯编辑状态与旧回调验证在 `tests/engineering/consumption-admin.spec.ts`，共享/路由见 consumption-model/service/routes。真实 Vue scope.dispose 的取消与非协作服务晚到回调由模型测试验证；浏览器离开再进入验证无旧页面数据/模态锁，不将完整导航冒充 SPA 组件卸载。正式 SSR 原节点水合、主题/host 迁移矩阵、tarball 和4段可编译场景 SFC 仍归后续任务；未接真实后端、未执行真实业务持久化。
+组件必须从公开子路径导入；页面自己的状态、Mock 和样式不进入产品最小依赖图。筛选/编辑浏览器回归分别在 `e2e/vue/admin-scenario.e2e.ts`、`admin-edit.e2e.ts`；纯编辑状态与旧回调验证在 `tests/engineering/consumption-admin.spec.ts`，共享/路由见 consumption-model/service/routes。真实 Vue scope.dispose 的取消与非协作服务晚到回调由模型测试验证；浏览器离开再进入验证无旧页面数据/模态锁，不将完整导航冒充 SPA 组件卸载。主题/host/布局见 Task14.6 实施记录；正式 SSR 原节点水合、tarball 和4段可编译场景 SFC 仍归后续任务。未接真实后端、未执行真实业务持久化。
 
 Task14.2 交付时已通过共享/路由18项、完整Vue Chromium93项及后台三浏览器24项；当时全量单元383项、生产构建和严格类型也通过，现已获用户验收。三浏览器专项在沙箱外运行；受限环境中的Firefox在空白页创建阶段崩溃，原失败记录与正常重跑分列。历史命令、版本、结果和边界见[Task14.2实施记录](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task142后台页面外壳筛选与结果展示)。Task14.3 的当前验证另列于对应实施记录。
 
-Task14.3 当前验证为全量单元399/399（包括构建与严格类型）、编辑/共享/路由专项31/31、完整Vue Chromium101/101、后台三浏览器48/48（每浏览器筛选8＋编辑8，无skip/retry）。Vue产品源码覆盖率 gate 通过：语句92.40%、函数96.03%、分支88.92%、行96.38%；私有探针和页面模型分开记录。生产构建、既有SSR与默认/数字0/空串编辑器的确定性SSR通过。全量首轮旧DOM导入超时原报告保留，原样单独复核及全量重跑通过。三浏览器沿用沙箱外执行方式。证据与限制见[Task14.3实施记录](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task143后台编辑保存与关闭确认)及 `.artifacts/task14/14.3/`；Task14.3仍保留进行中，Task14.4未开始。
+Task14.3 交付验证为全量单元399/399（包括构建与严格类型）、编辑/共享/路由专项31/31、完整Vue Chromium101/101、后台三浏览器48/48（每浏览器筛选8＋编辑8，无skip/retry）。Vue产品源码覆盖率 gate 通过：语句92.40%、函数96.03%、分支88.92%、行96.38%；私有探针和页面模型分开记录。生产构建、既有SSR与默认/数字0/空串编辑器的确定性SSR通过。全量首轮旧DOM导入超时原报告保留，原样单独复核及全量重跑通过。三浏览器沿用沙箱外执行方式。历史证据与限制见[Task14.3实施记录](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task143后台编辑保存与关闭确认)及 `.artifacts/task14/14.3/`。
+
+Task14.6 已验收：共享专项51/51、全量单元419/419、完整Vue Chromium125/125、外观三浏览器24/24；两页动态 host 迁移同节点/合法焦点/实际点击通过，warning/error=0，320px/大字号/RTL及双品牌截图已复核。证据与边界见[Task14.6实施记录](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task146主题-host响应式与双实例)和 `.artifacts/task14/14.6/`。
+
+Task14.7 当前验证：共享专项53/53、全量单元421/421、完整Vue Chromium146/146、正式F16三浏览器48/48及两页表单/清理15/15。`scenario-forms.e2e.ts` 验证外置footer真实form owner、native Enter/submit/reset、FormData的0/空串字符串；业务类型仍由纯模型DTO检查证明。合成composition配合真实Enter无submit，Escape先关闭popup，再关闭无修改编辑器，URL初始open回查询fallback。`/regressions/dialog-focus` 仅为诊断入口；旧独立夹具不再承担正式F16验收，实际子app卸载/重挂验证9类交互监听归零。证据及IME/packed边界见[Task14.7实施记录](../../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task147表单键盘与-f1f5-正式消费回归)和 `.artifacts/task14/14.7/`，未将合成composition当系统输入法实测。

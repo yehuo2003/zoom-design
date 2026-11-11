@@ -13,7 +13,6 @@ test-results/
 
 # Local npm publish credentials
 /.npmrc
-.npmrc
 
 # Angular precompiled CSS
 .generated/

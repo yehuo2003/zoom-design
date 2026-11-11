@@ -75,3 +75,7 @@ sass.compile('app-theme.scss', { importers: [new sass.NodePackageImporter()] });
 `@use` 本身不输出 CSS；在需要的局部容器或根选择器内调用 mixin。`with` 为一次模块加载配置默认值，多主题用 mixin map，不要以不同配置重复加载同一个模块。自定义输出放在库 CSS 之后或明确的局部作用域。Vite 或其他构建器需由应用启用相应 importer，不能假设所有构建器零配置支持 `pkg:`。
 
 开发预览：`npm run dev:vue` 后访问 `http://127.0.0.1:5171/theme`；SSR 样本为 `/ssr?example=theme&brand=purple` 或 `brand=teal`。默认 `/` 与 `/ssr` 仍提供原工程探针。实际自动验收与未执行项见 [Task6 记录](engineering/task6-acceptance.md)。
+
+两类消费页 `/scenarios/admin`、`/scenarios/brand` 在「显示设置」中提供品牌、密度、字体、字号和方向预设。`?large=true&rtl=true&long=true&open=true` 可检查窄屏长内容；品牌页 `?dual=true` 并排渲染紫/青两个独立实例，窄屏自动上下排列。显示状态属于实例，不重置业务选择、草稿或历史摘要。衬线预设为 `Georgia, "Songti SC", serif`，使用本机字体及回退；大字号设置 `--zoom-font-size-base:1.5rem`，不等同浏览器缩放测试。
+
+场景在自己的 `.consumption-scenario` 上覆盖既有 `--zoom-color-primary`、`--zoom-font-family`、`--zoom-font-size-base`，并设置 `data-zoom-density` 与 `dir`；自定义值可按上面的容器 `style.setProperty` 方法覆盖。两候选 host 同属该 scope 且位于表单/滚动区外；`hostPosition=before|after` 或直接挂载时响应式 `scenarioConfig.hostPosition` 选择唯一当前目标，Dialog、Select、Combobox 共用其回调。host 断开时按公开组件契约内联回退，可能输出诊断警告，恢复后重用目标；消费页不手动移动组件节点或干预 inert。外观/迁移实测与后续原节点水合边界见 [Task14.6](../.trae/task-14-两类消费验收-详细开发-工作量评估.md#task146主题-host响应式与双实例)。
